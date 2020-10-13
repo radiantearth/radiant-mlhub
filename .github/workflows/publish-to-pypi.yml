@@ -1,9 +1,9 @@
 name: Publish Python distribution to PyPI
 
-on: push
+on: release
 
 jobs:
-  build-n-publish:
+  build-and-publish:
     name: Build and publish Python distribution to PyPI
     runs-on: ubuntu-18.04
     steps:
