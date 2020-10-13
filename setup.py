@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="radiant_mlhub",
-    version="0.0.1",
+    version="0.0.2",
     author="Radiant Earth Foundation",
     author_email="devops@radiant.earth",
     description="A Python client for Radiant MLHub",
