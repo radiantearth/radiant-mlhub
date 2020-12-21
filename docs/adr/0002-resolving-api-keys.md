@@ -28,7 +28,7 @@ us from storing this additional information.
 The Python client will resolve the API key to be used in a request in the following order:
 
 1) Passing an `api_key` argument directly to the method
-2) Setting an `ML_HUB_API_KEY` environment variable
+2) Setting an `MLHUB_API_KEY` environment variable
 3) Passing a `profile` argument directly to the method. This will read the API key from the given profile (see below for details)
 4) Setting an `MLHUB_PROFILE` environment variable. This will read the API key from the given profile (see below for details)
 5) Using the API from the `default` profile
