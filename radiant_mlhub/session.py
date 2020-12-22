@@ -29,7 +29,7 @@ class Session(requests.Session):
 
     def __init__(self, *, api_key: str):
         super().__init__()
-        self.params.update({'key': api_key})
+        self.params.update({'key': api_key})  # type: ignore [union-attr]
         self.headers.update({
             'Accept': 'application/json',
             # Add the package name + version and the system info to the user-agent header
