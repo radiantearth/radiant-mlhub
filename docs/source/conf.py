@@ -14,6 +14,8 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 import sphinx_rtd_theme
+from radiant_mlhub import __version__
+import re
 
 
 # -- Project information -----------------------------------------------------
@@ -23,10 +25,10 @@ copyright = '2020, Radiant Earth Foundation'
 author = 'Radiant Earth Foundation'
 
 # The short X.Y version
-version = '0.0.2'
+version = re.fullmatch(r'^(\d+\.\d+\.\d).*$', __version__).group(1)
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.2'
+release = __version__
 
 
 # -- General configuration ---------------------------------------------------
