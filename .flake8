@@ -1,0 +1,14 @@
+[flake8]
+exclude =
+    .git
+    .github
+    .mypy_cache
+    .pytest_cache
+    .vscode
+    .idea
+    env
+    venv
+    docs
+    radiant_mlhub.egg-info
+    build
+max-line-length = 140
