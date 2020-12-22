@@ -143,11 +143,9 @@ def get_session(api_key: Optional[str] = None, profile: Optional[str] = None) ->
     >>> from radiant_mlhub import get_session
     # Get the API from the "default" profile
     >>> session = get_session()
-
     # Get the session from the "project1" profile
     # Alternatively, you could set the MLHUB_PROFILE environment variable to "project1"
     >>> session = get_session(profile='project1')
-
     # Pass an API key directly to the session
     # Alternatively, you could set the MLHUB_API_KEY environment variable to "some-api-key"
     >>> session = get_session(api_key='some-api-key')
