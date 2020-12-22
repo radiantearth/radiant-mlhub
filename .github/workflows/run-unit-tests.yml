@@ -11,11 +11,6 @@ on:
       - pyproject.toml
       - 'test/**'
 
-  # For testing...
-  push:
-    branches:
-      - ci-testing
-
 jobs:
   lint:
 
