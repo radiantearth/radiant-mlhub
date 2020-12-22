@@ -13,6 +13,9 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/radiantearth/radiant-mlhub",
     packages=setuptools.find_packages(),
+    install_requires=[
+        'requests~=2.25.1'
+    ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
