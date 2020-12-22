@@ -10,7 +10,9 @@ Welcome to radiant_mlhub's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   api/modules.rst
+   getting_started
+   authentication
+   API Documentation <api/modules>
 
 Indices and tables
 ==================
