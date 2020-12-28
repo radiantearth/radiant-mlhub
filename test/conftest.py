@@ -37,4 +37,3 @@ def bigearthnet_v1_source_items(requests_mock):
     requests_mock.get(page_2_endpoint, text=page_2_response_text)
 
     yield items_endpoint
-
