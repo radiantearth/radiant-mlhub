@@ -18,9 +18,9 @@ class Collection(pystac.Collection):
         catalog_type = pystac.CatalogType.determine_type(d)
 
         d = deepcopy(d)
-        id = d.pop('id')
+        id_ = d.pop('id')
         description = d.pop('description')
-        license = d.pop('license')
+        license_ = d.pop('license')
         extent = pystac.Extent.from_dict(d.pop('extent'))
         title = d.get('title')
         stac_extensions = d.get('stac_extensions')
@@ -35,13 +35,13 @@ class Collection(pystac.Collection):
         d.pop('stac_version')
 
         collection = cls(
-            id=id,
+            id=id_,
             description=description,
             extent=extent,
             title=title,
             stac_extensions=stac_extensions,
             extra_fields=d,
-            license=license,
+            license=license_,
             keywords=keywords,
             providers=providers,
             properties=properties,
