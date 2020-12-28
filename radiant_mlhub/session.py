@@ -36,12 +36,16 @@ class Session(requests.Session):
             'User-Agent': f'{__name__.split(".")[0]}/{__version__} ({platform.version()})'
         })
 
-    @functools.wraps(requests.Session.request)
+    @functools.wraps(
+        requests.Session.request,
+        assigned=[attr for attr in functools.WRAPPER_ASSIGNMENTS if attr != '__doc__']  # Keep this docstring
+    )
     def request(self, method, url, **kwargs):
-        """Overwrites the default :func:`requests.Session.request` method to prepend the MLHub root URL if the given
+        """Overwrites the default :meth:`requests.Session.request` method to prepend the MLHub root URL if the given
         ``url`` does not include a scheme.
 
-        All arguments except ``url`` are passed directly to :func:`requests.Session.request`."""
+        All arguments except ``url`` are passed directly to :meth:`requests.Session.request` (see that documentation for an explanation
+        of all other keyword arguments)."""
         # Parse the url argument and substitute the base URL if this is a relative path
         parsed_url = urllib.parse.urlsplit(url)
         if not parsed_url.scheme:

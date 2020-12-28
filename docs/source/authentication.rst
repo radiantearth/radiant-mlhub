@@ -9,8 +9,8 @@ API keys.
 Using API Keys
 ++++++++++++++
 
-The best way to add your API key to requests is to create :class:`~radiant_mlhub.client.Session` instance using
-:func:`radiant_mlhub.get_session` and making requests using this instance:
+The best way to add your API key to requests is to create a :class:`~radiant_mlhub.session.Session` instance using the
+:func:`~radiant_mlhub.session.get_session` helper function and making requests using this instance:
 
 .. code-block:: python
 
