@@ -7,7 +7,7 @@ from pathlib import Path
 import functools
 import urllib.parse
 import platform
-from typing import Optional
+from typing import Optional, Iterator
 
 import requests
 
@@ -115,6 +115,28 @@ class Session(requests.Session):
             raise KeyError(f'Could not find "api_key" value in "{profile}" section of {config_path}')
 
         return cls(api_key=api_key)
+
+    def paginate(self, url: str, **kwargs) -> Iterator[dict]:
+        """Makes a GET request to the given ``url`` and paginates through all results by looking for a link in each response with a ``rel``
+        of ``"next"``. Any additional keyword arguments are passed directly to :meth:`requests.Session.get`.
+
+        Parameters
+        ----------
+        url : str
+            The URL to which the initial request will be made.
+
+        Yields
+        ------
+        page : dict
+            An individual response as a dictionary.
+        """
+        while True:
+            page = self.get(url, **kwargs).json()
+            yield page
+
+            url = next((link for link in page.get('links', []) if link['rel'] == 'next'), {}).get('href')
+            if not url:
+                break
 
 
 def get_session(api_key: Optional[str] = None, profile: Optional[str] = None) -> Session:
