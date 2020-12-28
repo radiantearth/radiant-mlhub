@@ -72,7 +72,8 @@ class TestResolveAPIKeys:
     def test_no_profiles_file(self, tmp_path, monkeypatch):
         # Ensure there is no profiles file
         config_file = tmp_path / '.mlhub' / 'profiles'
-        config_file.unlink(missing_ok=True)
+        if config_file.exists():
+            config_file.unlink()
 
         # Monkeypatch the user's home directory to be the temp directory
         monkeypatch.setenv('HOME', str(tmp_path))
@@ -104,7 +105,8 @@ class TestResolveAPIKeys:
 
         # Ensure we don't have a profiles file
         config_file = tmp_path / '.mlhub' / 'profiles'
-        config_file.unlink(missing_ok=True)
+        if config_file.exists():
+            config_file.unlink()
 
         with pytest.raises(ValueError) as excinfo:
             get_session()
