@@ -37,3 +37,14 @@ def bigearthnet_v1_source_items(requests_mock):
     requests_mock.get(page_2_endpoint, text=page_2_response_text)
 
     yield items_endpoint
+
+
+@pytest.fixture(scope='function')
+def collections_list(requests_mock):
+    """Mock the response for the /collections endpoint."""
+    collections_response = read_data_file('collections_list.json')
+    endpoint = urllib.parse.urljoin('https://api.radiant.earth/mlhub/v1/', 'collections')
+
+    requests_mock.get(endpoint, text=collections_response)
+
+    yield endpoint

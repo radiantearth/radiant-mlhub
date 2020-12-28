@@ -4,6 +4,11 @@ from radiant_mlhub.models import Collection
 
 class TestCollection:
 
+    def test_list_collections(self, collections_list):
+        collections = list(Collection.list())
+        assert len(collections) == 47
+        assert isinstance(collections[0], Collection)
+
     def test_get_collection_from_file(self, bigearthnet_v1_source):
         """The collection can be fetched by passing the MLHub URL to the from_file method."""
         collection = Collection.from_file(bigearthnet_v1_source)

@@ -12,6 +12,28 @@ class Collection(pystac.Collection):
     """
 
     @classmethod
+    def list(cls, api_key: Optional[str] = None, profile: Optional[str] = None) -> Iterator['Collection']:
+        """Yields :class:`Collection` instances for all collections hosted by MLHub.
+
+        See the :ref:`Authentication` documentation for details on how authentication is handled for this request.
+
+        Parameters
+        ----------
+        api_key : str, optional
+            An API key to use for the requests.
+        profile: str, optional
+            A named profile from ``~/.mlhub/profiles`` to use for the request.
+
+        Yields
+        ------
+        collection : Collection
+        """
+        session = get_session(api_key=api_key, profile=profile)
+        for page in session.paginate('collections'):
+            for _collection in page.get('collections', []):
+                yield cls.from_dict(_collection)
+
+    @classmethod
     def from_dict(cls, d, href=None, root=None):
         """Patches the :meth:`pystac.Collection.from_dict` method so that it returns the calling class instead of always returning
         a :class:`pystac.Collection` instance."""
