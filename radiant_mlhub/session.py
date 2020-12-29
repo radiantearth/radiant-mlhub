@@ -135,7 +135,7 @@ class Session(requests.Session):
             page = self.get(url, **kwargs).json()
             yield page
 
-            url = next((link for link in page.get('links', []) if link['rel'] == 'next'), {}).get('href')
+            url = dict(next((link for link in page.get('links', []) if link['rel'] == 'next'), {})).get('href')
             if not url:
                 break
 
