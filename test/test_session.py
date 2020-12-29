@@ -20,7 +20,8 @@ class TestResolveAPIKeys:
         config['blank-profile'] = {}
 
         # Monkeypatch the user's home directory to be the temp directory
-        monkeypatch.setenv('HOME', str(tmp_path))
+        monkeypatch.setenv('HOME', str(tmp_path))  # Linux/Unix
+        monkeypatch.setenv('USERPROFILE', str(tmp_path))  # Windows
 
         # Create .mlhub directory and config file
         mlhub_dir = tmp_path / '.mlhub'
@@ -48,7 +49,7 @@ class TestResolveAPIKeys:
         session = get_session()
         assert session.params.get('key') == 'defaultapikey'
 
-    def test_api_key_from_named_profile(self, tmp_path, monkeypatch, config_content):
+    def test_api_key_from_named_profile(self, tmp_path, config_content):
         """The API key from the given profile in ~/.mlhub/profiles is stored on the session."""
         session = get_session(profile='other-profile')
         assert session.params.get('key') == 'otherapikey'
