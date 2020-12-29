@@ -2,7 +2,7 @@ name: Unit tests
 
 on:
 
-  push: &trigger_config
+  push:
 
     branches:
       - master
@@ -15,7 +15,16 @@ on:
       - 'test/**'
 
   pull_request:
-    <<: *trigger_config
+
+    branches:
+      - master
+      - dev
+
+    paths:
+      - 'radiant_mlhub/**'
+      - setup.py
+      - pyproject.toml
+      - 'test/**'
 
 jobs:
 
