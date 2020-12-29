@@ -53,7 +53,7 @@ jobs:
   test:
 
     # Only runs the Windows and MacOS tests if the PR is against master
-    if: github.base_ref == 'master' || matrix.os == 'ubuntu-latest'
+    if: github.base_ref == 'master' || startsWith(runner.os, 'Linux')
 
     strategy:
       matrix:
