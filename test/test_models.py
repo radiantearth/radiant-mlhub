@@ -1,8 +1,30 @@
+import configparser
+
 import pystac
+import pytest
 from radiant_mlhub.models import Collection
 
 
 class TestCollection:
+
+    @pytest.fixture(autouse=True)
+    def mock_profile(self, monkeypatch, tmp_path):
+        config = configparser.ConfigParser()
+
+        config['default'] = {'api_key': 'defaultapikey'}
+
+        # Monkeypatch the user's home directory to be the temp directory
+        monkeypatch.setenv('HOME', str(tmp_path))  # Linux/Unix
+        monkeypatch.setenv('USERPROFILE', str(tmp_path))  # Windows
+
+        # Create .mlhub directory and config file
+        mlhub_dir = tmp_path / '.mlhub'
+        mlhub_dir.mkdir()
+        config_file = mlhub_dir / 'profiles'
+        with config_file.open('w') as dst:
+            config.write(dst)
+
+        yield config
 
     def test_list_collections(self, collections_list):
         collections = list(Collection.list())
