@@ -57,7 +57,9 @@ For details on more fine-grained control over which API key is used for a sessio
 Discover Collections
 ++++++++++++++++++++
 
-You can use the :meth:`radiant_mlhub.models.Collection.list` method to list all of the collections available in MLHub:
+You can use the :meth:`Collection.list <radiant_mlhub.models.Collection.list>` method to list all of the collections available in MLHub. This method returns
+a generator that yields :class:`~radiant_mlhub.models.Collection` instances. You can use the properties of these instances to get more
+information about each collection. For instance, the following code will print the ID and description for each collection:
 
 .. code-block:: python
 
@@ -77,7 +79,8 @@ You can use the :meth:`radiant_mlhub.models.Collection.list` method to list all 
 Get Collection
 ++++++++++++++
 
-You can also get a collection by ID:
+If you know the ID of a collection, you can fetch it from the MLHub API using the :meth:`Collection.from_mlhub <radiant_mlhub.models.Collection.from_mlhub>` class
+method:
 
 .. code-block:: python
 
