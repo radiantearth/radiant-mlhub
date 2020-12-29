@@ -1,6 +1,7 @@
 """
-Methods and classes to simplify requests to the MLHub API.
+Methods and classes to simplify constructing and authenticating requests to the MLHub API.
 """
+
 import os
 import configparser
 from pathlib import Path
@@ -139,7 +140,7 @@ class Session(requests.Session):
                 break
 
 
-def get_session(api_key: Optional[str] = None, profile: Optional[str] = None) -> Session:
+def get_session(*, api_key: Optional[str] = None, profile: Optional[str] = None) -> Session:
     """Gets a :class:`Session` object that uses the given ``api_key`` for all requests. If no ``api_key`` argument is
     provided then the function will try to resolve an API key by finding the following values (in order of preference):
 
@@ -152,8 +153,8 @@ def get_session(api_key: Optional[str] = None, profile: Optional[str] = None) ->
     api_key : str, optional
         The API key to use for all requests from the session. See description above for how the API key is resolved if not provided as an
         argument.
-    profile: str, optional
-            The name of a profile configured in the ``.mlhub/profiles`` file. This will be passed directly to :func:`~Session.from_config`.
+    profile : str, optional
+        The name of a profile configured in the ``.mlhub/profiles`` file. This will be passed directly to :func:`~Session.from_config`.
 
     Returns
     -------

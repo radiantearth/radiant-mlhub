@@ -4,6 +4,14 @@ radiant\_mlhub package
 Submodules
 ----------
 
+radiant\_mlhub.client module
+----------------------------
+
+.. automodule:: radiant_mlhub.client
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 radiant\_mlhub.models module
 ----------------------------
 

@@ -1,35 +1,35 @@
+"""Extensions of the `PySTAC <https://pystac.readthedocs.io/en/latest/>`_ classes that provide convenience methods for interacting
+with the `Radiant MLHub API <https://docs.mlhub.earth/#radiant-mlhub-api>`_."""
+
 from copy import deepcopy
-from typing import Optional, Iterator
+from typing import Iterator
 
 import pystac
 
-from .session import get_session
+from . import client
 
 
 class Collection(pystac.Collection):
-    """Sub-class of :class:`pystac.Collection` that overrides the :meth:`pystac.Catalog.get_items` to fetch item links from the
+    """Class inheriting from :class:`pystac.Collection` that overrides the :meth:`pystac.Catalog.get_items` to fetch item links from the
     ``collections/<collection_id>/items`` MLHub endpoint instead of trying to use static links within the catalog object.
     """
 
     @classmethod
-    def list(cls, api_key: Optional[str] = None, profile: Optional[str] = None) -> Iterator['Collection']:
+    def list(cls, **session_kwargs) -> Iterator['Collection']:
         """Yields :class:`Collection` instances for all collections hosted by MLHub.
 
         See the :ref:`Authentication` documentation for details on how authentication is handled for this request.
 
         Parameters
         ----------
-        api_key : str, optional
-            An API key to use for the requests.
-        profile: str, optional
-            A named profile from ``~/.mlhub/profiles`` to use for the request.
+        **session_kwargs
+            Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
 
         Yields
         ------
         collection : Collection
         """
-        session = get_session(api_key=api_key, profile=profile)
-        for page in session.paginate('collections'):
+        for page in client.list_collections(**session_kwargs):
             for _collection in page.get('collections', []):
                 yield cls.from_dict(_collection)
 
@@ -83,23 +83,24 @@ class Collection(pystac.Collection):
         return collection
 
     @classmethod
-    def from_mlhub(cls, collection_id: str) -> 'Collection':
+    def from_mlhub(cls, collection_id: str, **session_kwargs) -> 'Collection':
         """Creates a :class:`Collection` instance by fetching the collection with the given ID from MLHub.
 
         Parameters
         ----------
         collection_id : str
             The ID of the collection to fetch (e.g. ``bigearthnet_v1_source``).
+        **session_kwargs
+            Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
 
         Returns
         -------
         collection : Collection
         """
-        session = get_session()
-        response = session.get(f'collections/{collection_id}').json()
+        response = client.get_collection(collection_id, **session_kwargs)
         return cls.from_dict(response)
 
-    def get_items(self, api_key: Optional[str] = None, profile: Optional[str] = None) -> Iterator[pystac.Item]:
+    def get_items(self, **session_kwargs) -> Iterator[pystac.Item]:
         """Overrides the :meth:`pystac.Catalog.get_items` method to fetch items using the ``collections/<collection_id>/items`` endpoint
         instead of looking for static links within the ``Collection`` object.
 
@@ -107,15 +108,13 @@ class Collection(pystac.Collection):
 
         Parameters
         ----------
-        api_key : str, optional
-            An API key to use for the requests.
-        profile: str, optional
-            A named profile from ``~/.mlhub/profiles`` to use for the request.
+        **session_kwargs
+            Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
         Yields
         ------
         item : pystac.Item
         """
-        session = get_session(api_key=api_key, profile=profile)
-        for page in session.paginate(f'collections/{self.id}/items'):
+        for page in client.list_collection_items(self.id, **session_kwargs):
             for feature in page.get('features', []):
                 yield pystac.Item.from_dict(feature)

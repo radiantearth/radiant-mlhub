@@ -36,7 +36,7 @@ Open ``~/.mlhub/profiles`` in a text editor and add the following content:
 Making API Requests
 +++++++++++++++++++
 
-Once you have your `profiles` file in place, you can create a session that will be used to make authenticated requests to the API:
+Once you have your ``profiles`` file in place, you can create a session that will be used to make authenticated requests to the API:
 
 .. code-block:: python
 
