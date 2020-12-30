@@ -37,7 +37,8 @@ setuptools.setup(
     ],
     project_urls={
         'Tracker': 'https://github.com/radiantearth/radiant-mlhub/issues',
-        'Slack': 'https://mlhubearth.slack.com'
+        'Slack': 'https://mlhubearth.slack.com',
+        'Documentation': 'https://radiant-mlhub.readthedocs.io/en/latest/'
     },
     python_requires='>=3.6',
 )
