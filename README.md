@@ -1,3 +1,5 @@
+[![Radiant MLHub Logo](docs/img/Radiant%20MLHub_2019_Primary%20Color%20Logo.png)](https://mlhub.earth/)
+
 # Radiant MLHub Python Client
 
 [![Unit tests](https://github.com/radiantearth/radiant-mlhub/workflows/Unit%20tests/badge.svg)](https://github.com/radiantearth/radiant-mlhub/actions)
