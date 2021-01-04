@@ -1,4 +1,4 @@
-[![Radiant MLHub Logo](docs/img/Radiant%20MLHub_2019_Primary%20Color%20Logo.png)](https://mlhub.earth/)
+[![Radiant MLHub Logo](https://radiant-assets.s3-us-west-2.amazonaws.com/PrimaryRadiantMLHubLogo.png)](https://mlhub.earth/)
 
 # Radiant MLHub Python Client
 
