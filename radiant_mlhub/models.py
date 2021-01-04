@@ -83,7 +83,7 @@ class Collection(pystac.Collection):
         return collection
 
     @classmethod
-    def from_mlhub(cls, collection_id: str, **session_kwargs) -> 'Collection':
+    def fetch(cls, collection_id: str, **session_kwargs) -> 'Collection':
         """Creates a :class:`Collection` instance by fetching the collection with the given ID from MLHub.
 
         Parameters

@@ -39,7 +39,7 @@ class TestCollection:
         assert collection.description == 'BigEarthNet v1.0'
 
     def test_get_collection_from_mlhub(self, bigearthnet_v1_source):
-        collection = Collection.from_mlhub('bigearthnet_v1_source')
+        collection = Collection.fetch('bigearthnet_v1_source')
 
         assert isinstance(collection, Collection)
         assert collection.description == 'BigEarthNet v1.0'

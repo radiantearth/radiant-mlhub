@@ -79,13 +79,13 @@ information about each collection. For instance, the following code will print t
 Get Collection
 ++++++++++++++
 
-If you know the ID of a collection, you can fetch it from the MLHub API using the :meth:`Collection.from_mlhub <radiant_mlhub.models.Collection.from_mlhub>` class
+If you know the ID of a collection, you can fetch it from the MLHub API using the :meth:`Collection.fetch <radiant_mlhub.models.Collection.fetch>` class
 method:
 
 .. code-block:: python
 
     >>> from pprint import pprint
-    >>> collection = Collection.from_mlhub('bigearthnet_v1_source')
+    >>> collection = Collection.fetch('bigearthnet_v1_source')
     >>> print(collection)
     <Collection id=bigearthnet_v1_source>
     >>> pprint(collection.to_dict())
