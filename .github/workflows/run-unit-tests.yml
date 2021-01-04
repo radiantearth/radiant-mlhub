@@ -81,20 +81,6 @@ jobs:
           path: ~/.cache/pip
           key: ${{ matrix.os }}-test-dependencies-${{ hashFiles('requirements_dev.txt') }}
 
-      - name: Cache test dependencies (MacOS)
-        uses: actions/cache@v2
-        if: startsWith(runner.os, 'macOS')
-        with:
-          path: ~/Library/Caches/pip
-          key: ${{ matrix.os }}-test-dependencies-${{ hashFiles('requirements_dev.txt') }}
-
-      - name: Cache test dependencies (Windows)
-        uses: actions/cache@v2
-        if: startsWith(runner.os, 'Windows')
-        with:
-          path: ~\AppData\Local\pip\Cache
-          key: ${{ matrix.os }}-test-dependencies-${{ hashFiles('requirements_dev.txt') }}
-
       # We run this every time because an if statement that checks each cache hit would be complicated
       #  and the step should take very little time if a cache was found
       - name: Install test dependencies
@@ -135,13 +121,6 @@ jobs:
           python-version: ${{matrix.python-version }}
 
       # Caches the pip install directory based on the OS
-      - name: Cache test dependencies (Linux)
-        uses: actions/cache@v2
-        if: startsWith(runner.os, 'Linux')
-        with:
-          path: ~/.cache/pip
-          key: ${{ matrix.os }}-test-dependencies-${{ hashFiles('requirements_dev.txt') }}
-
       - name: Cache test dependencies (MacOS)
         uses: actions/cache@v2
         if: startsWith(runner.os, 'macOS')
