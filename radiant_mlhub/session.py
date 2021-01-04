@@ -1,13 +1,14 @@
 """
-Methods and classes to simplify requests to the MLHub API.
+Methods and classes to simplify constructing and authenticating requests to the MLHub API.
 """
+
 import os
 import configparser
 from pathlib import Path
 import functools
 import urllib.parse
 import platform
-from typing import Optional
+from typing import Optional, Iterator
 
 import requests
 
@@ -36,12 +37,16 @@ class Session(requests.Session):
             'User-Agent': f'{__name__.split(".")[0]}/{__version__} ({platform.version()})'
         })
 
-    @functools.wraps(requests.Session.request)
+    @functools.wraps(
+        requests.Session.request,
+        assigned=[attr for attr in functools.WRAPPER_ASSIGNMENTS if attr != '__doc__']  # Keep this docstring
+    )
     def request(self, method, url, **kwargs):
-        """Overwrites the default :func:`requests.Session.request` method to prepend the MLHub root URL if the given
+        """Overwrites the default :meth:`requests.Session.request` method to prepend the MLHub root URL if the given
         ``url`` does not include a scheme.
 
-        All arguments except ``url`` are passed directly to :func:`requests.Session.request`."""
+        All arguments except ``url`` are passed directly to :meth:`requests.Session.request` (see that documentation for an explanation
+        of all other keyword arguments)."""
         # Parse the url argument and substitute the base URL if this is a relative path
         parsed_url = urllib.parse.urlsplit(url)
         if not parsed_url.scheme:
@@ -112,8 +117,30 @@ class Session(requests.Session):
 
         return cls(api_key=api_key)
 
+    def paginate(self, url: str, **kwargs) -> Iterator[dict]:
+        """Makes a GET request to the given ``url`` and paginates through all results by looking for a link in each response with a ``rel``
+        of ``"next"``. Any additional keyword arguments are passed directly to :meth:`requests.Session.get`.
 
-def get_session(api_key: Optional[str] = None, profile: Optional[str] = None) -> Session:
+        Parameters
+        ----------
+        url : str
+            The URL to which the initial request will be made.
+
+        Yields
+        ------
+        page : dict
+            An individual response as a dictionary.
+        """
+        while True:
+            page = self.get(url, **kwargs).json()
+            yield page
+
+            url = dict(next((link for link in page.get('links', []) if link['rel'] == 'next'), {})).get('href')
+            if not url:
+                break
+
+
+def get_session(*, api_key: Optional[str] = None, profile: Optional[str] = None) -> Session:
     """Gets a :class:`Session` object that uses the given ``api_key`` for all requests. If no ``api_key`` argument is
     provided then the function will try to resolve an API key by finding the following values (in order of preference):
 
@@ -126,8 +153,8 @@ def get_session(api_key: Optional[str] = None, profile: Optional[str] = None) ->
     api_key : str, optional
         The API key to use for all requests from the session. See description above for how the API key is resolved if not provided as an
         argument.
-    profile: str, optional
-            The name of a profile configured in the ``.mlhub/profiles`` file. This will be passed directly to :func:`~Session.from_config`.
+    profile : str, optional
+        The name of a profile configured in the ``.mlhub/profiles`` file. This will be passed directly to :func:`~Session.from_config`.
 
     Returns
     -------

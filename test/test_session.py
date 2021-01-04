@@ -62,6 +62,7 @@ class TestResolveAPIKeys:
         assert session.params.get('key') == 'environmentprofilekey'
 
     def test_from_env_error(self, monkeypatch):
+        """Raises an exception if no MLHUB_API_KEY environment variable is found when explicitly loading session from environment."""
         # Ensure there is not MLHUB_API_KEY environment variable
         monkeypatch.delenv('MLHUB_API_KEY', raising=False)
 
@@ -71,6 +72,7 @@ class TestResolveAPIKeys:
         assert 'No "MLHUB_API_KEY" variable found in environment.' == str(excinfo.value)
 
     def test_no_profiles_file(self, tmp_path, monkeypatch):
+        """Raises an exception if no profile files are found when falling back to using profiles."""
         # Ensure there is no profiles file
         config_file = tmp_path / '.mlhub' / 'profiles'
         if config_file.exists():
@@ -85,18 +87,21 @@ class TestResolveAPIKeys:
         assert 'No file found' in str(excinfo.value)
 
     def test_invalid_profile_name(self, config_content):
+        """Raises an exception if a non-existent profile name is given."""
         with pytest.raises(KeyError) as excinfo:
             Session.from_config(profile='does-not-exist')
 
         assert 'Could not find "does-not-exist" section' in str(excinfo.value)
 
     def test_missing_api_key(self, config_content):
+        """Raises an exception if the profile does not have an api_key value."""
         with pytest.raises(KeyError) as excinfo:
             Session.from_config(profile='blank-profile')
 
         assert 'Could not find "api_key" value in "blank-profile" section' in str(excinfo.value)
 
     def test_unresolved_api_key(self, monkeypatch, tmp_path):
+        """Raises an exception if no API key can be resolved from arguments, environment, or profiles."""
         # Monkeypatch the user's home directory to be the temp directory.
         monkeypatch.setenv('HOME', str(tmp_path))
 
@@ -139,6 +144,7 @@ class TestSessionRequests:
         assert query_params.get('key') == [test_api_key]
 
     def test_inject_headers(self, requests_mock):
+        """The session injects the User-Agent and Accept headers."""
 
         requests_mock.get('https://some-domain.com')
 

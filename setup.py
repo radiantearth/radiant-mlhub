@@ -16,7 +16,8 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     platforms='Platform Independent',
     install_requires=[
-        'requests~=2.25.1'
+        'requests~=2.25.1',
+        'pystac~=0.5.3'
     ],
     classifiers=[
         "Programming Language :: Python",
