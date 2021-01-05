@@ -176,7 +176,7 @@ def get_collection_item(collection_id: str, item_id: str, **session_kwargs) -> d
     """
     session = get_session(**session_kwargs)
 
-    response = session.get(f'collections/{collection_id}')
+    response = session.get(f'collections/{collection_id}/items/{item_id}')
 
     if response.ok:
         return response.json()
