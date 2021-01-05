@@ -175,4 +175,11 @@ def get_collection_item(collection_id: str, item_id: str, **session_kwargs) -> d
     item : dict
     """
     session = get_session(**session_kwargs)
-    return session.get(f'collections/{collection_id}/items/{item_id}').json()
+
+    response = session.get(f'collections/{collection_id}')
+
+    if response.ok:
+        return response.json()
+    if response.status_code == 404:
+        raise EntityDoesNotExist(collection_id)
+    raise MLHubException(f'An unknown error occurred: {response.status_code} ({response.reason})')
