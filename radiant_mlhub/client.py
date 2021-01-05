@@ -3,6 +3,8 @@
 import itertools as it
 from typing import Iterator, List
 
+from requests.exceptions import HTTPError
+
 from .session import get_session
 from .exceptions import CollectionDoesNotExist, MLHubException
 
@@ -82,15 +84,22 @@ def get_collection(collection_id: str, **session_kwargs) -> dict:
     Returns
     -------
     collection : dict
+
+    Raises
+    ------
+    CollectionDoesNotExist
+        If a 404 response code is returned by the API
+    MLHubException
+        If any other response code is returned
     """
     session = get_session(**session_kwargs)
-    response = session.get(f'collections/{collection_id}')
 
-    if response.ok:
-        return response.json()
-    if response.status_code == 404:
-        raise CollectionDoesNotExist(collection_id)
-    raise MLHubException(f'An unknown error occurred: {response.status_code} ({response.reason})')
+    try:
+        return session.get(f'collections/{collection_id}').json()
+    except HTTPError as e:
+        if e.response.status_code == 404:
+            raise CollectionDoesNotExist(collection_id) from None
+        raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})') from None
 
 
 def list_collection_items(
