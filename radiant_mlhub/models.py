@@ -134,7 +134,7 @@ class CollectionType(Enum):
     LABELS = 'labels'
 
 
-_CollectionWithType = namedtuple('DatasetCollection', ['type', 'collection'])
+_CollectionWithType = namedtuple('_CollectionWithType', ['type', 'collection'])
 
 
 class _CollectionList(Sequence):

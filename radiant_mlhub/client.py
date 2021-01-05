@@ -4,6 +4,7 @@ import itertools as it
 from typing import Iterator, List
 
 from .session import get_session
+from .exceptions import CollectionDoesNotExist, MLHubException
 
 
 def list_datasets(**session_kwargs) -> List[dict]:
@@ -83,7 +84,13 @@ def get_collection(collection_id: str, **session_kwargs) -> dict:
     collection : dict
     """
     session = get_session(**session_kwargs)
-    return session.get(f'collections/{collection_id}').json()
+    response = session.get(f'collections/{collection_id}')
+
+    if response.ok:
+        return response.json()
+    if response.status_code == 404:
+        raise CollectionDoesNotExist(collection_id)
+    raise MLHubException(f'An unknown error occurred: {response.status_code} ({response.reason})')
 
 
 def list_collection_items(
