@@ -13,6 +13,7 @@ from typing import Optional, Iterator
 import requests
 
 from .__version__ import __version__
+from .exceptions import AuthenticationError
 
 
 class Session(requests.Session):
@@ -46,7 +47,13 @@ class Session(requests.Session):
         ``url`` does not include a scheme.
 
         All arguments except ``url`` are passed directly to :meth:`requests.Session.request` (see that documentation for an explanation
-        of all other keyword arguments)."""
+        of all other keyword arguments).
+
+        Raises
+        ------
+        AuthenticationError
+            If the response status code is 401
+        """
         # Parse the url argument and substitute the base URL if this is a relative path
         parsed_url = urllib.parse.urlsplit(url)
         if not parsed_url.scheme:
@@ -59,7 +66,14 @@ class Session(requests.Session):
                 parsed_url.query,
                 parsed_url.fragment,
             ).geturl()
-        return super().request(method, url, **kwargs)
+
+        response = super().request(method, url, **kwargs)
+
+        # Handle authentication errors
+        if response.status_code == 401:
+            raise AuthenticationError(f'Authentication failed for API key "{self.params.get("key")}"')
+
+        return response
 
     @classmethod
     def from_env(cls) -> 'Session':

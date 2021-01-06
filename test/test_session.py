@@ -6,6 +6,7 @@ import pytest
 from requests_mock.exceptions import NoMockAddress
 
 from radiant_mlhub.session import get_session, Session
+from radiant_mlhub.exceptions import AuthenticationError
 
 
 class TestResolveAPIKeys:
@@ -178,3 +179,22 @@ class TestSessionRequests:
         assert urllib.parse.urlsplit(history[0].url).path == '/mlhub/v1/relative/path'
         assert urllib.parse.urlsplit(history[1].url).netloc == 'api.radiant.earth'
         assert urllib.parse.urlsplit(history[1].url).path == '/mlhub/v1/relative/path'
+
+    def test_auth_error(self, requests_mock):
+        """The session raises an AuthenticationError if it gets a 401 response."""
+        session = get_session(api_key='not-valid')
+
+        requests_mock.get(
+            'https://api.radiant.earth/mlhub/v1/auth-error',
+            status_code=401,
+            reason='UNAUTHORIZED',
+            text='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">\n<title>401 Unauthorized</title>\n'
+                 '<h1>Unauthorized</h1>\n<p>The server could not verify that you are authorized to access the URL requested. '
+                 'You either supplied the wrong credentials (e.g. a bad password), or your browser doesn\'t understand how to '
+                 'supply the credentials required.</p>\n'
+        )
+
+        with pytest.raises(AuthenticationError) as excinfo:
+            session.get('https://api.radiant.earth/mlhub/v1/auth-error')
+
+        assert 'Authentication failed for API key "not-valid"' == str(excinfo.value)
