@@ -13,7 +13,7 @@ from typing import Optional, Iterator
 import requests
 
 from .__version__ import __version__
-from .exceptions import AuthenticationError
+from .exceptions import AuthenticationError, APIKeyNotFound
 
 
 class Session(requests.Session):
@@ -85,12 +85,12 @@ class Session(requests.Session):
 
         Raises
         ------
-        ValueError
+        APIKeyNotFound
             If the API key cannot be found in the environment
         """
         api_key = os.getenv(cls.API_KEY_ENV_VARIABLE)
         if not api_key:
-            raise ValueError(f'No "{cls.API_KEY_ENV_VARIABLE}" variable found in environment.')
+            raise APIKeyNotFound(f'No "{cls.API_KEY_ENV_VARIABLE}" variable found in environment.')
         return cls(api_key=api_key)
 
     @classmethod
@@ -108,15 +108,13 @@ class Session(requests.Session):
 
         Raises
         ------
-        FileNotFoundError
-            If the given config file does not exist.
-
-        KeyError
-            If the given profile cannot be found or there is no ``api_key`` property in the given profile section.
+        APIKeyNotFound
+            If the given config file does not exist, the given profile cannot be found, or there is no ``api_key`` property in the
+            given profile section.
         """
         config_path = Path.home() / '.mlhub/profiles'
         if not config_path.exists():
-            raise FileNotFoundError(f'No file found at {config_path}')
+            raise APIKeyNotFound(f'No file found at {config_path}')
 
         config = configparser.ConfigParser()
         config.read(config_path)
@@ -124,10 +122,10 @@ class Session(requests.Session):
         profile = profile or 'default'  # Use the default profile if the given profile is None or empty
 
         if profile not in config.sections():
-            raise KeyError(f'Could not find "{profile}" section in {config_path}')
+            raise APIKeyNotFound(f'Could not find "{profile}" section in {config_path}')
         api_key = config.get(profile, 'api_key', fallback=None)
         if not api_key:
-            raise KeyError(f'Could not find "api_key" value in "{profile}" section of {config_path}')
+            raise APIKeyNotFound(f'Could not find "api_key" value in "{profile}" section of {config_path}')
 
         return cls(api_key=api_key)
 
@@ -176,7 +174,7 @@ def get_session(*, api_key: Optional[str] = None, profile: Optional[str] = None)
 
     Raises
     ------
-    ValueError
+    APIKeyNotFound
         If no API key can be resolved.
 
     Examples
@@ -202,5 +200,5 @@ def get_session(*, api_key: Optional[str] = None, profile: Optional[str] = None)
         # Use the profile argument (if not None or empty), otherwise try to get the profile name from the MLHUB_PROFILE env variable.
         profile = profile or os.getenv(Session.PROFILE_ENV_VARIABLE)
         return Session.from_config(profile=profile)
-    except (FileNotFoundError, KeyError):
-        raise ValueError('Could not resolve an API key from arguments, the environment, or a config file.')
+    except APIKeyNotFound:
+        raise APIKeyNotFound('Could not resolve an API key from arguments, the environment, or a config file.') from None

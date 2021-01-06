@@ -6,7 +6,7 @@ import pytest
 from requests_mock.exceptions import NoMockAddress
 
 from radiant_mlhub.session import get_session, Session
-from radiant_mlhub.exceptions import AuthenticationError
+from radiant_mlhub.exceptions import AuthenticationError, APIKeyNotFound
 
 
 class TestResolveAPIKeys:
@@ -67,7 +67,7 @@ class TestResolveAPIKeys:
         # Ensure there is not MLHUB_API_KEY environment variable
         monkeypatch.delenv('MLHUB_API_KEY', raising=False)
 
-        with pytest.raises(ValueError) as excinfo:
+        with pytest.raises(APIKeyNotFound) as excinfo:
             Session.from_env()
 
         assert 'No "MLHUB_API_KEY" variable found in environment.' == str(excinfo.value)
@@ -82,21 +82,21 @@ class TestResolveAPIKeys:
         # Monkeypatch the user's home directory to be the temp directory
         monkeypatch.setenv('HOME', str(tmp_path))
 
-        with pytest.raises(FileNotFoundError) as excinfo:
+        with pytest.raises(APIKeyNotFound) as excinfo:
             Session.from_config()
 
         assert 'No file found' in str(excinfo.value)
 
     def test_invalid_profile_name(self, config_content):
         """Raises an exception if a non-existent profile name is given."""
-        with pytest.raises(KeyError) as excinfo:
+        with pytest.raises(APIKeyNotFound) as excinfo:
             Session.from_config(profile='does-not-exist')
 
         assert 'Could not find "does-not-exist" section' in str(excinfo.value)
 
     def test_missing_api_key(self, config_content):
         """Raises an exception if the profile does not have an api_key value."""
-        with pytest.raises(KeyError) as excinfo:
+        with pytest.raises(APIKeyNotFound) as excinfo:
             Session.from_config(profile='blank-profile')
 
         assert 'Could not find "api_key" value in "blank-profile" section' in str(excinfo.value)
@@ -115,7 +115,7 @@ class TestResolveAPIKeys:
         if config_file.exists():
             config_file.unlink()
 
-        with pytest.raises(ValueError) as excinfo:
+        with pytest.raises(APIKeyNotFound) as excinfo:
             get_session()
 
         assert 'Could not resolve an API key from arguments, the environment, or a config file.' == str(excinfo.value)
