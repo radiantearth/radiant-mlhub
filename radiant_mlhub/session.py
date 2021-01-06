@@ -1,5 +1,9 @@
 """
 Methods and classes to simplify constructing and authenticating requests to the MLHub API.
+
+It is generally recommended that you use the :func:`get_session` function to create sessions, since this will propertly handle resolution
+of the API key from function arguments, environment variables, and profiles as described in :ref:`Authentication`. See the
+:func:`get_session` docs for usage examples.
 """
 
 import os
@@ -21,8 +25,9 @@ class Session(requests.Session):
 
     * Adds the API key as a ``key`` query parameter
     * Adds an ``Accept: application/json`` header
-    * Adds a ``User-Agent`` header that contains the package name and version, plus system information
+    * Adds a ``User-Agent`` header that contains the package name and version, plus basic system information like the OS name
     * Prepends the MLHub root URL (``https://api.radiant.earth/mlhub/v1/``) to any request paths without a domain
+    * Raises a :exc:`radiant_mlhub.exceptions.AuthenticationError` for ``401 (UNAUTHORIZED)`` responses
     """
 
     API_KEY_ENV_VARIABLE = 'MLHUB_API_KEY'
@@ -46,8 +51,16 @@ class Session(requests.Session):
         """Overwrites the default :meth:`requests.Session.request` method to prepend the MLHub root URL if the given
         ``url`` does not include a scheme.
 
-        All arguments except ``url`` are passed directly to :meth:`requests.Session.request` (see that documentation for an explanation
-        of all other keyword arguments).
+        Parameters
+        ----------
+        method : str
+            The request method to use. Passed directly to the ``method`` argument of :meth:`requests.Session.request`
+        url : str
+            Either a full URL or a path relative to the :attr:`ROOT_URL`. For example, to make a request to the Radiant MLHub API
+            ``/collections`` endpoint, you could use ``session.get('collections')``.
+        **kwargs
+            All other keyword arguments are passed directly to :meth:`requests.Session.request` (see that documentation for an explanation
+            of these keyword arguments).
 
         Raises
         ------
@@ -130,13 +143,14 @@ class Session(requests.Session):
         return cls(api_key=api_key)
 
     def paginate(self, url: str, **kwargs) -> Iterator[dict]:
-        """Makes a GET request to the given ``url`` and paginates through all results by looking for a link in each response with a ``rel``
-        of ``"next"``. Any additional keyword arguments are passed directly to :meth:`requests.Session.get`.
+        """Makes a GET request to the given ``url`` and paginates through all results by looking for a link in each response with a
+        ``rel`` type of ``"next"``. Any additional keyword arguments are passed directly to :meth:`requests.Session.get`.
 
         Parameters
         ----------
         url : str
-            The URL to which the initial request will be made.
+            The URL to which the initial request will be made. Note that this may either be a full URL or a path relative to the
+            :attr:`ROOT_URL` as described in :meth:`Session.request`.
 
         Yields
         ------
