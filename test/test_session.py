@@ -130,11 +130,14 @@ class TestSessionRequests:
         return os.getenv('MLHUB_API_KEY')
 
     def test_inject_api_key(self, requests_mock, test_api_key):
-        """The API key stored on the session is used in requests"""
+        """The API key stored on the session is used in requests and any additional query params that are passed in the
+        request method are preserved."""
 
         requests_mock.get('https://some-domain.com', text='{}')
 
         session = get_session()  # Gets the API key from the monkeypatched environment variable
+
+        # Test injection of API key
         session.get('https://some-domain.com')
 
         history = requests_mock.request_history
@@ -143,6 +146,27 @@ class TestSessionRequests:
         qs = urllib.parse.urlsplit(history[0].url).query
         query_params = urllib.parse.parse_qs(qs)
         assert query_params.get('key') == [test_api_key]
+
+        # Test preservation of other query params
+        session.get('https://some-domain.com', params={'otherparam': 'here'})
+
+        history = requests_mock.request_history
+
+        assert len(history) == 2
+        qs = urllib.parse.urlsplit(history[1].url).query
+        query_params = urllib.parse.parse_qs(qs)
+        assert query_params.get('key') == [test_api_key]
+        assert query_params.get('otherparam') == ['here']
+
+        # Test overwriting api key in request method
+        session.get('https://some-domain.com', params={'key': 'new-api-key'})
+
+        history = requests_mock.request_history
+
+        assert len(history) == 3
+        qs = urllib.parse.urlsplit(history[2].url).query
+        query_params = urllib.parse.parse_qs(qs)
+        assert query_params.get('key') == ['new-api-key']
 
     def test_inject_headers(self, requests_mock):
         """The session injects the User-Agent and Accept headers."""
