@@ -155,6 +155,9 @@ class _CollectionList(Sequence):
     def __getitem__(self, item):
         return (self.source + self.labels)[item]
 
+    def __repr__(self):
+        return list(self.__iter__()).__repr__()
+
 
 class Dataset:
     """Class that brings together multiple Radiant MLHub "collections" that are all considered part of a single "dataset". For instance,
