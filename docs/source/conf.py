@@ -77,8 +77,8 @@ html_favicon = '_static/favicon.ico'
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    'https://docs.python.org/3/': None,
-    'https://requests.readthedocs.io/en/master/': None,
-    'https://pystac.readthedocs.io/en/latest/': None,
+    'python': ('https://docs.python.org/3', None),
+    'requests': ('https://requests.readthedocs.io/en/master', None),
+    'pystac': ('https://pystac.readthedocs.io/en/latest', None),
 }
 
