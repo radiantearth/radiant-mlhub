@@ -13,7 +13,7 @@ def read_data_file(file_name):
 
 @pytest.fixture(scope='function')
 def bigearthnet_v1_source(requests_mock):
-    """Mock the response for getting the bigearthnet_v1_source collection."""
+    """Response for GET /collections/bigearthnet_v1_source."""
     response_text = read_data_file('bigearthnet_v1_source.json')
     endpoint = 'https://api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_source'
 
@@ -24,7 +24,7 @@ def bigearthnet_v1_source(requests_mock):
 
 @pytest.fixture(scope='function')
 def collections_list(requests_mock):
-    """Mock the response for the /collections endpoint."""
+    """Response for GET /collections."""
     collections_response = read_data_file('collections_list.json')
     endpoint = 'https://api.radiant.earth/mlhub/v1/collections'
 
