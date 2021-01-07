@@ -18,7 +18,7 @@ providing an API key to be used when making a request to the API. These options 
 Users may have multiple valid API keys associated with their account at any given time. The system for storing API keys on the user's 
 system must accommodate this and provide a clear, deterministic way of resolving an API key for a given project.
 
-We anticipate the need to store other data related to MLHub for uses unrelated to authentication. For instance, we may have a need to 
+We anticipate the need to store other data related to Radiant MLHub for uses unrelated to authentication. For instance, we may have a need to 
 track the progress of downloads so that they can be resumed if interrupted, or we may want to specify a base URL in a config file so that 
 developers can test against the staging environment. The method that we choose for storing API keys on the user's system must not preclude 
 us from storing this additional information. 
