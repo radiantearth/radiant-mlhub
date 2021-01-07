@@ -6,6 +6,44 @@ from typing import Iterator, List
 from .session import get_session
 
 
+def list_datasets(**session_kwargs) -> List[dict]:
+    """Gets a list of JSON-like dictionaries representing dataset objects returned by the Radiant MLHub ``GET /datasets`` endpoint.
+
+    See the `MLHub API docs <https://docs.mlhub.earth/#radiant-mlhub-api>`_ for details.
+
+    Parameters
+    ----------
+    **session_kwargs
+        Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
+    Returns
+    -------
+    datasets : List[dict]
+    """
+    session = get_session(**session_kwargs)
+    return session.get('datasets').json()
+
+
+def get_dataset(dataset_id: str, **session_kwargs) -> dict:
+    """Returns a JSON-like dictionary representing the response from the Radiant MLHub ``GET /datasets/{dataset_id}`` endpoint.
+
+    See the `MLHub API docs <https://docs.mlhub.earth/#radiant-mlhub-api>`_ for details.
+
+    Parameters
+    ----------
+    dataset_id : str
+        The ID of the dataset to fetch
+    **session_kwargs
+        Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
+    Returns
+    -------
+    dataset : dict
+    """
+    session = get_session(**session_kwargs)
+    return session.get(f'datasets/{dataset_id}').json()
+
+
 def list_collections(**session_kwargs) -> List[dict]:
     """Gets a list of JSON-like dictionaries representing STAC Collection objects returned by the Radiant MLHub ``GET /collections``
     endpoint.
