@@ -1,9 +1,17 @@
+import os
+
 import pytest
 import pystac
 from radiant_mlhub.models import Collection, Dataset
 
 
 class TestCollection:
+
+    @pytest.fixture(autouse=True)
+    def mock_api_key(self, monkeypatch):
+        """Set the default (dummy) API key to use for testing."""
+        monkeypatch.setenv('MLHUB_API_KEY', 'testapikey')
+        return os.getenv('MLHUB_API_KEY')
 
     def test_list_collections(self, collections_list):
         collections = Collection.list()
