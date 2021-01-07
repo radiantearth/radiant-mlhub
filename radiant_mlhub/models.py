@@ -129,6 +129,7 @@ class Collection(pystac.Collection):
 
 
 class CollectionType(Enum):
+    """Valid values for the type of a collection associated with a Radiant MLHub dataset."""
     SOURCE = 'source'
     LABELS = 'labels'
 
@@ -168,7 +169,42 @@ class Dataset:
         self.session_kwargs = session_kwargs
 
     @cached_property
-    def collections(self):
+    def collections(self) -> _CollectionList:
+        """List of collections associated with this dataset. The list that is returned has 2 additional attributes (``source`` and
+        ``labels``) that represent the list of collections corresponding the each type.
+
+        .. note::
+
+            This is a cached property, so updating ``self.collection_descriptions`` after calling ``self.collections`` the first time
+            will have no effect on the results. See :func:`functools.cached_property` for details on clearing the cached value.
+
+        Examples
+        --------
+
+        >>> from radiant_mlhub import Dataset
+        >>> dataset = Dataset.fetch('bigearthnet_v1')
+        >>> len(dataset.collections)
+        2
+        >>> len(dataset.collections.source)
+        1
+        >>> len(dataset.collections.labels)
+        1
+
+        To loop through all collections
+
+            >>> for collection in dataset.collections:
+            ...     # Do something here
+
+        To loop through only the source imagery collections:
+
+            >>> for collection in dataset.collections.source:
+            ...     # Do something here
+
+        To loop through only the label collections:
+
+            >>> for collection in dataset.collections.labels:
+            ...     # Do something here
+        """
         # Internal method to return a Collection along with it's CollectionType
         def _fetch_collection(_collection_description):
             return _CollectionWithType(
