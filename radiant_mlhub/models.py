@@ -2,7 +2,17 @@
 with the `Radiant MLHub API <https://docs.mlhub.earth/#radiant-mlhub-api>`_."""
 
 from copy import deepcopy
-from typing import Iterator, List
+from typing import Iterator, List, Optional
+import concurrent.futures
+from enum import Enum
+from collections import namedtuple
+from collections.abc import Sequence
+
+try:
+    from functools import cached_property
+except ImportError:  # pragma: no cover
+    from backports.cached_property import cached_property  # type: ignore [no-redef]
+
 
 import pystac
 
@@ -85,7 +95,7 @@ class Collection(pystac.Collection):
 
     @classmethod
     def fetch(cls, collection_id: str, **session_kwargs) -> 'Collection':
-        """Creates a :class:`Collection` instance by fetching the collection with the given ID from MLHub.
+        """Creates a :class:`Collection` instance by fetching the collection with the given ID from the Radiant MLHub API.
 
         Parameters
         ----------
@@ -116,3 +126,98 @@ class Collection(pystac.Collection):
     def fetch_item(self, item_id: str, **session_kwargs) -> pystac.Item:
         response = client.get_collection_item(self.id, item_id)
         return pystac.Item.from_dict(response)
+
+
+class CollectionType(Enum):
+    SOURCE = 'source'
+    LABELS = 'labels'
+
+
+_CollectionWithType = namedtuple('DatasetCollection', ['type', 'collection'])
+
+
+class _CollectionList(Sequence):
+    """Used internally by :class:`Dataset` to create a list of collections that can also be accessed by type using the
+    ``source`` and ``labels`` attributes."""
+
+    def __init__(self, collections: List[_CollectionWithType]):
+        self.source = [c.collection for c in collections if CollectionType(c.type) is CollectionType.SOURCE]
+        self.labels = [c.collection for c in collections if CollectionType(c.type) is CollectionType.LABELS]
+
+    def __iter__(self):
+        for item in self.source + self.labels:
+            yield item
+
+    def __len__(self):
+        return len(self.source) + len(self.labels)
+
+    def __getitem__(self, item):
+        return (self.source + self.labels)[item]
+
+
+class Dataset:
+    """Class that brings together multiple Radiant MLHub "collections" that are all considered part of a single "dataset". For instance,
+    the ``bigearthnet_v1`` dataset is composed of both a source imagery collection (``bigearthnet_v1_source``) and a labels collection
+    (``bigearthnet_v1_labels``).
+    """
+
+    def __init__(self, id: str, collections: List[dict], title: Optional[str] = None, **session_kwargs):
+        self.id = id
+        self.title = title
+        self.collection_descriptions = collections
+        self.session_kwargs = session_kwargs
+
+    @cached_property
+    def collections(self):
+        # Internal method to return a Collection along with it's CollectionType
+        def _fetch_collection(_collection_description):
+            return _CollectionWithType(
+                _collection_description['type'],
+                Collection.fetch(_collection_description['id'], **self.session_kwargs)
+            )
+
+        # Fetch all collections and create Collection instances
+        if len(self.collection_descriptions) == 1:
+            # If there is only 1 collection, fetch it in the same thread
+            only_description = self.collection_descriptions[0]
+            collections = [_fetch_collection(only_description)]
+        else:
+            # If there are multiple collections, fetch them concurrently
+            with concurrent.futures.ThreadPoolExecutor() as exc:
+                collections = list(exc.map(_fetch_collection, self.collection_descriptions))
+
+        return _CollectionList(collections)
+
+    @classmethod
+    def list(cls, **session_kwargs) -> Iterator['Dataset']:
+        """Yields :class:`Dataset` instances for all datasets hosted by MLHub.
+
+        See the :ref:`Authentication` documentation for details on how authentication is handled for this request.
+
+        Parameters
+        ----------
+        **session_kwargs
+            Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
+        Yields
+        ------
+        dataset : Dataset
+        """
+        yield from map(lambda d: cls(**d), client.list_datasets(**session_kwargs))
+
+    @classmethod
+    def fetch(cls, dataset_id: str, **session_kwargs) -> 'Dataset':
+        """Creates a :class:`Dataset` instance by fetching the dataset with the given ID from the Radiant MLHub API.
+
+        Parameters
+        ----------
+        dataset_id : str
+            The ID of the dataset to fetch (e.g. ``bigearthnet_v1``).
+        **session_kwargs
+            Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`.
+
+        Returns
+        -------
+        dataset : Dataset
+        """
+        return cls(**client.get_dataset(dataset_id, **session_kwargs))
