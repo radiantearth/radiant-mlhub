@@ -132,3 +132,40 @@ These would be the API keys used by sessions created using the various methods d
     >>> session = get_session(api_key='argument_direct')
     >>> session.params['key']
     'argument_direct'
+
+Making API Requests
++++++++++++++++++++
+
+Once you have your ``profiles`` file in place, you can create a session that will be used to make authenticated requests to the API:
+
+.. code-block:: python
+
+    >>> from radiant_mlhub import get_session
+    >>> session = get_session()
+
+You can use this session to make authenticated calls to the API. For example, to list all collections:
+
+.. code-block:: python
+
+    >>> r = session.get('/collections')  # Leading slash is optional
+    >>> collections = r.json()['collections']
+    >>> print(len(collections))
+    47
+
+Relative v. Absolute URLs
+-------------------------
+
+Any URLs that do not include a scheme (``http://``, ``https://``) are assumed to be relative to the Radiant MLHub root URL. For instance,
+the following code would make a request to ``https://api.radiant.earth/mlhub/v1/some-endpoint``:
+
+.. code-block:: python
+
+    >>> session.get('some-endpoint')
+
+but the following code would make a request to ``https://www.google.com``:
+
+.. code-block:: python
+
+    >>> session.get('https://www.google.com')
+
+It is not recommended to make calls to APIs other than the Radiant MLHub API using these sessions.
