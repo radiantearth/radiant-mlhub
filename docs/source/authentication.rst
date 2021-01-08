@@ -18,7 +18,7 @@ The best way to add your API key to requests is to create a :class:`~radiant_mlh
     >>> session = get_session()
     >>> r = session.get(...)
 
-You can associated an API key with a session in a number of ways:
+You can associate an API key with a session in a number of ways:
 
 * programmatically via an instantiation argument
 * using environment variables
