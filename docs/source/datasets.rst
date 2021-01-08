@@ -7,6 +7,9 @@ Collection contains the source imagery for the `BigEarthNet <http://bigearth.net
 ``bigearthnet_v1_labels`` Collection contains the annotations for that same dataset. These 2 collections are grouped together into the
 ``bigearthnet_v1`` dataset.
 
+The `Radiant MLHub Training Data Registry <http://registry.mlhub.earth/>`_ provides an overview of the datasets available through the
+Radiant MLHub API along with dataset metadata and a listing of the associated Collections.
+
 To discover and fetch datasets you can either use the low-level client methods from :mod:`radiant_mlhub.client` or the
 :class:`~radiant_mlhub.models.Dataset` class. Using the :class:`~radiant_mlhub.models.Dataset` class is the recommended approach, but
 both methods are described below.
@@ -21,7 +24,7 @@ Discovering Datasets
 
 The Radiant MLHub ``/datasets`` endpoint returns a list of objects describing the available datasets and their associated collections. You
 can use the low-level :func:`~radiant_mlhub.client.list_datasets` function to work with these responses as native Python data types
-(:class:`list` and :class:`dict`). This function is a generator that yields a :class:`dict` for each dataset listed.
+(:class:`list` and :class:`dict`). This function is a generator that yields a :class:`dict` for each dataset.
 
 .. code-block:: python
 
@@ -64,8 +67,8 @@ The Radiant MLHub ``/datasets/{dataset_id}`` endpoint returns an object represen
      'id': 'bigearthnet_v1',
      'title': 'BigEarthNet V1'}
 
-You can fetch a dataset from the Radiant MLHub API based on the dataset ID using the :meth:`Dataset.fetch <radiant_mlhub.models.Dataset.fetch>`
-method.
+You can also fetch a dataset from the Radiant MLHub API based on the dataset ID using the :meth:`Dataset.fetch <radiant_mlhub.models.Dataset.fetch>`
+method. This is the recommended way of fetching a dataset. This method returns a :class:`~radiant_mlhub.models.Dataset` instance.
 
 .. code-block:: python
 
