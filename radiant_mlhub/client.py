@@ -6,7 +6,7 @@ from typing import Iterator, List
 from requests.exceptions import HTTPError
 
 from .session import get_session
-from .exceptions import CollectionDoesNotExist, MLHubException
+from .exceptions import EntityDoesNotExist, MLHubException
 
 
 def list_datasets(**session_kwargs) -> List[dict]:
@@ -44,7 +44,12 @@ def get_dataset(dataset_id: str, **session_kwargs) -> dict:
     dataset : dict
     """
     session = get_session(**session_kwargs)
-    return session.get(f'datasets/{dataset_id}').json()
+    try:
+        return session.get(f'datasets/{dataset_id}').json()
+    except HTTPError as e:
+        if e.response.status_code == 404:
+            raise EntityDoesNotExist(dataset_id) from None
+        raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})') from None
 
 
 def list_collections(**session_kwargs) -> List[dict]:
@@ -87,7 +92,7 @@ def get_collection(collection_id: str, **session_kwargs) -> dict:
 
     Raises
     ------
-    CollectionDoesNotExist
+    EntityDoesNotExist
         If a 404 response code is returned by the API
     MLHubException
         If any other response code is returned
@@ -98,7 +103,7 @@ def get_collection(collection_id: str, **session_kwargs) -> dict:
         return session.get(f'collections/{collection_id}').json()
     except HTTPError as e:
         if e.response.status_code == 404:
-            raise CollectionDoesNotExist(collection_id) from None
+            raise EntityDoesNotExist(collection_id) from None
         raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})') from None
 
 

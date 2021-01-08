@@ -1,6 +1,6 @@
 import pytest
 import radiant_mlhub.client
-from radiant_mlhub.exceptions import MLHubException, CollectionDoesNotExist
+from radiant_mlhub.exceptions import MLHubException, EntityDoesNotExist
 
 
 class TestClient:
@@ -23,7 +23,24 @@ class TestClient:
 
     @pytest.fixture
     def collection_does_not_exist(self, requests_mock):
-        endpoint = 'https://api.radiant.earth/mlhub/v1/collections/does_not_exist'
+        endpoint = 'https://api.radiant.earth/mlhub/v1/collections/no_collection'
+
+        requests_mock.get(
+            endpoint,
+            status_code=404,
+            reason='NOT FOUND',
+            headers={'Content-Type': 'text/html; charset=utf-8'},
+            text='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">\n'
+                 '<title>404 Not Found</title>\n<h1>Not Found</h1>\n'
+                 '<p>The requested URL was not found on the server. '
+                 'If you entered the URL manually please check your spelling and try again.</p>\n'
+        )
+
+        yield endpoint
+
+    @pytest.fixture
+    def dataset_does_not_exist(self, requests_mock):
+        endpoint = 'https://api.radiant.earth/mlhub/v1/datasets/no_dataset'
 
         requests_mock.get(
             endpoint,
@@ -54,10 +71,16 @@ class TestClient:
         yield endpoint
 
     def test_collection_does_not_exist(self, collection_does_not_exist):
-        with pytest.raises(CollectionDoesNotExist) as excinfo:
-            radiant_mlhub.client.get_collection('does_not_exist')
+        with pytest.raises(EntityDoesNotExist) as excinfo:
+            radiant_mlhub.client.get_collection('no_collection')
 
-        assert 'Collection "does_not_exist" does not exist' in str(excinfo.value)
+        assert 'Entity with ID "no_collection" does not exist' in str(excinfo.value)
+
+    def test_dataset_does_not_exist(self, dataset_does_not_exist):
+        with pytest.raises(EntityDoesNotExist) as excinfo:
+            radiant_mlhub.client.get_dataset('no_dataset')
+
+        assert 'Entity with ID "no_dataset" does not exist' in str(excinfo.value)
 
     def test_internal_server_error(self, internal_server_error):
         with pytest.raises(MLHubException) as excinfo:
