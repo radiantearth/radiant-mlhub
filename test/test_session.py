@@ -6,6 +6,7 @@ import pytest
 from requests_mock.exceptions import NoMockAddress
 
 from radiant_mlhub.session import get_session, Session
+from radiant_mlhub.exceptions import AuthenticationError, APIKeyNotFound
 
 
 class TestResolveAPIKeys:
@@ -66,7 +67,7 @@ class TestResolveAPIKeys:
         # Ensure there is not MLHUB_API_KEY environment variable
         monkeypatch.delenv('MLHUB_API_KEY', raising=False)
 
-        with pytest.raises(ValueError) as excinfo:
+        with pytest.raises(APIKeyNotFound) as excinfo:
             Session.from_env()
 
         assert 'No "MLHUB_API_KEY" variable found in environment.' == str(excinfo.value)
@@ -81,21 +82,21 @@ class TestResolveAPIKeys:
         # Monkeypatch the user's home directory to be the temp directory
         monkeypatch.setenv('HOME', str(tmp_path))
 
-        with pytest.raises(FileNotFoundError) as excinfo:
+        with pytest.raises(APIKeyNotFound) as excinfo:
             Session.from_config()
 
         assert 'No file found' in str(excinfo.value)
 
     def test_invalid_profile_name(self, config_content):
         """Raises an exception if a non-existent profile name is given."""
-        with pytest.raises(KeyError) as excinfo:
+        with pytest.raises(APIKeyNotFound) as excinfo:
             Session.from_config(profile='does-not-exist')
 
         assert 'Could not find "does-not-exist" section' in str(excinfo.value)
 
     def test_missing_api_key(self, config_content):
         """Raises an exception if the profile does not have an api_key value."""
-        with pytest.raises(KeyError) as excinfo:
+        with pytest.raises(APIKeyNotFound) as excinfo:
             Session.from_config(profile='blank-profile')
 
         assert 'Could not find "api_key" value in "blank-profile" section' in str(excinfo.value)
@@ -114,7 +115,7 @@ class TestResolveAPIKeys:
         if config_file.exists():
             config_file.unlink()
 
-        with pytest.raises(ValueError) as excinfo:
+        with pytest.raises(APIKeyNotFound) as excinfo:
             get_session()
 
         assert 'Could not resolve an API key from arguments, the environment, or a config file.' == str(excinfo.value)
@@ -129,11 +130,14 @@ class TestSessionRequests:
         return os.getenv('MLHUB_API_KEY')
 
     def test_inject_api_key(self, requests_mock, test_api_key):
-        """The API key stored on the session is used in requests"""
+        """The API key stored on the session is used in requests and any additional query params that are passed in the
+        request method are preserved."""
 
         requests_mock.get('https://some-domain.com', text='{}')
 
         session = get_session()  # Gets the API key from the monkeypatched environment variable
+
+        # Test injection of API key
         session.get('https://some-domain.com')
 
         history = requests_mock.request_history
@@ -142,6 +146,27 @@ class TestSessionRequests:
         qs = urllib.parse.urlsplit(history[0].url).query
         query_params = urllib.parse.parse_qs(qs)
         assert query_params.get('key') == [test_api_key]
+
+        # Test preservation of other query params
+        session.get('https://some-domain.com', params={'otherparam': 'here'})
+
+        history = requests_mock.request_history
+
+        assert len(history) == 2
+        qs = urllib.parse.urlsplit(history[1].url).query
+        query_params = urllib.parse.parse_qs(qs)
+        assert query_params.get('key') == [test_api_key]
+        assert query_params.get('otherparam') == ['here']
+
+        # Test overwriting api key in request method
+        session.get('https://some-domain.com', params={'key': 'new-api-key'})
+
+        history = requests_mock.request_history
+
+        assert len(history) == 3
+        qs = urllib.parse.urlsplit(history[2].url).query
+        query_params = urllib.parse.parse_qs(qs)
+        assert query_params.get('key') == ['new-api-key']
 
     def test_inject_headers(self, requests_mock):
         """The session injects the User-Agent and Accept headers."""
@@ -178,3 +203,22 @@ class TestSessionRequests:
         assert urllib.parse.urlsplit(history[0].url).path == '/mlhub/v1/relative/path'
         assert urllib.parse.urlsplit(history[1].url).netloc == 'api.radiant.earth'
         assert urllib.parse.urlsplit(history[1].url).path == '/mlhub/v1/relative/path'
+
+    def test_auth_error(self, requests_mock):
+        """The session raises an AuthenticationError if it gets a 401 response."""
+        session = get_session(api_key='not-valid')
+
+        requests_mock.get(
+            'https://api.radiant.earth/mlhub/v1/auth-error',
+            status_code=401,
+            reason='UNAUTHORIZED',
+            text='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">\n<title>401 Unauthorized</title>\n'
+                 '<h1>Unauthorized</h1>\n<p>The server could not verify that you are authorized to access the URL requested. '
+                 'You either supplied the wrong credentials (e.g. a bad password), or your browser doesn\'t understand how to '
+                 'supply the credentials required.</p>\n'
+        )
+
+        with pytest.raises(AuthenticationError) as excinfo:
+            session.get('https://api.radiant.earth/mlhub/v1/auth-error')
+
+        assert 'Authentication failed for API key "not-valid"' == str(excinfo.value)

@@ -12,6 +12,14 @@ radiant\_mlhub.client module
    :undoc-members:
    :show-inheritance:
 
+radiant\_mlhub.exceptions module
+--------------------------------
+
+.. automodule:: radiant_mlhub.exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 radiant\_mlhub.models module
 ----------------------------
 

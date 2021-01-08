@@ -1,7 +1,7 @@
 Authentication
 ==============
 
-The MLHub API uses API keys to authenticate users. These keys must be passed as a `key` query parameter in any request made to the API.
+The MLHub API uses API keys to authenticate users. These keys must be passed as a ``key`` query parameter in any request made to the API.
 Anyone can register for an API key by going to `https://dashboard.mlhub.earth <https://dashboard.mlhub.earth>`_ and creating an account.
 Once you have logged into your account, go to `http://dashboard.mlhub.earth/api-keys <http://dashboard.mlhub.earth/api-keys>`_ to create
 API keys.
@@ -18,9 +18,13 @@ The best way to add your API key to requests is to create a :class:`~radiant_mlh
     >>> session = get_session()
     >>> r = session.get(...)
 
-You can associated an API key with a session in a number of ways: programmatically via an instantiation argument, using environment
-variables, or using a named profile. The :class:`~radiant_mlhub.session.Session` resolves an API key by trying each of the following, in
-order:
+You can associate an API key with a session in a number of ways:
+
+* programmatically via an instantiation argument
+* using environment variables
+* using a named profile
+
+The :class:`~radiant_mlhub.session.Session` resolves an API key by trying each of the following (in this order):
 
 1) Use an ``api_key`` argument provided during instantiation
 
@@ -55,12 +59,16 @@ order:
 
        >>> session = get_session()
 
-*If none of the above strategies results in a valid API key, then an exception is raised.*
+*If none of the above strategies results in a valid API key, then an* :exc:`~radiant_mlhub.exceptions.APIKeyNotFound` *exception is raised.*
 
-The :class:`radiant_mlhub.session.Session` instance inherits from :class:`requests.Session` and adds 2 conveniences to a typical session:
+The :class:`radiant_mlhub.session.Session` instance inherits from :class:`requests.Session` and adds a few conveniences to a typical
+session:
 
-1) Injects API key into query params
-2) Prepends the MLHub root URL (``https://api.radiant.earth/mlhub/v1/``) to request paths
+* Adds the API key as a ``key`` query parameter
+* Adds an ``Accept: application/json`` header
+* Adds a ``User-Agent`` header that contains the package name and version, plus basic system information like the the OS name
+* Prepends the MLHub root URL (``https://api.radiant.earth/mlhub/v1/``) to any request paths without a domain
+* Raises a :exc:`radiant_mlhub.exceptions.AuthenticationError` for ``401 (UNAUTHORIZED)`` responses
 
 Using Profiles
 ++++++++++++++

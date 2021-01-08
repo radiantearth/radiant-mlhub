@@ -1,5 +1,9 @@
 """
 Methods and classes to simplify constructing and authenticating requests to the MLHub API.
+
+It is generally recommended that you use the :func:`get_session` function to create sessions, since this will propertly handle resolution
+of the API key from function arguments, environment variables, and profiles as described in :ref:`Authentication`. See the
+:func:`get_session` docs for usage examples.
 """
 
 import os
@@ -13,6 +17,7 @@ from typing import Optional, Iterator
 import requests
 
 from .__version__ import __version__
+from .exceptions import AuthenticationError, APIKeyNotFound
 
 
 class Session(requests.Session):
@@ -20,8 +25,9 @@ class Session(requests.Session):
 
     * Adds the API key as a ``key`` query parameter
     * Adds an ``Accept: application/json`` header
-    * Adds a ``User-Agent`` header that contains the package name and version, plus system information
+    * Adds a ``User-Agent`` header that contains the package name and version, plus basic system information like the OS name
     * Prepends the MLHub root URL (``https://api.radiant.earth/mlhub/v1/``) to any request paths without a domain
+    * Raises a :exc:`radiant_mlhub.exceptions.AuthenticationError` for ``401 (UNAUTHORIZED)`` responses
     """
 
     API_KEY_ENV_VARIABLE = 'MLHUB_API_KEY'
@@ -45,8 +51,22 @@ class Session(requests.Session):
         """Overwrites the default :meth:`requests.Session.request` method to prepend the MLHub root URL if the given
         ``url`` does not include a scheme.
 
-        All arguments except ``url`` are passed directly to :meth:`requests.Session.request` (see that documentation for an explanation
-        of all other keyword arguments)."""
+        Parameters
+        ----------
+        method : str
+            The request method to use. Passed directly to the ``method`` argument of :meth:`requests.Session.request`
+        url : str
+            Either a full URL or a path relative to the :attr:`ROOT_URL`. For example, to make a request to the Radiant MLHub API
+            ``/collections`` endpoint, you could use ``session.get('collections')``.
+        **kwargs
+            All other keyword arguments are passed directly to :meth:`requests.Session.request` (see that documentation for an explanation
+            of these keyword arguments).
+
+        Raises
+        ------
+        AuthenticationError
+            If the response status code is 401
+        """
         # Parse the url argument and substitute the base URL if this is a relative path
         parsed_url = urllib.parse.urlsplit(url)
         if not parsed_url.scheme:
@@ -59,7 +79,14 @@ class Session(requests.Session):
                 parsed_url.query,
                 parsed_url.fragment,
             ).geturl()
-        return super().request(method, url, **kwargs)
+
+        response = super().request(method, url, **kwargs)
+
+        # Handle authentication errors
+        if response.status_code == 401:
+            raise AuthenticationError(f'Authentication failed for API key "{self.params.get("key")}"')
+
+        return response
 
     @classmethod
     def from_env(cls) -> 'Session':
@@ -71,12 +98,12 @@ class Session(requests.Session):
 
         Raises
         ------
-        ValueError
+        APIKeyNotFound
             If the API key cannot be found in the environment
         """
         api_key = os.getenv(cls.API_KEY_ENV_VARIABLE)
         if not api_key:
-            raise ValueError(f'No "{cls.API_KEY_ENV_VARIABLE}" variable found in environment.')
+            raise APIKeyNotFound(f'No "{cls.API_KEY_ENV_VARIABLE}" variable found in environment.')
         return cls(api_key=api_key)
 
     @classmethod
@@ -94,15 +121,13 @@ class Session(requests.Session):
 
         Raises
         ------
-        FileNotFoundError
-            If the given config file does not exist.
-
-        KeyError
-            If the given profile cannot be found or there is no ``api_key`` property in the given profile section.
+        APIKeyNotFound
+            If the given config file does not exist, the given profile cannot be found, or there is no ``api_key`` property in the
+            given profile section.
         """
         config_path = Path.home() / '.mlhub/profiles'
         if not config_path.exists():
-            raise FileNotFoundError(f'No file found at {config_path}')
+            raise APIKeyNotFound(f'No file found at {config_path}')
 
         config = configparser.ConfigParser()
         config.read(config_path)
@@ -110,21 +135,22 @@ class Session(requests.Session):
         profile = profile or 'default'  # Use the default profile if the given profile is None or empty
 
         if profile not in config.sections():
-            raise KeyError(f'Could not find "{profile}" section in {config_path}')
+            raise APIKeyNotFound(f'Could not find "{profile}" section in {config_path}')
         api_key = config.get(profile, 'api_key', fallback=None)
         if not api_key:
-            raise KeyError(f'Could not find "api_key" value in "{profile}" section of {config_path}')
+            raise APIKeyNotFound(f'Could not find "api_key" value in "{profile}" section of {config_path}')
 
         return cls(api_key=api_key)
 
     def paginate(self, url: str, **kwargs) -> Iterator[dict]:
-        """Makes a GET request to the given ``url`` and paginates through all results by looking for a link in each response with a ``rel``
-        of ``"next"``. Any additional keyword arguments are passed directly to :meth:`requests.Session.get`.
+        """Makes a GET request to the given ``url`` and paginates through all results by looking for a link in each response with a
+        ``rel`` type of ``"next"``. Any additional keyword arguments are passed directly to :meth:`requests.Session.get`.
 
         Parameters
         ----------
         url : str
-            The URL to which the initial request will be made.
+            The URL to which the initial request will be made. Note that this may either be a full URL or a path relative to the
+            :attr:`ROOT_URL` as described in :meth:`Session.request`.
 
         Yields
         ------
@@ -162,7 +188,7 @@ def get_session(*, api_key: Optional[str] = None, profile: Optional[str] = None)
 
     Raises
     ------
-    ValueError
+    APIKeyNotFound
         If no API key can be resolved.
 
     Examples
@@ -188,5 +214,5 @@ def get_session(*, api_key: Optional[str] = None, profile: Optional[str] = None)
         # Use the profile argument (if not None or empty), otherwise try to get the profile name from the MLHUB_PROFILE env variable.
         profile = profile or os.getenv(Session.PROFILE_ENV_VARIABLE)
         return Session.from_config(profile=profile)
-    except (FileNotFoundError, KeyError):
-        raise ValueError('Could not resolve an API key from arguments, the environment, or a config file.')
+    except APIKeyNotFound:
+        raise APIKeyNotFound('Could not resolve an API key from arguments, the environment, or a config file.') from None
