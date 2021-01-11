@@ -6,12 +6,12 @@ on:
     - published
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   build-and-publish:
 
-    # Only run the job for releases and PRs against master from release* branches
+    # Only run the job for releases and PRs against main from release* branches
     if: >-
       github.event_name == 'release' ||
       (github.event_name == 'pull_request' && startswith(github.ref, 'ref/heads/release'))
@@ -46,7 +46,7 @@ jobs:
         password: ${{ secrets.pypi_password }}
 
     - name: Publish distribution to TestPyPI
-      # Publish to TestPyPi for PRs against master from release branches
+      # Publish to TestPyPi for PRs against main from release branches
       if: (github.event_name == 'pull_request') && startsWith(github.ref, 'refs/heads/release')
       uses: pypa/gh-action-pypi-publish@master
       with:
