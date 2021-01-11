@@ -81,7 +81,7 @@ jobs:
         if: startsWith(runner.os, 'Linux')
         with:
           path: ~/.cache/pip
-          key: ${{ matrix.os }}-test-dependencies-${{ hashFiles('requirements_dev.txt') }}
+          key: unit-tests-${{ matrix.os }}-python${{ matrix.python-version }}-${{ hashFiles('requirements_dev.txt') }}
 
       - name: Install test dependencies
         run: |
@@ -126,14 +126,14 @@ jobs:
         if: startsWith(runner.os, 'macOS')
         with:
           path: ~/Library/Caches/pip
-          key: ${{ matrix.os }}-test-dependencies-${{ hashFiles('requirements_dev.txt') }}
+          key: unit-tests-${{ matrix.os }}-python${{ matrix.python-version }}-${{ hashFiles('requirements_dev.txt') }}
 
       - name: Cache test dependencies (${{ matrix.os }})
         uses: actions/cache@v2
         if: startsWith(runner.os, 'Windows')
         with:
           path: ~\AppData\Local\pip\Cache
-          key: ${{ matrix.os }}-test-dependencies-${{ hashFiles('requirements_dev.txt') }}
+          key: unit-tests-${{ matrix.os }}-python${{ matrix.python-version }}-${{ hashFiles('requirements_dev.txt') }}
 
       - name: Install test dependencies
         run: |
