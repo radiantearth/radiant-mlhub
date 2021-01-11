@@ -96,7 +96,9 @@ jobs:
   test_mac_windows:
 
     # Only run this for PRs against main and pushes to main
-    if: (github.event_name == 'pull_request' && github.base_ref == 'main') || (github.event_name == 'push' && github.ref == 'main')
+    if: >-
+      (github.event_name == 'pull_request' && github.base_ref == 'refs/heads/main') ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/main')
 
     strategy:
       matrix:
