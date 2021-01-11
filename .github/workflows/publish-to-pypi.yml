@@ -4,9 +4,18 @@ on:
   release:
     types:
     - published
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build-and-publish:
+
+    # Only run the job for releases and PRs against master from release* branches
+    if: >-
+      github.event_name == 'release' ||
+      (github.event_name == 'pull_request' && startswith(github.ref, 'ref/heads/release'))
+
     name: Build and publish Python distribution to PyPI
     runs-on: ubuntu-18.04
     steps:
@@ -30,7 +39,16 @@ jobs:
         --outdir dist/
         .
     - name: Publish distribution to PyPI
-      if: startsWith(github.ref, 'refs/tags')
+      # Publish to PyPi for releases
+      if: (github.event_name == 'release') && startsWith(github.ref, 'refs/tags')
       uses: pypa/gh-action-pypi-publish@master
       with:
         password: ${{ secrets.pypi_password }}
+
+    - name: Publish distribution to TestPyPI
+      # Publish to TestPyPi for PRs against master from release branches
+      if: (github.event_name == 'pull_request') && startsWith(github.ref, 'refs/heads/release')
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.pypi_password }}
+        repository_url: https://test.pypi.org/legacy/
