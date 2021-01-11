@@ -1,5 +1,13 @@
 # Contributing
 
+## Development Environment
+
+Install development dependencies:
+
+```shell
+> pip install -r requirements_dev.txt
+```
+
 ## Branches
 The `main` branch represents the latest stable version of the `radiant-mlhub` Python client. The `dev` branch 
 is where active feature development takes place. When developing new features, please create a branch off of the 
@@ -13,15 +21,23 @@ when it is ready for review.
 ## Tests
 
 This library uses [`pytest`](https://docs.pytest.org/en/stable/) for unit testing, [`flake8`](https://flake8.pycqa.org/en/latest/) 
-for code style checking, and [`mypy`](https://mypy.readthedocs.io/en/stable/) for type checking. You can run the full set of tests 
-as follows (from the project root):
+for code style checking, and [`mypy`](https://mypy.readthedocs.io/en/stable/) for type checking. We use [`tox`](https://tox.readthedocs.io/en/latest/examples.html)
+run each of these tools against all supported Python versions.
+
+To run against all supported Python versions in parallel:
 
 ```shell
-> pip install -r requirements_dev.txt
-> pytest
-> flake8
-> mypy radiant_mlhub
+> tox -p
 ```
+
+To run against just Python 3.8:
+
+```shell
+> tox -e py38
+```
+
+*Note that you must have all supported Python versions installed in order to run tests against them. See [`tox-pyenv`](https://pypi.org/project/tox-pyenv/) if you are 
+using `pyenv` to manage your installed Python versions.*  
 
 ## Releases
 
