@@ -5,7 +5,7 @@ on:
   push:
 
     branches:
-      - master
+      - main
       - dev
 
     paths:
@@ -17,7 +17,7 @@ on:
   pull_request:
 
     branches:
-      - master
+      - main
       - dev
 
     paths:
@@ -109,8 +109,8 @@ jobs:
 
   test_mac_windows:
 
-    # Only run this for PRs against master and pushes to master
-    if: (github.event_name == 'pull_request' && github.base_ref == 'master') || (github.event_name == 'push' && github.ref == 'master')
+    # Only run this for PRs against main and pushes to main
+    if: (github.event_name == 'pull_request' && github.base_ref == 'main') || (github.event_name == 'push' && github.ref == 'main')
 
     strategy:
       matrix:
