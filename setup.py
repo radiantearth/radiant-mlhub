@@ -17,7 +17,7 @@ setuptools.setup(
     platforms='Platform Independent',
     entry_points={
         'console_scripts': [
-            'mlhub=radiant_mlhub.cli:main'
+            'mlhub=radiant_mlhub.cli:mlhub'
         ]
     },
     install_requires=[
