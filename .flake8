@@ -6,6 +6,7 @@ exclude =
     .pytest_cache
     .vscode
     .idea
+    .tox
     env
     venv
     docs

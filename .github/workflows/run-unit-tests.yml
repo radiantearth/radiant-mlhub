@@ -13,6 +13,7 @@ on:
       - setup.py
       - pyproject.toml
       - 'test/**'
+      - '.github/workflows/run-unit-tests.yml'
 
   pull_request:
 
@@ -25,6 +26,7 @@ on:
       - setup.py
       - pyproject.toml
       - 'test/**'
+      - '.github/workflows/run-unit-tests.yml'
 
 jobs:
 
@@ -68,39 +70,23 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: ${{matrix.python-version }}
 
       # Caches the pip install directory based on the OS
-      - name: Cache test dependencies (Linux)
+      - name: Cache test dependencies (${{ matrix.os }})
         uses: actions/cache@v2
         if: startsWith(runner.os, 'Linux')
         with:
           path: ~/.cache/pip
-          key: ${{ matrix.os }}-test-dependencies-${{ hashFiles('requirements_dev.txt') }}
+          key: unit-tests-${{ matrix.os }}-python${{ matrix.python-version }}-${{ hashFiles('requirements_testing.txt') }}
 
-      - name: Cache test dependencies (MacOS)
-        uses: actions/cache@v2
-        if: startsWith(runner.os, 'macOS')
-        with:
-          path: ~/Library/Caches/pip
-          key: ${{ matrix.os }}-test-dependencies-${{ hashFiles('requirements_dev.txt') }}
-
-      - name: Cache test dependencies (Windows)
-        uses: actions/cache@v2
-        if: startsWith(runner.os, 'Windows')
-        with:
-          path: ~\AppData\Local\pip\Cache
-          key: ${{ matrix.os }}-test-dependencies-${{ hashFiles('requirements_dev.txt') }}
-
-      # We run this every time because an if statement that checks each cache hit would be complicated
-      #  and the step should take very little time if a cache was found
       - name: Install test dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements_dev.txt
+          pip install -r requirements_testing.txt
 
       - name: Run tests
         run: |
@@ -110,7 +96,9 @@ jobs:
   test_mac_windows:
 
     # Only run this for PRs against main and pushes to main
-    if: (github.event_name == 'pull_request' && github.base_ref == 'main') || (github.event_name == 'push' && github.ref == 'main')
+    if: >-
+      (github.event_name == 'pull_request' && github.base_ref == 'refs/heads/main') ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/main')
 
     strategy:
       matrix:
@@ -129,39 +117,30 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: ${{matrix.python-version }}
 
       # Caches the pip install directory based on the OS
-      - name: Cache test dependencies (Linux)
-        uses: actions/cache@v2
-        if: startsWith(runner.os, 'Linux')
-        with:
-          path: ~/.cache/pip
-          key: ${{ matrix.os }}-test-dependencies-${{ hashFiles('requirements_dev.txt') }}
-
-      - name: Cache test dependencies (MacOS)
+      - name: Cache test dependencies (${{ matrix.os }})
         uses: actions/cache@v2
         if: startsWith(runner.os, 'macOS')
         with:
           path: ~/Library/Caches/pip
-          key: ${{ matrix.os }}-test-dependencies-${{ hashFiles('requirements_dev.txt') }}
+          key: unit-tests-${{ matrix.os }}-python${{ matrix.python-version }}-${{ hashFiles('requirements_testing.txt') }}
 
-      - name: Cache test dependencies (Windows)
+      - name: Cache test dependencies (${{ matrix.os }})
         uses: actions/cache@v2
         if: startsWith(runner.os, 'Windows')
         with:
           path: ~\AppData\Local\pip\Cache
-          key: ${{ matrix.os }}-test-dependencies-${{ hashFiles('requirements_dev.txt') }}
+          key: unit-tests-${{ matrix.os }}-python${{ matrix.python-version }}-${{ hashFiles('requirements_testing.txt') }}
 
-      # We run this every time because an if statement that checks each cache hit would be complicated
-      #  and the step should take very little time if a cache was found
       - name: Install test dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements_dev.txt
+          pip install -r requirements_testing.txt
 
       - name: Run tests
         run: |
