@@ -101,20 +101,13 @@ class Collection(pystac.Collection):
         return cls.from_dict(response)
 
     def get_items(self, **session_kwargs) -> Iterator[pystac.Item]:
-        """Overrides the :meth:`pystac.Catalog.get_items` method to fetch items using the ``collections/<collection_id>/items`` endpoint
-        instead of looking for static links within the ``Collection`` object.
-
-        See the :ref:`Authentication` documentation for details on how authentication is handled for this request.
-
-        Parameters
-        ----------
-        **session_kwargs
-            Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
-
-        Yields
-        ------
-        item : pystac.Item
         """
-        for page in client.list_collection_items(self.id, **session_kwargs):
-            for feature in page.get('features', []):
-                yield pystac.Item.from_dict(feature)
+        .. note::
+
+            The ``get_items`` method is not implemented for Radiant MLHub :class:`Collection` instances for performance reasons.
+
+        Raises
+        ------
+        NotImplementedError
+        """
+        raise NotImplementedError('For performance reasons, the get_items method has not been implemented for Collection instances.')

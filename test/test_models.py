@@ -1,6 +1,5 @@
 import configparser
 
-import pystac
 import pytest
 from radiant_mlhub.models import Collection
 
@@ -44,12 +43,10 @@ class TestCollection:
         assert isinstance(collection, Collection)
         assert collection.description == 'BigEarthNet v1.0'
 
-    def test_get_items(self, bigearthnet_v1_source, bigearthnet_v1_source_items):
-        """Collection items can be fetched using the overridden get_items method."""
-        collection = Collection.from_file(bigearthnet_v1_source)
+    def test_get_items_error(self, bigearthnet_v1_source):
+        collection = Collection.fetch('bigearthnet_v1_source')
 
-        items = list(collection.get_items())
+        with pytest.raises(NotImplementedError) as excinfo:
+            collection.get_items()
 
-        assert len(items) == 60
-        assert items[0].id != items[30].id  # Check that the pages contain new items
-        assert isinstance(items[0], pystac.Item)
+        assert 'For performance reasons, the get_items method has not been implemented for Collection instances.' == str(excinfo.value)
