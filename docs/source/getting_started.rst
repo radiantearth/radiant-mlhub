@@ -23,15 +23,9 @@ Once you have your API key, you will need to create a default profile by setting
 
 .. code-block:: console
 
-    $ mkdir -p ~/.mlhub
-    $ touch ~/.mlhub/profiles
-
-Open ``~/.mlhub/profiles`` in a text editor and add the following content:
-
-.. code-block:: ini
-
-    [default]
-    api_key = <your_api_key_here>
+    $ mlhub configure
+    API Key: Enter your API key here...
+    Wrote profile to /Users/youruser/.mlhub/profiles
 
 Making API Requests
 +++++++++++++++++++

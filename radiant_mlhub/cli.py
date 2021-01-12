@@ -23,7 +23,9 @@ def configure(profile, api_key):
     option, you will be prompted to enter an API key by the tool.
 
     For details on profiles and authentication for the radiant_mlhub client, please see the official
-    Authentication documentation (https://radiant-mlhub.readthedocs.io/en/latest/authentication.html).
+    Authentication documentation:
+
+    https://radiant-mlhub.readthedocs.io
     """
 
     config_path = Path.home() / '.mlhub' / 'profiles'
