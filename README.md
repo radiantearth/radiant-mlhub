@@ -17,3 +17,6 @@ API reference and Getting Started guides are available on [Read the Docs](https:
 
 Major architectural and design decisions are documented using [Architectural Design Records](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) stored in the [`docs/adr`](./docs/adr) directory.
 
+## Contributing
+
+See the [Contributing](./CONTRIBUTING.md) docs for details on contributing to the project.
