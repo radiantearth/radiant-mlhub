@@ -14,9 +14,17 @@ def mlhub():
 
 @mlhub.command()
 @click.option('--profile', default='default', help='The name of the profile to configure.')
-@click.option('--api-key', prompt='API Key')
+@click.option('--api-key', prompt='API Key', help='The API key to use for this profile.')
 def configure(profile, api_key):
-    """Interactively set up radiant_mlhub configuration file."""
+    """Interactively set up radiant_mlhub configuration file.
+
+    This tool walks you through setting up a ~/.mlhub/profiles file and adding an API key. If you do not
+    provide a --profile option, it will update the "default" profile. If you do not provide an --api-key
+    option, you will be prompted to enter an API key by the tool.
+
+    For details on profiles and authentication for the radiant_mlhub client, please see the official
+    Authentication documentation (https://radiant-mlhub.readthedocs.io/en/latest/authentication.html).
+    """
 
     config_path = Path.home() / '.mlhub' / 'profiles'
 
