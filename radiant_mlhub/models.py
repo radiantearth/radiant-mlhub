@@ -9,7 +9,7 @@ from collections import namedtuple
 from collections.abc import Sequence
 
 try:
-    from functools import cached_property
+    from functools import cached_property  # type: ignore [attr-defined]
 except ImportError:  # pragma: no cover
     from backports.cached_property import cached_property  # type: ignore [no-redef]
 
