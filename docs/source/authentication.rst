@@ -80,6 +80,14 @@ so that you do not need to explicitly set environment variables or pass in argum
 All profile configuration must be stored in a ``.mlhub/profiles`` file in your home directory. The ``profiles`` file uses the INI file
 structure supported by Python's ``configparser`` module `as described here <https://docs.python.org/3/library/configparser.html#supported-ini-file-structure>`_.
 
+The easiest way to configure a profile is using the ``mlhub configure`` CLI tool documented in the :ref:`CLI Tools section<CLI Tools>`:
+
+.. code-block:: console
+
+    $ mlhub configure
+    API Key: <Enter your API key when prompted>
+    Wrote profile to /Users/youruser/.mlhub/profiles
+
 Given the following ``profiles`` file...
 
 .. code-block:: ini
