@@ -6,6 +6,7 @@
 [![Documentation](https://readthedocs.org/projects/radiant-mlhub/badge/)](https://radiant-mlhub.readthedocs.io/en/latest/)
 [![PyPI version](https://badge.fury.io/py/radiant-mlhub.svg)](https://pypi.org/project/radiant-mlhub/)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/radiant-mlhub)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/radiantearth/radiant-mlhub/dev?filepath=examples%2Findex.ipynb)
 
 *A Python client for the [Radiant MLHub API](https://mlhub.earth/).*
 

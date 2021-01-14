@@ -1,0 +1,4 @@
+[flake8_nb]
+exclude = examples/.ipynb_checkpoints
+ignore =
+    E402

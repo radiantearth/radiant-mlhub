@@ -14,5 +14,6 @@ deps = -rrequirements_testing.txt
 commands =
     pytest
     flake8
+    flake8_nb examples/
     mypy radiant_mlhub
 """
