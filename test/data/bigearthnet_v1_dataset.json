@@ -1,14 +1,18 @@
 {
-    "id": "bigearthnet_v1",
-    "title": "BigEarthNet V1",
     "collections": [
         {
             "id": "bigearthnet_v1_source",
-            "types": ["source"]
+            "types": [
+                "source_imagery"
+            ]
         },
         {
             "id": "bigearthnet_v1_labels",
-            "types": ["labels"]
+            "types": [
+                "labels"
+            ]
         }
-    ]
+    ],
+    "id": "bigearthnet_v1",
+    "title": "BigEarthNet"
 }

@@ -33,7 +33,7 @@ can use the low-level :func:`~radiant_mlhub.client.list_datasets` function to wo
     >>> datasets = list_datasets()
     >>> first_dataset = next(datasets)
     >>> pprint(first_dataset)
-    {'collections': [{'id': 'bigearthnet_v1_source', 'types': ['source']},
+    {'collections': [{'id': 'bigearthnet_v1_source', 'types': ['source_imagery']},
                  {'id': 'bigearthnet_v1_labels', 'types': ['labels']}],
      'id': 'bigearthnet_v1',
      'title': 'BigEarthNet V1'}
@@ -62,7 +62,7 @@ The Radiant MLHub ``/datasets/{dataset_id}`` endpoint returns an object represen
     >>> from radiant_mlhub.client import get_dataset
     >>> dataset = get_dataset('bigearthnet_v1')
     >>> pprint(dataset)
-    {'collections': [{'id': 'bigearthnet_v1_source', 'types': ['source']},
+    {'collections': [{'id': 'bigearthnet_v1_source', 'types': ['source_imagery']},
                  {'id': 'bigearthnet_v1_labels', 'types': ['labels']}],
      'id': 'bigearthnet_v1',
      'title': 'BigEarthNet V1'}
@@ -81,7 +81,7 @@ Dataset Collections
 
 If you are using the :class:`~radiant_mlhub.models.Dataset` class, you can list the Collections associated with the dataset using the
 :attr:`Dataset.collections <radiant_mlhub.models.Dataset.collections>` property. This method returns a modified :class:`list` that has
-2 additional attributes: ``source`` and ``labels``. You can use these attributes to list only the collections of a the associated type.
+2 additional attributes: ``source_imagery`` and ``labels``. You can use these attributes to list only the collections of a the associated type.
 All elements of these lists are instances of :class:`~radiant_mlhub.models.Collection`. See the :ref:`Collections` documentation for
 details on how to work with these instances.
 
@@ -89,9 +89,9 @@ details on how to work with these instances.
 
     >>> len(first_dataset.collections)
     2
-    >>> len(first_dataset.collections.source)
+    >>> len(first_dataset.collections.source_imagery)
     1
-    >>> first_dataset.collections.source[0].id
+    >>> first_dataset.collections.source_imagery[0].id
     'bigearthnet_v1_source'
     >>> len(first_dataset.collections.labels)
     1
@@ -100,13 +100,13 @@ details on how to work with these instances.
 
 .. warning::
 
-    There are rare cases of collections that contain both ``source`` and ``labels`` items (e.g. the SpaceNet collections). In these cases, the
-    collection will be listed in both the ``dataset.collections.labels`` and ``dataset.collections.source`` lists, but *will only appear once
+    There are rare cases of collections that contain both ``source_imagery`` and ``labels`` items (e.g. the SpaceNet collections). In these cases, the
+    collection will be listed in both the ``dataset.collections.labels`` and ``dataset.collections.source_imagery`` lists, but *will only appear once
     in the main ``dataset.collections`` list*. This may cause what appears to be a mismatch in list lengths:
 
     .. code-block:: python
 
-        >>> len(dataset.collections.source) + len(dataset.collections.labels) == len(dataset.collections)
+        >>> len(dataset.collections.source_imagery) + len(dataset.collections.labels) == len(dataset.collections)
         False
 
 .. note::

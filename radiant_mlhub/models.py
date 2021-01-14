@@ -129,7 +129,7 @@ class Collection(pystac.Collection):
 
 class CollectionType(Enum):
     """Valid values for the type of a collection associated with a Radiant MLHub dataset."""
-    SOURCE = 'source'
+    SOURCE = 'source_imagery'
     LABELS = 'labels'
 
 
@@ -141,7 +141,7 @@ class _CollectionWithType:
 
 class _CollectionList(Sequence):
     """Used internally by :class:`Dataset` to create a list of collections that can also be accessed by type using the
-    ``source`` and ``labels`` attributes."""
+    ``source_imagery`` and ``labels`` attributes."""
 
     def __init__(self, collections_with_type: List[_CollectionWithType]):
         self._collections = collections_with_type
@@ -160,7 +160,7 @@ class _CollectionList(Sequence):
         return list(self.__iter__()).__repr__()
 
     @cached_property
-    def source(self):
+    def source_imagery(self):
         return [
             c.collection
             for c in self._collections
@@ -190,7 +190,7 @@ class Dataset:
 
     @cached_property
     def collections(self) -> _CollectionList:
-        """List of collections associated with this dataset. The list that is returned has 2 additional attributes (``source`` and
+        """List of collections associated with this dataset. The list that is returned has 2 additional attributes (``source_imagery`` and
         ``labels``) that represent the list of collections corresponding the each type.
 
         .. note::
@@ -205,7 +205,7 @@ class Dataset:
         >>> dataset = Dataset.fetch('bigearthnet_v1')
         >>> len(dataset.collections)
         2
-        >>> len(dataset.collections.source)
+        >>> len(dataset.collections.source_imagery)
         1
         >>> len(dataset.collections.labels)
         1
@@ -217,7 +217,7 @@ class Dataset:
 
         To loop through only the source imagery collections:
 
-            >>> for collection in dataset.collections.source:
+            >>> for collection in dataset.collections.source_imagery:
             ...     # Do something here
 
         To loop through only the label collections:

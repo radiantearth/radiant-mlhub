@@ -44,7 +44,7 @@ class TestDataset:
     def test_list_datasets(self, datasets_list):
         """Dataset.list returns a list of Dataset instances."""
         datasets = list(Dataset.list())
-        assert len(datasets) == 1
+        assert len(datasets) == 19
         assert isinstance(datasets[0], Dataset)
 
     def test_fetch_dataset(self, bigearthnet_v1_dataset):
@@ -55,7 +55,7 @@ class TestDataset:
     def test_dataset_collections(self, bigearthnet_v1_dataset, bigearthnet_v1_source, bigearthnet_v1_labels):
         dataset = Dataset.fetch('bigearthnet_v1')
         assert len(dataset.collections) == 2
-        assert len(dataset.collections.source) == 1
+        assert len(dataset.collections.source_imagery) == 1
         assert len(dataset.collections.labels) == 1
         assert all(isinstance(c, Collection) for c in dataset.collections)
-        assert dataset.collections[0] in dataset.collections.source
+        assert dataset.collections[0] in dataset.collections.source_imagery
