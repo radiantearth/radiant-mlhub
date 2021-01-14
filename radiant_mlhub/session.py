@@ -51,7 +51,7 @@ class Session(requests.Session):
     def request(self, method, url, **kwargs):
         """Overwrites the default :meth:`requests.Session.request` method to prepend the MLHub root URL if the given
         ``url`` does not include a scheme. This will raise an :exc:`~radiant_mlhub.exceptions.AuthenticationError` if a 401 response is
-         returned by the server, and a :class:`~requests.exceptions.HTTPError` if any other status code of 400 or above is returned.
+        returned by the server, and a :class:`~requests.exceptions.HTTPError` if any other status code of 400 or above is returned.
 
         Parameters
         ----------
