@@ -2,3 +2,4 @@
 exclude = examples/.ipynb_checkpoints
 ignore =
     E402
+max-line-length = 120
