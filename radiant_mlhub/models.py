@@ -5,7 +5,6 @@ from copy import deepcopy
 from typing import Iterator, List, Optional
 import concurrent.futures
 from enum import Enum
-from collections import namedtuple
 from collections.abc import Sequence
 
 try:
@@ -134,29 +133,47 @@ class CollectionType(Enum):
     LABELS = 'labels'
 
 
-_CollectionWithType = namedtuple('_CollectionWithType', ['type', 'collection'])
+class _CollectionWithType:
+    def __init__(self, collection: Collection, types: List[str]):
+        self.types = [CollectionType(type_) for type_ in types]
+        self.collection = collection
 
 
 class _CollectionList(Sequence):
     """Used internally by :class:`Dataset` to create a list of collections that can also be accessed by type using the
     ``source`` and ``labels`` attributes."""
 
-    def __init__(self, collections: List[_CollectionWithType]):
-        self.source = [c.collection for c in collections if CollectionType(c.type) is CollectionType.SOURCE]
-        self.labels = [c.collection for c in collections if CollectionType(c.type) is CollectionType.LABELS]
+    def __init__(self, collections_with_type: List[_CollectionWithType]):
+        self._collections = collections_with_type
 
     def __iter__(self):
-        for item in self.source + self.labels:
-            yield item
+        for item in self._collections:
+            yield item.collection
 
     def __len__(self):
-        return len(self.source) + len(self.labels)
+        return len(self._collections)
 
     def __getitem__(self, item):
-        return (self.source + self.labels)[item]
+        return self._collections[item].collection
 
     def __repr__(self):
         return list(self.__iter__()).__repr__()
+
+    @cached_property
+    def source(self):
+        return [
+            c.collection
+            for c in self._collections
+            if any(type_ is CollectionType.SOURCE for type_ in c.types)
+        ]
+
+    @cached_property
+    def labels(self):
+        return [
+            c.collection
+            for c in self._collections
+            if any(type_ is CollectionType.LABELS for type_ in c.types)
+        ]
 
 
 class Dataset:
@@ -211,8 +228,8 @@ class Dataset:
         # Internal method to return a Collection along with it's CollectionType
         def _fetch_collection(_collection_description):
             return _CollectionWithType(
-                _collection_description['type'],
-                Collection.fetch(_collection_description['id'], **self.session_kwargs)
+                Collection.fetch(_collection_description['id'], **self.session_kwargs),
+                [CollectionType(type_) for type_ in _collection_description['types']]
             )
 
         # Fetch all collections and create Collection instances

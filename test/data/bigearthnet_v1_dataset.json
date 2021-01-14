@@ -4,11 +4,11 @@
     "collections": [
         {
             "id": "bigearthnet_v1_source",
-            "type": "source"
+            "types": ["source"]
         },
         {
             "id": "bigearthnet_v1_labels",
-            "type": "labels"
+            "types": ["labels"]
         }
     ]
 }

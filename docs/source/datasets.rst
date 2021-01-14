@@ -33,8 +33,8 @@ can use the low-level :func:`~radiant_mlhub.client.list_datasets` function to wo
     >>> datasets = list_datasets()
     >>> first_dataset = next(datasets)
     >>> pprint(first_dataset)
-    {'collections': [{'id': 'bigearthnet_v1_source', 'type': 'source'},
-                 {'id': 'bigearthnet_v1_labels', 'type': 'labels'}],
+    {'collections': [{'id': 'bigearthnet_v1_source', 'types': ['source']},
+                 {'id': 'bigearthnet_v1_labels', 'types': ['labels']}],
      'id': 'bigearthnet_v1',
      'title': 'BigEarthNet V1'}
 
@@ -62,8 +62,8 @@ The Radiant MLHub ``/datasets/{dataset_id}`` endpoint returns an object represen
     >>> from radiant_mlhub.client import get_dataset
     >>> dataset = get_dataset('bigearthnet_v1')
     >>> pprint(dataset)
-    {'collections': [{'id': 'bigearthnet_v1_source', 'type': 'source'},
-                 {'id': 'bigearthnet_v1_labels', 'type': 'labels'}],
+    {'collections': [{'id': 'bigearthnet_v1_source', 'types': ['source']},
+                 {'id': 'bigearthnet_v1_labels', 'types': ['labels']}],
      'id': 'bigearthnet_v1',
      'title': 'BigEarthNet V1'}
 
@@ -97,6 +97,17 @@ details on how to work with these instances.
     1
     >>> first_dataset.collections.labels[0].id
     'bigearthnet_v1_labels'
+
+.. warning::
+
+    There are rare cases of collections that contain both ``source`` and ``labels`` items (e.g. the SpaceNet collections). In these cases, the
+    collection will be listed in both the ``dataset.collections.labels`` and ``dataset.collections.source`` lists, but *will only appear once
+    in the main ``dataset.collections`` list*. This may cause what appears to be a mismatch in list lengths:
+
+    .. code-block:: python
+
+        >>> len(dataset.collections.source) + len(dataset.collections.labels) == len(dataset.collections)
+        False
 
 .. note::
 
