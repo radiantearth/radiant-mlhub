@@ -30,28 +30,6 @@ on:
 
 jobs:
 
-  lint:
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-
-      - name: Install linter dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install flake8~=3.8.0 mypy~=0.790
-
-      - name: Run flake8 and mypy
-        run: |
-          flake8
-          mypy radiant_mlhub
-
   test_linux:
 
     strategy:
@@ -92,6 +70,9 @@ jobs:
         run: |
           pip install .
           pytest test
+          flake8
+          flake8_nb examples/
+          mypy radiant_mlhub
 
   test_mac_windows:
 
@@ -146,3 +127,6 @@ jobs:
         run: |
           pip install .
           pytest test
+          flake8
+          flake8_nb examples/
+          mypy radiant_mlhub
