@@ -5,9 +5,9 @@ import json
 import pytest
 
 
-def read_data_file(file_name):
+def read_data_file(file_name, mode='r'):
     full_path = pathlib.Path(__file__).parent / 'data' / file_name
-    with full_path.open('r') as src:
+    with full_path.open(mode) as src:
         return src.read()
 
 

@@ -1,9 +1,11 @@
 """Low-level functions for making requests to MLHub API endpoints."""
 
 import itertools as it
-from typing import Iterator, List
+from pathlib import Path
+from typing import Iterator, Union, List
 
 from requests.exceptions import HTTPError
+from tqdm import tqdm
 
 from .session import get_session
 from .exceptions import EntityDoesNotExist, MLHubException
@@ -183,3 +185,41 @@ def get_collection_item(collection_id: str, item_id: str, **session_kwargs) -> d
     if response.status_code == 404:
         raise EntityDoesNotExist(collection_id)
     raise MLHubException(f'An unknown error occurred: {response.status_code} ({response.reason})')
+
+
+def download_archive(archive_id: str, output_path: Union[Path], overwrite: bool = False, **session_kwargs):
+    """Downloads the archive with the given ID to an output location (current working directory by default), and
+    returns the full path to the downloaded file.
+
+    Parameters
+    ----------
+    archive_id : str
+        The ID of the archive to download.
+    output_path : Path
+        Path to which the archive will be downloaded.
+    overwrite : bool, optional
+        Whether to overwrite an existing file of the same name. Defaults to ``False``.
+
+    Raises
+    ------
+    FileExistsError
+        If file at ``output_path`` already exists and ``overwrite==False``.
+    """
+    output_path = Path(output_path).expanduser().resolve()
+
+    if output_path.exists() and not overwrite:
+        raise FileExistsError(f'File {output_path} already exists. Use overwrite=True to overwrite this file.')
+
+    session = get_session(**session_kwargs)
+
+    r = session.get(f'archive/{archive_id}', stream=True)
+
+    total_size = int(r.headers['Content-Length'])
+
+    with output_path.open('wb') as dst:
+        # TODO: Be more thoughtful about the chunksize
+        with tqdm(total=total_size, leave=False) as pbar:
+            chunk_size = 5000000
+            for chunk in r.iter_content(chunk_size=chunk_size):
+                dst.write(chunk)
+                pbar.update(min(chunk_size, pbar.total - pbar.n))
