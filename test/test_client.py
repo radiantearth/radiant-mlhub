@@ -2,8 +2,6 @@ import pytest
 import radiant_mlhub.client
 from radiant_mlhub.exceptions import MLHubException, EntityDoesNotExist
 
-from .conftest import read_data_file
-
 
 class TestClient:
 
@@ -40,42 +38,6 @@ class TestClient:
         )
 
         yield endpoint
-
-    @pytest.fixture
-    def collection_archive(self, requests_mock):
-        archive_id = 'sn1_AOI_1_RIO'
-        url = f'https://api.radiant.earth/mlhub/v1/archive/{archive_id}'
-
-        # Mock the initial endpoint
-        requests_mock.get(
-            url,
-            status_code=302,
-            headers={
-                'Content-Type': 'text/html; charset=utf-8',
-                'Content-Length': '343',
-                'Location': 'https://radiant-mlhub.s3.amazonaws.com/archives/sn1_AOI_1_RIO.tar.gz',
-            },
-            text='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">\n<title>Redirecting...</title>\n<h1>Redirecting...</h1>\n'
-                 '<p>You should be redirected automatically to target URL: '
-                 '<a href="https://radiant-mlhub.s3.amazonaws.com/archives/sn1_AOI_1_RIO.tar.gz">'
-                 'https://radiant-mlhub.s3.amazonaws.com/archives/sn1_AOI_1_RIO.tar.gz</a>.  If not click the link.'
-        )
-
-        # Mock the redirect link to return just a small chunk of the actual original archive
-        content = read_data_file('sn1_AOI_1_RIO.first1000.tar.gz', 'rb')
-        requests_mock.get(
-            'https://radiant-mlhub.s3.amazonaws.com/archives/sn1_AOI_1_RIO.tar.gz',
-            status_code=200,
-            headers={
-                'Accept-Ranges': 'bytes',
-                'Content-Type': 'binary/octet-stream',
-                # 'Content-Length': '3496942859',
-                'Content-Length': '1000',
-            },
-            content=content
-        )
-
-        yield archive_id
 
     @pytest.fixture
     def internal_server_error(self, requests_mock):

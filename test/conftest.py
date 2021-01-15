@@ -113,3 +113,40 @@ def mock_profile(monkeypatch, tmp_path):
         config.write(dst)
 
     yield config
+
+
+@pytest.fixture
+def collection_archive(requests_mock):
+    archive_id = 'bigearthnet_v1_source'
+    url = f'https://api.radiant.earth/mlhub/v1/archive/{archive_id}'
+
+    # Mock the initial endpoint
+    requests_mock.get(
+        url,
+        status_code=302,
+        headers={
+            'Content-Type': 'text/html; charset=utf-8',
+            'Content-Length': '343',
+            'Location': 'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz',
+        },
+        text='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">\n<title>Redirecting...</title>\n<h1>Redirecting...</h1>\n'
+             '<p>You should be redirected automatically to target URL: '
+             '<a href="https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz">'
+             'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz</a>.  If not click the link.'
+    )
+
+    # Mock the redirect link to return just a small chunk of the actual original archive
+    content = read_data_file('bigearthnet_v1_source.first1000.tar.gz', 'rb')
+    requests_mock.get(
+        'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz',
+        status_code=200,
+        headers={
+            'Accept-Ranges': 'bytes',
+            'Content-Type': 'binary/octet-stream',
+            # 'Content-Length': '3496942859',
+            'Content-Length': '1000',
+        },
+        content=content
+    )
+
+    yield archive_id

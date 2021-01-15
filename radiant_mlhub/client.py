@@ -188,8 +188,7 @@ def get_collection_item(collection_id: str, item_id: str, **session_kwargs) -> d
 
 
 def download_archive(archive_id: str, output_path: Union[Path], overwrite: bool = False, **session_kwargs):
-    """Downloads the archive with the given ID to an output location (current working directory by default), and
-    returns the full path to the downloaded file.
+    """Downloads the archive with the given ID to an output location (current working directory by default).
 
     Parameters
     ----------
@@ -199,6 +198,8 @@ def download_archive(archive_id: str, output_path: Union[Path], overwrite: bool 
         Path to which the archive will be downloaded.
     overwrite : bool, optional
         Whether to overwrite an existing file of the same name. Defaults to ``False``.
+    **session_kwargs
+        Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
 
     Raises
     ------

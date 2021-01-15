@@ -2,7 +2,8 @@
 with the `Radiant MLHub API <https://docs.mlhub.earth/#radiant-mlhub-api>`_."""
 
 from copy import deepcopy
-from typing import Iterator, List, Optional
+from pathlib import Path
+from typing import Iterator, List, Optional, Union
 import concurrent.futures
 from enum import Enum
 from collections.abc import Sequence
@@ -125,6 +126,25 @@ class Collection(pystac.Collection):
     def fetch_item(self, item_id: str, **session_kwargs) -> pystac.Item:
         response = client.get_collection_item(self.id, item_id)
         return pystac.Item.from_dict(response)
+
+    def download(self, output_path: Union[Path], overwrite: bool = False, **session_kwargs):
+        """Downloads the archive for this collection to an output location (current working directory by default).
+
+        Parameters
+        ----------
+        output_path : Path
+            Path to which the archive will be downloaded.
+        overwrite : bool, optional
+            Whether to overwrite an existing file of the same name. Defaults to ``False``.
+        **session_kwargs
+            Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
+        Raises
+        ------
+        FileExistsError
+            If file at ``output_path`` already exists and ``overwrite==False``.
+        """
+        client.download_archive(self.id, output_path=output_path, overwrite=overwrite, **session_kwargs)
 
 
 class CollectionType(Enum):
