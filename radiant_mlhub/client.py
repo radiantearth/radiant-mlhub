@@ -70,12 +70,25 @@ def _download(
     content_length = int(r.headers['Content-Length'])
     download_url = r.url
 
-    with ThreadPoolExecutor(max_workers=20) as executor:
-        with output_path.open('wb') as dst:
-            with tqdm(total=round(content_length / 1000000., 1), unit='M') as pbar:
-                for chunk in executor.map(partial(_fetch_range, download_url), _get_ranges(content_length, chunk_size)):
-                    dst.write(chunk)
-                    pbar.update(round(chunk_size / 1000000., 1))
+    # Check that the endpoint accepts byte range requests
+    use_range = r.headers.get('Accept-Ranges') == 'bytes'
+
+    if use_range:
+        # If we can use range requests, make concurrent requests to the byte ranges we need...
+        with ThreadPoolExecutor(max_workers=20) as executor:
+            with output_path.open('wb') as dst:
+                with tqdm(total=round(content_length / 1000000., 1), unit='M') as pbar:
+                    for chunk in executor.map(partial(_fetch_range, download_url), _get_ranges(content_length, chunk_size)):
+                        dst.write(chunk)
+                        pbar.update(round(chunk_size / 1000000., 1))
+    else:
+        # ...if not, stream the response
+        with session.get(url, stream=True, allow_redirects=True) as r:
+            with output_path.open('wb') as dst:
+                with tqdm(total=round(content_length / 1000000., 1), unit='M') as pbar:
+                    for chunk in r.iter_content(chunk_size=chunk_size):
+                        dst.write(chunk)
+                        pbar.update(round(chunk_size / 1000000., 1))
 
 
 def list_datasets(**session_kwargs) -> List[dict]:
