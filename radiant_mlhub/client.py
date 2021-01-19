@@ -72,10 +72,10 @@ def _download(
 
     with ThreadPoolExecutor(max_workers=20) as executor:
         with output_path.open('wb') as dst:
-            with tqdm(total=content_length) as pbar:
+            with tqdm(total=round(content_length / 1000000., 1), unit='M') as pbar:
                 for chunk in executor.map(partial(_fetch_range, download_url), _get_ranges(content_length, chunk_size)):
                     dst.write(chunk)
-                    pbar.update(chunk_size)
+                    pbar.update(round(chunk_size / 1000000., 1))
 
 
 def list_datasets(**session_kwargs) -> List[dict]:
