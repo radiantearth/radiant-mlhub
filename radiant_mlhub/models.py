@@ -20,8 +20,8 @@ from . import client
 
 
 class Collection(pystac.Collection):
-    """Class inheriting from :class:`pystac.Collection` that overrides the :meth:`pystac.Catalog.get_items` to fetch item links from the
-    ``collections/<collection_id>/items`` MLHub endpoint instead of trying to use static links within the catalog object.
+    """Class inheriting from :class:`pystac.Collection` that adds some convenience methods for listing and fetching from the Radiant
+    MLHub API.
     """
 
     @classmethod
@@ -115,13 +115,15 @@ class Collection(pystac.Collection):
         """
         .. note::
 
-            The ``get_items`` method is not implemented for Radiant MLHub :class:`Collection` instances for performance reasons.
+            The ``get_items`` method is not implemented for Radiant MLHub :class:`Collection` instances for performance reasons. Please use
+            the :meth:`Collection.download` method to download Collection assets.
 
         Raises
         ------
         NotImplementedError
         """
-        raise NotImplementedError('For performance reasons, the get_items method has not been implemented for Collection instances.')
+        raise NotImplementedError('For performance reasons, the get_items method has not been implemented for Collection instances. Please '
+                                  'use the Collection.download method to download Collection assets.')
 
     def fetch_item(self, item_id: str, **session_kwargs) -> pystac.Item:
         response = client.get_collection_item(self.id, item_id)
