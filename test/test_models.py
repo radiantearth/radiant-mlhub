@@ -29,7 +29,8 @@ class TestCollection:
         with pytest.raises(NotImplementedError) as excinfo:
             collection.get_items()
 
-        assert 'For performance reasons, the get_items method has not been implemented for Collection instances.' == str(excinfo.value)
+        assert 'For performance reasons, the get_items method has not been implemented for Collection instances. Please ' \
+               'use the Collection.download method to download Collection assets.' == str(excinfo.value)
 
     def test_fetch_item(self, bigearthnet_v1_source, bigearthnet_v1_source_item):
         collection = Collection.fetch('bigearthnet_v1_source')

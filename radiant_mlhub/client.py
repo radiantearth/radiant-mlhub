@@ -267,7 +267,7 @@ def get_collection_item(collection_id: str, item_id: str, **session_kwargs) -> d
     raise MLHubException(f'An unknown error occurred: {response.status_code} ({response.reason})')
 
 
-def download_archive(archive_id: str, output_path: Path, overwrite: bool = False, **session_kwargs):
+def download_archive(archive_id: str, output_path: Path, *, overwrite: bool = False, **session_kwargs):
     """Downloads the archive with the given ID to an output location (current working directory by default).
 
     Parameters
