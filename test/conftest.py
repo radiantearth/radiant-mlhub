@@ -135,16 +135,110 @@ def collection_archive(requests_mock):
              'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz</a>.  If not click the link.'
     )
 
-    # Mock the redirect link to return just a small chunk of the actual original archive
-    content = read_data_file('bigearthnet_v1_source.first1000.tar.gz', 'rb')
+    # Mock the head requests
+    requests_mock.head(
+        url,
+        status_code=302,
+        headers={
+            'Content-Type': 'text/html; charset=utf-8',
+            'Content-Length': '343',
+            'Location': 'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz',
+        },
+        text=''
+    )
+    requests_mock.head(
+        'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz',
+        headers={
+            'Accept-Ranges': 'bytes',
+            'Content-Type': 'binary/octet-stream',
+            'Content-Length': '10000000'
+        },
+        text=''
+    )
+
+    # Mock the first byte range of the download content
+    content = read_data_file('bigearthnet_v1_source.first.tar.gz', 'rb')
+    requests_mock.get(
+        'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz',
+        status_code=200,
+        request_headers={
+          'Range': 'bytes=0-4999999'
+        },
+        headers={
+            'Accept-Ranges': 'bytes',
+            'Content-Type': 'binary/octet-stream',
+            'Content-Length': '5000000',
+        },
+        content=content
+    )
+
+    # Mock the second byte range of the download content
+    content = read_data_file('bigearthnet_v1_source.second.tar.gz', 'rb')
+    requests_mock.get(
+        'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz',
+        status_code=200,
+        request_headers={
+            'Range': 'bytes=5000000-9999999'
+        },
+        headers={
+            'Accept-Ranges': 'bytes',
+            'Content-Type': 'binary/octet-stream',
+            'Content-Length': '5000000',
+        },
+        content=content
+    )
+
+    yield archive_id
+
+
+@pytest.fixture
+def collection_archive_no_bytes(requests_mock):
+    archive_id = 'bigearthnet_v1_source'
+    url = f'https://api.radiant.earth/mlhub/v1/archive/{archive_id}'
+
+    # Mock the initial endpoint
+    requests_mock.get(
+        url,
+        status_code=302,
+        headers={
+            'Content-Type': 'text/html; charset=utf-8',
+            'Content-Length': '343',
+            'Location': 'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz',
+        },
+        text='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">\n<title>Redirecting...</title>\n<h1>Redirecting...</h1>\n'
+             '<p>You should be redirected automatically to target URL: '
+             '<a href="https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz">'
+             'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz</a>.  If not click the link.'
+    )
+
+    # Mock the head requests
+    requests_mock.head(
+        url,
+        status_code=302,
+        headers={
+            'Content-Type': 'text/html; charset=utf-8',
+            'Content-Length': '343',
+            'Location': 'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz',
+        },
+        text=''
+    )
+    requests_mock.head(
+        'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz',
+        headers={
+            'Content-Type': 'binary/octet-stream',
+            'Content-Length': '10000000'
+        },
+        text=''
+    )
+
+    # Mock the full download content
+    content = read_data_file('bigearthnet_v1_source.first.tar.gz', 'rb') + read_data_file('bigearthnet_v1_source.first.tar.gz', 'rb')
     requests_mock.get(
         'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz',
         status_code=200,
         headers={
-            'Accept-Ranges': 'bytes',
             'Content-Type': 'binary/octet-stream',
-            # 'Content-Length': '3496942859',
-            'Content-Length': '1000',
+            'Content-Length': '10000000',
         },
         content=content
     )

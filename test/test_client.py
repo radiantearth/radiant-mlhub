@@ -88,8 +88,12 @@ class TestClient:
         assert item['stac_extensions'] == ['eo']
         assert item['id'] == 'bigearthnet_v1_source_S2A_MSIL2A_20180526T100031_65_62'
 
-    @pytest.mark.skip('Needs update for concurrent downloads')
     def test_download_archive(self, collection_archive, tmp_path):
         radiant_mlhub.client.download_archive(collection_archive, output_path=tmp_path / 'download.tar.gz')
+
+        assert (tmp_path / 'download.tar.gz').exists()
+
+    def test_download_archive_no_bytes(self, collection_archive_no_bytes, tmp_path):
+        radiant_mlhub.client.download_archive(collection_archive_no_bytes, output_path=tmp_path / 'download.tar.gz')
 
         assert (tmp_path / 'download.tar.gz').exists()
