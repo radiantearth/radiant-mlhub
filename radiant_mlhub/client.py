@@ -2,13 +2,80 @@
 
 import itertools as it
 from pathlib import Path
-from typing import Iterator, Union, List
+from typing import Iterator, List
+from concurrent.futures import ThreadPoolExecutor
+from functools import partial
 
 from requests.exceptions import HTTPError
 from tqdm import tqdm
 
 from .session import get_session
 from .exceptions import EntityDoesNotExist, MLHubException
+
+
+def _download(
+        url: str,
+        output_path: Path,
+        overwrite: bool = False,
+        chunk_size=5000000,
+        **session_kwargs
+):
+    """Internal function used to parallelize downloads from a given URL.
+
+    Parameters
+    ----------
+    url : str
+        This can either be a full URL or a path relative to the Radiant MLHub root URL.
+    output_path : Path
+        Local path to which the content will be downloaded.
+    overwrite : bool, optional
+        Whether to overwrite an existing file at ``output_path``. Defaults to ``False``.
+    chunk_size : int, optional
+        The size of byte range for each concurrent request.
+    session_kwargs
+        Keyword arguments passed directly to ``get_session``
+
+    Raises
+    ------
+    FileExistsError
+        If file at ``output_path`` already exists and ``overwrite==False``.
+    """
+
+    def _get_ranges(total_size, interval):
+        """Internal function for getting byte ranges from a total size and interval/chunk size."""
+        start = 0
+        while True:
+            end = min(start + interval - 1, total_size)
+            yield f'{start}-{end}'
+            start += interval
+            if start >= total_size:
+                break
+
+    def _fetch_range(url_, range_):
+        """Internal function for fetching a byte range from the url."""
+        return session.get(url_, headers={'Range': f'bytes={range_}'}).content
+
+    # Resolve user directory shortcuts and relative paths
+    output_path = Path(output_path).expanduser().resolve()
+
+    # Check for existing output file
+    if output_path.exists() and not overwrite:
+        raise FileExistsError(f'File {output_path} already exists. Use overwrite=True to overwrite this file.')
+
+    # Create a session
+    session = get_session(**session_kwargs)
+
+    # HEAD the endpoint and follow redirects to get the actual download URL and Content-Length
+    r = session.head(url, allow_redirects=True)
+    content_length = int(r.headers['Content-Length'])
+    download_url = r.url
+
+    with ThreadPoolExecutor(max_workers=20) as executor:
+        with output_path.open('wb') as dst:
+            with tqdm(total=content_length) as pbar:
+                for chunk in executor.map(partial(_fetch_range, download_url), _get_ranges(content_length, chunk_size)):
+                    dst.write(chunk)
+                    pbar.update(chunk_size)
 
 
 def list_datasets(**session_kwargs) -> List[dict]:
@@ -187,7 +254,7 @@ def get_collection_item(collection_id: str, item_id: str, **session_kwargs) -> d
     raise MLHubException(f'An unknown error occurred: {response.status_code} ({response.reason})')
 
 
-def download_archive(archive_id: str, output_path: Union[Path], overwrite: bool = False, **session_kwargs):
+def download_archive(archive_id: str, output_path: Path, overwrite: bool = False, **session_kwargs):
     """Downloads the archive with the given ID to an output location (current working directory by default).
 
     Parameters
@@ -206,21 +273,4 @@ def download_archive(archive_id: str, output_path: Union[Path], overwrite: bool 
     FileExistsError
         If file at ``output_path`` already exists and ``overwrite==False``.
     """
-    output_path = Path(output_path).expanduser().resolve()
-
-    if output_path.exists() and not overwrite:
-        raise FileExistsError(f'File {output_path} already exists. Use overwrite=True to overwrite this file.')
-
-    session = get_session(**session_kwargs)
-
-    r = session.get(f'archive/{archive_id}', stream=True)
-
-    total_size = int(r.headers['Content-Length'])
-
-    with output_path.open('wb') as dst:
-        # TODO: Be more thoughtful about the chunksize
-        with tqdm(total=total_size, leave=False) as pbar:
-            chunk_size = 5000000
-            for chunk in r.iter_content(chunk_size=chunk_size):
-                dst.write(chunk)
-                pbar.update(min(chunk_size, pbar.total - pbar.n))
+    _download(f'archive/{archive_id}', output_path=output_path, overwrite=overwrite, **session_kwargs)
