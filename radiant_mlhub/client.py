@@ -62,6 +62,9 @@ def _download(
     if output_path.exists() and not overwrite:
         raise FileExistsError(f'File {output_path} already exists. Use overwrite=True to overwrite this file.')
 
+    # Create the parent directory, if it does not exist
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
     # Create a session
     session = get_session(**session_kwargs)
 
