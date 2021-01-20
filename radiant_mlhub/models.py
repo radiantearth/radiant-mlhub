@@ -130,7 +130,12 @@ class Collection(pystac.Collection):
         return pystac.Item.from_dict(response)
 
     def download(self, output_path: Union[Path], overwrite: bool = False, **session_kwargs):
-        """Downloads the archive for this collection to an output location (current working directory by default).
+        """Downloads the archive for this collection to an output location (current working directory by default). If the parent directories
+        for ``output_path`` do not exist, they will be created.
+
+        .. note::
+
+            Some collections may be very large and take a significant amount of time to download, depending on your connection speed.
 
         Parameters
         ----------
@@ -144,7 +149,7 @@ class Collection(pystac.Collection):
         Raises
         ------
         FileExistsError
-            If file at ``output_path`` already exists and ``overwrite==False``.
+            If file at ``output_path`` already exists and ``overwrite=False``.
         """
         client.download_archive(self.id, output_path=output_path, overwrite=overwrite, **session_kwargs)
 
@@ -299,3 +304,33 @@ class Dataset:
         dataset : Dataset
         """
         return cls(**client.get_dataset(dataset_id, **session_kwargs))
+
+    def download(self, output_dir: Union[Path, str], *, overwrite: bool = False, **session_kwargs):
+        """Downloads archives for all collections associated with this dataset to given directory. Each archive will be named using the
+        collection ID (e.g. some_collection.tar.gz). If ``output_dir`` does not exist, it will be created.
+
+        .. note::
+
+            Some collections may be very large and take a significant amount of time to download, depending on your connection speed.
+
+        Parameters
+        ----------
+        output_dir : str or pathlib.Path
+            The directory into which the archives will be written.
+        overwrite : bool, optional
+            Whether to overwrite existing archives at the same location.
+        session_kwargs
+            Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
+        Raises
+        -------
+        IOError
+            If ``output_dir`` exists and is not a directory.
+        """
+        output_dir = Path(output_dir)
+        if output_dir.exists() and not output_dir.is_dir():
+            raise IOError('output_dir must be a path to a local directory')
+
+        for collection in self.collections:
+            output_path = output_dir / f'{collection.id}.tar.gz'
+            collection.download(output_path, overwrite=overwrite, **session_kwargs)
