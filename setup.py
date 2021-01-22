@@ -22,7 +22,7 @@ setuptools.setup(
     },
     install_requires=[
         'requests~=2.25.1',
-        'pystac~=0.5.3',
+        'pystac~=0.5.4',
         'click~=7.1.2'
     ],
     classifiers=[
