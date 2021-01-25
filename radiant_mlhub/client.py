@@ -96,3 +96,23 @@ def list_collection_items(
             yield from page['features']
 
     yield from it.islice(_list_items(), limit)
+
+
+def get_collection_item(collection_id: str, item_id: str, **session_kwargs) -> dict:
+    """Returns a JSON-like dictionary representing the response from the Radiant MLHub ``GET /collections/{p1}/items/{p2}`` endpoint.
+
+    Parameters
+    ----------
+    collection_id : str
+        The ID of the Collection to which the Item belongs.
+    item_id : str
+        The ID of the Item.
+    **session_kwargs
+        Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
+    Returns
+    -------
+    item : dict
+    """
+    session = get_session(**session_kwargs)
+    return session.get(f'collections/{collection_id}/items/{item_id}').json()

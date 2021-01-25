@@ -35,7 +35,7 @@ def collections_list(requests_mock):
 
 @pytest.fixture(scope='function')
 def bigearthnet_v1_source_items(requests_mock):
-    """Mock the response for getting the bigearthnet_v1_source collection."""
+    """Mock the response for listing items for the bigearthnet_v1_source collection."""
     items_response_text = read_data_file('bigearthnet_v1_source_items_0.json')
     items_response_dict = json.loads(items_response_text)
 
@@ -48,6 +48,18 @@ def bigearthnet_v1_source_items(requests_mock):
     requests_mock.get(page_2_endpoint, text=page_2_response_text)
 
     yield items_endpoint
+
+
+@pytest.fixture(scope='function')
+def bigearthnet_v1_source_item(requests_mock):
+    """Mock the response for getting getting the first item from the bigearthnet_v1_source collection."""
+    response_text = read_data_file('bigearthnet_v1_source_item.json')
+    endpoint = 'https://api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_source/items/' \
+               'bigearthnet_v1_source_S2A_MSIL2A_20180526T100031_65_62'
+
+    requests_mock.get(endpoint, text=response_text)
+
+    yield endpoint
 
 
 @pytest.fixture(autouse=True)
@@ -68,4 +80,3 @@ def mock_profile(monkeypatch, tmp_path):
         config.write(dst)
 
     yield config
-
