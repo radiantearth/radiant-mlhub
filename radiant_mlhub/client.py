@@ -1,27 +1,31 @@
 """Low-level functions for making requests to MLHub API endpoints."""
 
-from typing import Iterator
 import itertools as it
+from typing import Iterator, List
 
 from .session import get_session
 
 
-def list_collections(**session_kwargs) -> Iterator[dict]:
-    """Yields JSON-like dictionaries representing the paginated response bodies from the Radiant MLHub ``GET /collections`` endpoint.
+def list_collections(**session_kwargs) -> List[dict]:
+    """Gets a list of JSON-like dictionaries representing STAC Collection objects returned by the Radiant MLHub ``GET /collections``
+    endpoint.
 
     See the `MLHub API docs <https://docs.mlhub.earth/#radiant-mlhub-api>`_ for details.
 
     Parameters
     ----------
+
     **session_kwargs
         Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
 
-    Yields
+    Returns
     -------
-    page : dict
+    collections: List[dict]
+        List of JSON-like dictionaries representing STAC Collection objects.
     """
     session = get_session(**session_kwargs)
-    yield from session.paginate('collections')
+    r = session.get('collections')
+    return r.json().get('collections', [])
 
 
 def get_collection(collection_id: str, **session_kwargs) -> dict:
@@ -89,6 +93,6 @@ def list_collection_items(
         if extensions is not None:
             params['extensions'] = extensions
         for page in session.paginate(f'collections/{collection_id}/items', params=params):
-            yield from page['items']
+            yield from page['features']
 
     yield from it.islice(_list_items(), limit)

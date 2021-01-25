@@ -2,7 +2,7 @@
 with the `Radiant MLHub API <https://docs.mlhub.earth/#radiant-mlhub-api>`_."""
 
 from copy import deepcopy
-from typing import Iterator
+from typing import Iterator, List
 
 import pystac
 
@@ -15,8 +15,8 @@ class Collection(pystac.Collection):
     """
 
     @classmethod
-    def list(cls, **session_kwargs) -> Iterator['Collection']:
-        """Yields :class:`Collection` instances for all collections hosted by MLHub.
+    def list(cls, **session_kwargs) -> List['Collection']:
+        """Returns a list of :class:`Collection` instances for all collections hosted by MLHub.
 
         See the :ref:`Authentication` documentation for details on how authentication is handled for this request.
 
@@ -25,13 +25,14 @@ class Collection(pystac.Collection):
         **session_kwargs
             Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
 
-        Yields
+        Returns
         ------
-        collection : Collection
+        collections : List[Collection]
         """
-        for page in client.list_collections(**session_kwargs):
-            for _collection in page.get('collections', []):
-                yield cls.from_dict(_collection)
+        return [
+            cls.from_dict(collection)
+            for collection in client.list_collections(**session_kwargs)
+        ]
 
     @classmethod
     def from_dict(cls, d, href=None, root=None):

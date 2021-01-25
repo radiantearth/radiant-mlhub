@@ -26,7 +26,7 @@ class TestCollection:
         yield config
 
     def test_list_collections(self, collections_list):
-        collections = list(Collection.list())
+        collections = Collection.list()
         assert len(collections) == 47
         assert isinstance(collections[0], Collection)
 
