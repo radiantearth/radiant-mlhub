@@ -1,5 +1,6 @@
+import configparser
 import pathlib
-import urllib.parse
+import json
 
 import pytest
 
@@ -14,7 +15,7 @@ def read_data_file(file_name):
 def bigearthnet_v1_source(requests_mock):
     """Mock the response for getting the bigearthnet_v1_source collection."""
     response_text = read_data_file('bigearthnet_v1_source.json')
-    endpoint = urllib.parse.urljoin('https://api.radiant.earth/mlhub/v1/', 'collections/bigearthnet_v1_source')
+    endpoint = 'https://api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_source'
 
     requests_mock.get(endpoint, text=response_text)
 
@@ -25,8 +26,46 @@ def bigearthnet_v1_source(requests_mock):
 def collections_list(requests_mock):
     """Mock the response for the /collections endpoint."""
     collections_response = read_data_file('collections_list.json')
-    endpoint = urllib.parse.urljoin('https://api.radiant.earth/mlhub/v1/', 'collections')
+    endpoint = 'https://api.radiant.earth/mlhub/v1/collections'
 
     requests_mock.get(endpoint, text=collections_response)
 
     yield endpoint
+
+
+@pytest.fixture(scope='function')
+def bigearthnet_v1_source_items(requests_mock):
+    """Mock the response for getting the bigearthnet_v1_source collection."""
+    items_response_text = read_data_file('bigearthnet_v1_source_items_0.json')
+    items_response_dict = json.loads(items_response_text)
+
+    page_2_response_text = read_data_file('bigearthnet_v1_source_items_1.json')
+
+    items_endpoint = 'https://api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_source/items'
+    page_2_endpoint = items_response_dict['links'][0]['href']  # The "next" link is the only one in this response
+
+    requests_mock.get(items_endpoint, text=items_response_text)
+    requests_mock.get(page_2_endpoint, text=page_2_response_text)
+
+    yield items_endpoint
+
+
+@pytest.fixture(autouse=True)
+def mock_profile(monkeypatch, tmp_path):
+    config = configparser.ConfigParser()
+
+    config['default'] = {'api_key': 'defaultapikey'}
+
+    # Monkeypatch the user's home directory to be the temp directory
+    monkeypatch.setenv('HOME', str(tmp_path))  # Linux/Unix
+    monkeypatch.setenv('USERPROFILE', str(tmp_path))  # Windows
+
+    # Create .mlhub directory and config file
+    mlhub_dir = tmp_path / '.mlhub'
+    mlhub_dir.mkdir()
+    config_file = mlhub_dir / 'profiles'
+    with config_file.open('w') as dst:
+        config.write(dst)
+
+    yield config
+

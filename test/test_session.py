@@ -12,7 +12,7 @@ from radiant_mlhub.exceptions import AuthenticationError, APIKeyNotFound
 class TestResolveAPIKeys:
 
     @pytest.fixture(scope='function')
-    def config_content(self, monkeypatch, tmp_path):
+    def mock_profile(self, monkeypatch, tmp_path):
         config = configparser.ConfigParser()
 
         config['default'] = {'api_key': 'defaultapikey'}
@@ -45,17 +45,17 @@ class TestResolveAPIKeys:
         session = get_session()
         assert session.params.get('key') == 'fromenvironment'
 
-    def test_api_key_from_default_profile(self, config_content):
+    def test_api_key_from_default_profile(self, mock_profile):
         """The API key from the default profile of ~/.mlhub/profiles is stored on the session if no explicit profile is given."""
         session = get_session()
         assert session.params.get('key') == 'defaultapikey'
 
-    def test_api_key_from_named_profile(self, tmp_path, config_content):
+    def test_api_key_from_named_profile(self, tmp_path, mock_profile):
         """The API key from the given profile in ~/.mlhub/profiles is stored on the session."""
         session = get_session(profile='other-profile')
         assert session.params.get('key') == 'otherapikey'
 
-    def test_api_key_from_environment_named_profile(self, config_content, monkeypatch):
+    def test_api_key_from_environment_named_profile(self, mock_profile, monkeypatch):
         """The API key from the profile given in the MLHUB_PROFILE environment variable is stored on the session."""
         monkeypatch.setenv('MLHUB_PROFILE', 'environment-profile')
 
@@ -87,14 +87,14 @@ class TestResolveAPIKeys:
 
         assert 'No file found' in str(excinfo.value)
 
-    def test_invalid_profile_name(self, config_content):
+    def test_invalid_profile_name(self, mock_profile):
         """Raises an exception if a non-existent profile name is given."""
         with pytest.raises(APIKeyNotFound) as excinfo:
             Session.from_config(profile='does-not-exist')
 
         assert 'Could not find "does-not-exist" section' in str(excinfo.value)
 
-    def test_missing_api_key(self, config_content):
+    def test_missing_api_key(self, mock_profile):
         """Raises an exception if the profile does not have an api_key value."""
         with pytest.raises(APIKeyNotFound) as excinfo:
             Session.from_config(profile='blank-profile')
