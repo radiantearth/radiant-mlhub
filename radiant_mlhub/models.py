@@ -112,3 +112,7 @@ class Collection(pystac.Collection):
         NotImplementedError
         """
         raise NotImplementedError('For performance reasons, the get_items method has not been implemented for Collection instances.')
+
+    def fetch_item(self, item_id: str, **session_kwargs) -> pystac.Item:
+        response = client.get_collection_item(self.id, item_id)
+        return pystac.Item.from_dict(response)
