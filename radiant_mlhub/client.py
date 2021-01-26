@@ -53,7 +53,7 @@ def list_collection_items(
         *,
         page_size: int = None,
         extensions: List[str] = None,
-        limit: int = 100,
+        limit: int = 10,
         **session_kwargs
 ) -> Iterator[dict]:
     """Yields JSON-like dictionaries representing STAC Item objects returned by the Radiant MLHub ``GET /collections/{collection_id}/items``
@@ -62,8 +62,9 @@ def list_collection_items(
     .. note::
 
         Because some collections may contain hundreds of thousands of items, this function limits the total number of responses
-        to ``100`` by default. You can change this value using the ``limit`` keyword argument, but be aware that trying to list all items
-        in a large collection may take a *very* long time.
+        to ``10`` by default. You can change this value by increasing the value of the ``limit`` keyword argument,
+        or setting it to ``None`` to list all items. **Be aware that trying to list all items in a large collection may take a very
+        long time.**
 
     Parameters
     ----------
@@ -75,7 +76,7 @@ def list_collection_items(
     extensions : list
         If provided, then only items that support all of the extensions listed will be returned.
     limit : int
-        The maximum *total* number of items to yield. Defaults to ``100``.
+        The maximum *total* number of items to yield. Defaults to ``10``.
     **session_kwargs
         Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
 
