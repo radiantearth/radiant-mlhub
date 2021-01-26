@@ -1,6 +1,7 @@
 import configparser
 
 import pytest
+import pystac
 from radiant_mlhub.models import Collection
 
 
@@ -26,7 +27,7 @@ class TestCollection:
         yield config
 
     def test_list_collections(self, collections_list):
-        collections = list(Collection.list())
+        collections = Collection.list()
         assert len(collections) == 47
         assert isinstance(collections[0], Collection)
 
@@ -50,3 +51,10 @@ class TestCollection:
             collection.get_items()
 
         assert 'For performance reasons, the get_items method has not been implemented for Collection instances.' == str(excinfo.value)
+
+    def test_fetch_item(self, bigearthnet_v1_source, bigearthnet_v1_source_item):
+        collection = Collection.fetch('bigearthnet_v1_source')
+        item = collection.fetch_item('bigearthnet_v1_source_S2A_MSIL2A_20180526T100031_65_62')
+
+        assert isinstance(item, pystac.Item)
+        assert len(item.assets) == 13
