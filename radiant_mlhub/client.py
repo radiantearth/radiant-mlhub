@@ -277,15 +277,15 @@ def get_collection_item(collection_id: str, item_id: str, **session_kwargs) -> d
     raise MLHubException(f'An unknown error occurred: {response.status_code} ({response.reason})')
 
 
-def download_archive(archive_id: str, output_dir: Path, *, overwrite: bool = False, **session_kwargs):
+def download_archive(archive_id: str, output_dir: Path = None, *, overwrite: bool = False, **session_kwargs):
     """Downloads the archive with the given ID to an output location (current working directory by default).
 
     Parameters
     ----------
     archive_id : str
         The ID of the archive to download.
-    output_path : Path
-        Path to which the archive will be downloaded.
+    output_dir : Path
+        Path to which the archive will be downloaded. Defaults to the current working directory.
     overwrite : bool, optional
         Whether to overwrite an existing file of the same name. Defaults to ``False``.
     **session_kwargs
@@ -296,6 +296,8 @@ def download_archive(archive_id: str, output_dir: Path, *, overwrite: bool = Fal
     FileExistsError
         If file at ``output_path`` already exists and ``overwrite==False``.
     """
+    output_dir = output_dir if output_dir is not None else Path.cwd()
+
     try:
         _download(f'archive/{archive_id}', output_dir=output_dir, overwrite=overwrite, **session_kwargs)
     except HTTPError as e:
