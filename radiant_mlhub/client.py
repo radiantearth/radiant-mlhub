@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Iterator, List
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
+import urllib.parse
 
 from requests.exceptions import HTTPError
 from tqdm import tqdm
@@ -15,7 +16,7 @@ from .exceptions import EntityDoesNotExist, MLHubException
 
 def _download(
         url: str,
-        output_path: Path,
+        output_dir: Path,
         overwrite: bool = False,
         chunk_size=5000000,
         **session_kwargs
@@ -26,8 +27,9 @@ def _download(
     ----------
     url : str
         This can either be a full URL or a path relative to the Radiant MLHub root URL.
-    output_path : Path
-        Local path to which the content will be downloaded.
+    output_dir : Path
+        Path to a local directory to which the file will be downloaded. File name will be generated
+        automatically based on the download URL.
     overwrite : bool, optional
         Whether to overwrite an existing file at ``output_path``. Defaults to ``False``.
     chunk_size : int, optional
@@ -38,7 +40,7 @@ def _download(
     Raises
     ------
     FileExistsError
-        If file at ``output_path`` already exists and ``overwrite==False``.
+        If file of the same name already exists in ``output_dir`` and ``overwrite==False``.
     """
 
     def _get_ranges(total_size, interval):
@@ -55,16 +57,6 @@ def _download(
         """Internal function for fetching a byte range from the url."""
         return session.get(url_, headers={'Range': f'bytes={range_}'}).content
 
-    # Resolve user directory shortcuts and relative paths
-    output_path = Path(output_path).expanduser().resolve()
-
-    # Check for existing output file
-    if output_path.exists() and not overwrite:
-        raise FileExistsError(f'File {output_path} already exists. Use overwrite=True to overwrite this file.')
-
-    # Create the parent directory, if it does not exist
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-
     # Create a session
     session = get_session(**session_kwargs)
 
@@ -73,6 +65,20 @@ def _download(
     r.raise_for_status()
     content_length = int(r.headers['Content-Length'])
     download_url = r.url
+
+    # Resolve user directory shortcuts and relative paths
+    output_dir = Path(output_dir).expanduser().resolve()
+
+    # Get the full file path
+    output_file_name = urllib.parse.urlsplit(download_url).path.rsplit('/', 1)[1]
+    output_path = output_dir / output_file_name
+
+    # Check for existing output file
+    if output_path.exists() and not overwrite:
+        raise FileExistsError(f'File {output_path} already exists. Use overwrite=True to overwrite this file.')
+
+    # Create the parent directory, if it does not exist
+    output_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Check that the endpoint accepts byte range requests
     use_range = r.headers.get('Accept-Ranges') == 'bytes'
@@ -271,7 +277,7 @@ def get_collection_item(collection_id: str, item_id: str, **session_kwargs) -> d
     raise MLHubException(f'An unknown error occurred: {response.status_code} ({response.reason})')
 
 
-def download_archive(archive_id: str, output_path: Path, *, overwrite: bool = False, **session_kwargs):
+def download_archive(archive_id: str, output_dir: Path, *, overwrite: bool = False, **session_kwargs):
     """Downloads the archive with the given ID to an output location (current working directory by default).
 
     Parameters
@@ -291,7 +297,7 @@ def download_archive(archive_id: str, output_path: Path, *, overwrite: bool = Fa
         If file at ``output_path`` already exists and ``overwrite==False``.
     """
     try:
-        _download(f'archive/{archive_id}', output_path=output_path, overwrite=overwrite, **session_kwargs)
+        _download(f'archive/{archive_id}', output_dir=output_dir, overwrite=overwrite, **session_kwargs)
     except HTTPError as e:
         if e.response.status_code != 404:
             raise

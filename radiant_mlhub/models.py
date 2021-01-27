@@ -129,7 +129,7 @@ class Collection(pystac.Collection):
         response = client.get_collection_item(self.id, item_id)
         return pystac.Item.from_dict(response)
 
-    def download(self, output_path: Union[Path], overwrite: bool = False, **session_kwargs):
+    def download(self, output_dir: Path, overwrite: bool = False, **session_kwargs):
         """Downloads the archive for this collection to an output location (current working directory by default). If the parent directories
         for ``output_path`` do not exist, they will be created.
 
@@ -139,8 +139,9 @@ class Collection(pystac.Collection):
 
         Parameters
         ----------
-        output_path : Path
-            Path to which the archive will be downloaded.
+        output_dir : Path
+            Path to a local directory to which the file will be downloaded. File name will be generated
+            automatically based on the download URL.
         overwrite : bool, optional
             Whether to overwrite an existing file of the same name. Defaults to ``False``.
         **session_kwargs
@@ -151,7 +152,7 @@ class Collection(pystac.Collection):
         FileExistsError
             If file at ``output_path`` already exists and ``overwrite=False``.
         """
-        client.download_archive(self.id, output_path=output_path, overwrite=overwrite, **session_kwargs)
+        client.download_archive(self.id, output_dir=output_dir, overwrite=overwrite, **session_kwargs)
 
 
 class CollectionType(Enum):

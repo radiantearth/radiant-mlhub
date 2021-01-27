@@ -119,6 +119,6 @@ the same name already exists it will raise an exception (unless you use ``overwr
 
 .. code-block:: python
 
-    >>> source_collection.download('~/Downloads/bigearthnet_v1_source.tar.gz')
+    >>> source_collection.download('~/Downloads')
     28%|██▊       | 985.0/3496.9 [00:35<00:51, 48.31M/s]
 

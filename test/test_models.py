@@ -41,9 +41,9 @@ class TestCollection:
 
     def test_download_archive(self, collection_archive, bigearthnet_v1_source, tmp_path):
         collection = Collection.fetch('bigearthnet_v1_source')
-        collection.download(output_path=tmp_path / 'download.tar.gz')
+        collection.download(output_dir=tmp_path)
 
-        assert (tmp_path / 'download.tar.gz').exists()
+        assert (tmp_path / 'bigearthnet_v1_source.tar.gz').exists()
 
 
 class TestDataset:

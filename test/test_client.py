@@ -89,18 +89,18 @@ class TestClient:
         assert item['id'] == 'bigearthnet_v1_source_S2A_MSIL2A_20180526T100031_65_62'
 
     def test_download_archive(self, collection_archive, tmp_path):
-        radiant_mlhub.client.download_archive(collection_archive, output_path=tmp_path / 'download.tar.gz')
+        radiant_mlhub.client.download_archive(collection_archive, output_dir=tmp_path)
 
-        assert (tmp_path / 'download.tar.gz').exists()
+        assert (tmp_path / 'bigearthnet_v1_source.tar.gz').exists()
 
     def test_download_archive_no_bytes(self, collection_archive_no_bytes, tmp_path):
-        radiant_mlhub.client.download_archive(collection_archive_no_bytes, output_path=tmp_path / 'download.tar.gz')
+        radiant_mlhub.client.download_archive(collection_archive_no_bytes, output_dir=tmp_path)
 
-        assert (tmp_path / 'download.tar.gz').exists()
+        assert (tmp_path / 'bigearthnet_v1_source.tar.gz').exists()
 
     def test_download_archive_does_not_exist(self, archive_does_not_exist, tmp_path):
         with pytest.raises(EntityDoesNotExist) as excinfo:
-            radiant_mlhub.client.download_archive(archive_does_not_exist, output_path=tmp_path / 'download.tar.gz')
+            radiant_mlhub.client.download_archive(archive_does_not_exist, output_dir=tmp_path)
 
         assert f'Archive "{archive_does_not_exist}" does not exist and may still be generating. ' \
                'Please try again later.' == str(excinfo.value)
