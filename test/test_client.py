@@ -1,4 +1,6 @@
+import pytest
 import radiant_mlhub.client
+from radiant_mlhub.exceptions import MLHubException, EntityDoesNotExist
 
 
 class TestClient:
@@ -18,3 +20,70 @@ class TestClient:
 
         assert item['stac_extensions'] == ['eo']
         assert item['id'] == 'bigearthnet_v1_source_S2A_MSIL2A_20180526T100031_65_62'
+
+    @pytest.fixture
+    def collection_does_not_exist(self, requests_mock):
+        endpoint = 'https://api.radiant.earth/mlhub/v1/collections/no_collection'
+
+        requests_mock.get(
+            endpoint,
+            status_code=404,
+            reason='NOT FOUND',
+            headers={'Content-Type': 'text/html; charset=utf-8'},
+            text='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">\n'
+                 '<title>404 Not Found</title>\n<h1>Not Found</h1>\n'
+                 '<p>The requested URL was not found on the server. '
+                 'If you entered the URL manually please check your spelling and try again.</p>\n'
+        )
+
+        yield endpoint
+
+    @pytest.fixture
+    def dataset_does_not_exist(self, requests_mock):
+        endpoint = 'https://api.radiant.earth/mlhub/v1/datasets/no_dataset'
+
+        requests_mock.get(
+            endpoint,
+            status_code=404,
+            reason='NOT FOUND',
+            headers={'Content-Type': 'text/html; charset=utf-8'},
+            text='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">\n'
+                 '<title>404 Not Found</title>\n<h1>Not Found</h1>\n'
+                 '<p>The requested URL was not found on the server. '
+                 'If you entered the URL manually please check your spelling and try again.</p>\n'
+        )
+
+        yield endpoint
+
+    @pytest.fixture
+    def internal_server_error(self, requests_mock):
+        endpoint = 'https://api.radiant.earth/mlhub/v1/collections/internal_error'
+
+        requests_mock.get(
+            endpoint,
+            status_code=500,
+            reason='Internal Server Error',
+            headers={'Content-Type': 'text/html; charset=utf-8'},
+            text='<html>\n  <head>\n    <title>Internal Server Error</title>\n  '
+                 '</head>\n  <body>\n    <h1><p>Internal Server Error</p></h1>\n    \n  </body>\n</html>\n'
+        )
+
+        yield endpoint
+
+    def test_collection_does_not_exist(self, collection_does_not_exist):
+        with pytest.raises(EntityDoesNotExist) as excinfo:
+            radiant_mlhub.client.get_collection('no_collection')
+
+        assert 'Entity with ID "no_collection" does not exist' in str(excinfo.value)
+
+    def test_dataset_does_not_exist(self, dataset_does_not_exist):
+        with pytest.raises(EntityDoesNotExist) as excinfo:
+            radiant_mlhub.client.get_dataset('no_dataset')
+
+        assert 'Entity with ID "no_dataset" does not exist' in str(excinfo.value)
+
+    def test_internal_server_error(self, internal_server_error):
+        with pytest.raises(MLHubException) as excinfo:
+            radiant_mlhub.client.get_collection('internal_error')
+
+        assert 'Internal Server Error' in str(excinfo.value)

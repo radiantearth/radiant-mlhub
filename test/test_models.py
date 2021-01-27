@@ -1,30 +1,9 @@
-import configparser
-
 import pytest
 import pystac
-from radiant_mlhub.models import Collection
+from radiant_mlhub.models import Collection, Dataset
 
 
 class TestCollection:
-
-    @pytest.fixture(autouse=True)
-    def mock_profile(self, monkeypatch, tmp_path):
-        config = configparser.ConfigParser()
-
-        config['default'] = {'api_key': 'defaultapikey'}
-
-        # Monkeypatch the user's home directory to be the temp directory
-        monkeypatch.setenv('HOME', str(tmp_path))  # Linux/Unix
-        monkeypatch.setenv('USERPROFILE', str(tmp_path))  # Windows
-
-        # Create .mlhub directory and config file
-        mlhub_dir = tmp_path / '.mlhub'
-        mlhub_dir.mkdir()
-        config_file = mlhub_dir / 'profiles'
-        with config_file.open('w') as dst:
-            config.write(dst)
-
-        yield config
 
     def test_list_collections(self, collections_list):
         collections = Collection.list()
@@ -58,3 +37,25 @@ class TestCollection:
 
         assert isinstance(item, pystac.Item)
         assert len(item.assets) == 13
+
+
+class TestDataset:
+
+    def test_list_datasets(self, datasets_list):
+        """Dataset.list returns a list of Dataset instances."""
+        datasets = list(Dataset.list())
+        assert len(datasets) == 19
+        assert isinstance(datasets[0], Dataset)
+
+    def test_fetch_dataset(self, bigearthnet_v1_dataset):
+        dataset = Dataset.fetch('bigearthnet_v1')
+        assert isinstance(dataset, Dataset)
+        assert dataset.id == 'bigearthnet_v1'
+
+    def test_dataset_collections(self, bigearthnet_v1_dataset, bigearthnet_v1_source, bigearthnet_v1_labels):
+        dataset = Dataset.fetch('bigearthnet_v1')
+        assert len(dataset.collections) == 2
+        assert len(dataset.collections.source_imagery) == 1
+        assert len(dataset.collections.labels) == 1
+        assert all(isinstance(c, Collection) for c in dataset.collections)
+        assert dataset.collections[0] in dataset.collections.source_imagery

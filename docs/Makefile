@@ -15,7 +15,7 @@ help:
 .PHONY: help Makefile
 
 api-docs: Makefile
-	sphinx-apidoc -f -o "$(SOURCEDIR)"/api "../radiant_mlhub" "../radiant_mlhub/cli.py"
+	sphinx-apidoc -fT -o "$(SOURCEDIR)"/api "../radiant_mlhub" "../radiant_mlhub/cli.py"
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).

@@ -13,7 +13,7 @@ def read_data_file(file_name):
 
 @pytest.fixture(scope='function')
 def bigearthnet_v1_source(requests_mock):
-    """Mock the response for getting the bigearthnet_v1_source collection."""
+    """Response for GET /collections/bigearthnet_v1_source."""
     response_text = read_data_file('bigearthnet_v1_source.json')
     endpoint = 'https://api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_source'
 
@@ -23,8 +23,41 @@ def bigearthnet_v1_source(requests_mock):
 
 
 @pytest.fixture(scope='function')
+def bigearthnet_v1_labels(requests_mock):
+    """Response for GET /collections/bigearthnet_v1_labels."""
+    response_text = read_data_file('bigearthnet_v1_labels.json')
+    endpoint = 'https://api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_labels'
+
+    requests_mock.get(endpoint, text=response_text)
+
+    yield endpoint
+
+
+@pytest.fixture
+def bigearthnet_v1_dataset(requests_mock):
+    """Response for GET /datasets/bigearthnet_v1."""
+    response_text = read_data_file('bigearthnet_v1_dataset.json')
+    endpoint = 'https://api.radiant.earth/mlhub/v1/datasets/bigearthnet_v1'
+
+    requests_mock.get(endpoint, text=response_text)
+
+    yield endpoint
+
+
+@pytest.fixture
+def datasets_list(requests_mock):
+    """Response for GET /datasets."""
+    response_text = read_data_file('datasets_list.json')
+    endpoint = 'https://api.radiant.earth/mlhub/v1/datasets'
+
+    requests_mock.get('https://api.radiant.earth/mlhub/v1/datasets', text=response_text)
+
+    yield endpoint
+
+
+@pytest.fixture(scope='function')
 def collections_list(requests_mock):
-    """Mock the response for the /collections endpoint."""
+    """Response for GET /collections."""
     collections_response = read_data_file('collections_list.json')
     endpoint = 'https://api.radiant.earth/mlhub/v1/collections'
 

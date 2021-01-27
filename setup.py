@@ -23,7 +23,8 @@ setuptools.setup(
     install_requires=[
         'requests~=2.25.1',
         'pystac~=0.5.4',
-        'click~=7.1.2'
+        'click~=7.1.2',
+        'backports.cached-property==1.0.0.post2; python_version < "3.8"',
     ],
     classifiers=[
         "Programming Language :: Python",

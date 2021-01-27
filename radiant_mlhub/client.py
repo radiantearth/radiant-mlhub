@@ -3,7 +3,53 @@
 import itertools as it
 from typing import Iterator, List
 
+from requests.exceptions import HTTPError
+
 from .session import get_session
+from .exceptions import EntityDoesNotExist, MLHubException
+
+
+def list_datasets(**session_kwargs) -> List[dict]:
+    """Gets a list of JSON-like dictionaries representing dataset objects returned by the Radiant MLHub ``GET /datasets`` endpoint.
+
+    See the `MLHub API docs <https://docs.mlhub.earth/#radiant-mlhub-api>`_ for details.
+
+    Parameters
+    ----------
+    **session_kwargs
+        Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
+    Returns
+    -------
+    datasets : List[dict]
+    """
+    session = get_session(**session_kwargs)
+    return session.get('datasets').json()
+
+
+def get_dataset(dataset_id: str, **session_kwargs) -> dict:
+    """Returns a JSON-like dictionary representing the response from the Radiant MLHub ``GET /datasets/{dataset_id}`` endpoint.
+
+    See the `MLHub API docs <https://docs.mlhub.earth/#radiant-mlhub-api>`_ for details.
+
+    Parameters
+    ----------
+    dataset_id : str
+        The ID of the dataset to fetch
+    **session_kwargs
+        Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
+    Returns
+    -------
+    dataset : dict
+    """
+    session = get_session(**session_kwargs)
+    try:
+        return session.get(f'datasets/{dataset_id}').json()
+    except HTTPError as e:
+        if e.response.status_code == 404:
+            raise EntityDoesNotExist(dataset_id) from None
+        raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})') from None
 
 
 def list_collections(**session_kwargs) -> List[dict]:
@@ -43,9 +89,22 @@ def get_collection(collection_id: str, **session_kwargs) -> dict:
     Returns
     -------
     collection : dict
+
+    Raises
+    ------
+    EntityDoesNotExist
+        If a 404 response code is returned by the API
+    MLHubException
+        If any other response code is returned
     """
     session = get_session(**session_kwargs)
-    return session.get(f'collections/{collection_id}').json()
+
+    try:
+        return session.get(f'collections/{collection_id}').json()
+    except HTTPError as e:
+        if e.response.status_code == 404:
+            raise EntityDoesNotExist(collection_id) from None
+        raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})') from None
 
 
 def list_collection_items(

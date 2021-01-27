@@ -27,62 +27,59 @@ Once you have your API key, you will need to create a default profile by setting
     API Key: Enter your API key here...
     Wrote profile to /Users/youruser/.mlhub/profiles
 
-Making API Requests
-+++++++++++++++++++
+List Datasets
++++++++++++++++++
 
-Once you have your ``profiles`` file in place, you can create a session that will be used to make authenticated requests to the API:
-
-.. code-block:: python
-
-    >>> from radiant_mlhub import get_session
-    >>> session = get_session()
-
-You can use this session to make authenticated calls to the API. For example, to list all collections:
+Once you have your profile configured, you can get a list of the available datasets from the Radiant MLHub API using the
+:meth:`Dataset.list <radiant_mlhub.models.Dataset.list>` method. This method is a :term:`generator` that yields
+:class:`~radiant_mlhub.models.Dataset` instances. You can use the ``id`` and ``title`` properties to get more information about a dataset.
 
 .. code-block:: python
 
-    >>> r = session.get('/collections')  # Leading slash is optional
-    >>> collections = r.json()['collections']
-    >>> print(len(collections))
-    47
+    >>> from radiant_mlhub import Dataset
+    >>> for dataset in Dataset.list():
+    ...     print(f'{dataset.id}: {dataset.title}')
+    'bigearthnet_v1: BigEarthNet V1'
 
-For details on more fine-grained control over which API key is used for a session, see the :ref:`Authentication` documentation.
 
-Discover Collections
-++++++++++++++++++++
+Fetch a Dataset
++++++++++++++++
 
-You can use the :meth:`Collection.list <radiant_mlhub.models.Collection.list>` method to list all of the collections available in MLHub. This method returns
-a generator that yields :class:`~radiant_mlhub.models.Collection` instances. You can use the properties of these instances to get more
-information about each collection. For instance, the following code will print the ID and description for each collection:
+You can also fetch a dataset by ID using the :meth:`Dataset.fetch <radiant_mlhub.models.Dataset.fetch>` method. This method returns a
+:class:`~radiant_mlhub.models.Dataset` instance.
 
 .. code-block:: python
 
-    >>> from radiant_mlhub import Collection
-    >>> for collection in Collection.list():
-    ...     print(f'{collection.id}: {collection.description}')
+    >>> dataset = Dataset.fetch('bigearthnet_v1')
+    >>> print(f'{dataset.id}: {dataset.title}')
+    'bigearthnet_v1: BigEarthNet V1'
 
-    ref_african_crops_kenya_01_labels: African Crops Kenya
-    ref_african_crops_kenya_01_source: African Crops Kenya Source Imagery
-    ref_african_crops_tanzania_01_labels: African Crops Tanzania
-    ref_african_crops_tanzania_01_source: African Crops Tanzania Source Imagery
-    ref_african_crops_uganda_01_labels: African Crops Uganda
-    ref_african_crops_uganda_01_source: African Crops Uganda Source Imagery
-    microsoft_chesapeake_landsat_leaf_off: Microsoft Chesapeake Landsat 8 Leaf-Off Composite
-    ...
+Work with Dataset Collections
++++++++++++++++++++++++++++++
 
-Get Collection
-++++++++++++++
+Datasets have 1 or more collections associated with them. Collections fall into 2 types:
 
-If you know the ID of a collection, you can fetch it from the MLHub API using the :meth:`Collection.fetch <radiant_mlhub.models.Collection.fetch>` class
-method:
+* ``source``: Collections of source imagery associated with the dataset
+* ``labels``: Collections of labeled data associated with the dataset (these collections implement the
+  `STAC Label Extension <https://github.com/radiantearth/stac-spec/tree/master/extensions/label>`_)
+
+To list all the collections associated with a dataset use the :attr:`~radiant_mlhub.models.Dataset.collections` attribute.
 
 .. code-block:: python
 
-    >>> from pprint import pprint
-    >>> collection = Collection.fetch('bigearthnet_v1_source')
-    >>> print(collection)
-    <Collection id=bigearthnet_v1_source>
-    >>> pprint(collection.to_dict())
+    >>> dataset.collections
+    [<Collection id=bigearthnet_v1_source>, <Collection id=bigearthnet_v1_labels>]
+    >>> type(dataset.collections[0])
+    <class 'radiant_mlhub.models.Collection'>
+
+You can also list the collections by type using the ``collections.source`` and ``collections.labels`` properties
+
+.. code-block:: python
+
+    >>> len(dataset.collections.source)
+    1
+    >>> source_collection = datasets.collections.source[0]
+    >>> pprint(source_collection)
     {'description': 'BigEarthNet v1.0',
      'extent': {'spatial': {'bbox': [[-9.00023345437725,
                                       1.7542686833884724,
@@ -102,7 +99,7 @@ method:
      'properties': {},
      'providers': [{'name': 'BigEarthNet',
                     'roles': ['processor', 'licensor'],
-                    'url': 'https://api.radiant.earth/mlhub/v1/download/gAAAAABf6lIUqtKGKItY35ACBtk0FSOZwOjQERPHKo8cp5h0S50GkpGQN-lOq-itFvBAxwt9oBE4a71pZu9Sd3eM44mz8ezjSyrH02SjiVKfGREiGD2rJjHsjkv1TuBh36M4RptF5S7zlt3k5BRi3EaO3uaWvM-5IFwT5YklrGlpOWIkeKcfVSqTgNiqg2jL-t89x-Yxjz3rSJOltq6unUlEMkImzp0MnW1YlALq4Wf2TdHPBOdZIUk='}],
+                    'url': 'https://api.radiant.earth/mlhub/v1/download/dummy-download-key'}],
      'sci:citation': 'G. Sumbul, M. Charfuelan, B. Demir, V. Markl, "BigEarthNet: '
                      'A Large-Scale Benchmark Archive for Remote Sensing Image '
                      'Understanding", IEEE International Geoscience and Remote '

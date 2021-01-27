@@ -28,6 +28,7 @@ class Session(requests.Session):
     * Adds a ``User-Agent`` header that contains the package name and version, plus basic system information like the OS name
     * Prepends the MLHub root URL (``https://api.radiant.earth/mlhub/v1/``) to any request paths without a domain
     * Raises a :exc:`radiant_mlhub.exceptions.AuthenticationError` for ``401 (UNAUTHORIZED)`` responses
+    * Calls :meth:`requests.Response.raise_for_status` after all requests to raise exceptions for any status codes above 400.
     """
 
     API_KEY_ENV_VARIABLE = 'MLHUB_API_KEY'
@@ -49,7 +50,8 @@ class Session(requests.Session):
     )
     def request(self, method, url, **kwargs):
         """Overwrites the default :meth:`requests.Session.request` method to prepend the MLHub root URL if the given
-        ``url`` does not include a scheme.
+        ``url`` does not include a scheme. This will raise an :exc:`~radiant_mlhub.exceptions.AuthenticationError` if a 401 response is
+        returned by the server, and a :class:`~requests.exceptions.HTTPError` if any other status code of 400 or above is returned.
 
         Parameters
         ----------
@@ -66,6 +68,9 @@ class Session(requests.Session):
         ------
         AuthenticationError
             If the response status code is 401
+
+        HTTPError
+            For all other response status codes at or above 400
         """
         # Parse the url argument and substitute the base URL if this is a relative path
         parsed_url = urllib.parse.urlsplit(url)
@@ -85,6 +90,9 @@ class Session(requests.Session):
         # Handle authentication errors
         if response.status_code == 401:
             raise AuthenticationError(f'Authentication failed for API key "{self.params.get("key")}"')
+
+        # Raise exceptions for any HTTP codes >=400
+        response.raise_for_status()
 
         return response
 
