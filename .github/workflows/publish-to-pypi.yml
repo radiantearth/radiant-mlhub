@@ -38,6 +38,7 @@ jobs:
         --wheel
         --outdir dist/
         .
+
     - name: Publish distribution to PyPI
       # Publish to PyPi for releases
       if: github.event_name == 'release'
@@ -45,9 +46,19 @@ jobs:
       with:
         password: ${{ secrets.pypi_password }}
 
+    - name: Check for test package
+      id: check-test-pypi
+      if: github.event_name == 'pull_request'
+      run: >-
+        pip install -e .;
+        MLHUB_VERSION=$(python -c "import radiant_mlhub; print(radiant_mlhub.__version__)");
+        CURL_STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://test.pypi.org/project/radiant-mlhub/${MLHUB_VERSION}/);
+        if [ ${CURL_STATUS_CODE} -eq 200 ]; then PACKAGE_EXISTS="True"; else PACKAGE_EXISTS="False"; fi;
+        echo "::set-output name=package_exists::${PACKAGE_EXISTS}";
+
     - name: Publish distribution to TestPyPI
       # Publish to TestPyPi for PRs against main from release branches
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && steps.check-test-pypi.outputs.package_exists != 'True'
       uses: pypa/gh-action-pypi-publish@master
       with:
         password: ${{ secrets.test_pypi_password }}
