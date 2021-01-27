@@ -58,13 +58,13 @@ class TestClient:
         with pytest.raises(EntityDoesNotExist) as excinfo:
             radiant_mlhub.client.get_collection('no_collection')
 
-        assert 'Entity with ID "no_collection" does not exist' in str(excinfo.value)
+        assert 'Collection "no_collection" does not exist.' == str(excinfo.value)
 
     def test_dataset_does_not_exist(self, dataset_does_not_exist):
         with pytest.raises(EntityDoesNotExist) as excinfo:
             radiant_mlhub.client.get_dataset('no_dataset')
 
-        assert 'Entity with ID "no_dataset" does not exist' in str(excinfo.value)
+        assert 'Dataset "no_dataset" does not exist.' == str(excinfo.value)
 
     def test_internal_server_error(self, internal_server_error):
         with pytest.raises(MLHubException) as excinfo:
@@ -97,3 +97,10 @@ class TestClient:
         radiant_mlhub.client.download_archive(collection_archive_no_bytes, output_path=tmp_path / 'download.tar.gz')
 
         assert (tmp_path / 'download.tar.gz').exists()
+
+    def test_download_archive_does_not_exist(self, archive_does_not_exist, tmp_path):
+        with pytest.raises(EntityDoesNotExist) as excinfo:
+            radiant_mlhub.client.download_archive(archive_does_not_exist, output_path=tmp_path / 'download.tar.gz')
+
+        assert f'Archive "{archive_does_not_exist}" does not exist and may still be generating. ' \
+               'Please try again later.' == str(excinfo.value)

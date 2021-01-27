@@ -70,6 +70,7 @@ def _download(
 
     # HEAD the endpoint and follow redirects to get the actual download URL and Content-Length
     r = session.head(url, allow_redirects=True)
+    r.raise_for_status()
     content_length = int(r.headers['Content-Length'])
     download_url = r.url
 
@@ -133,7 +134,7 @@ def get_dataset(dataset_id: str, **session_kwargs) -> dict:
         return session.get(f'datasets/{dataset_id}').json()
     except HTTPError as e:
         if e.response.status_code == 404:
-            raise EntityDoesNotExist(dataset_id) from None
+            raise EntityDoesNotExist(f'Dataset "{dataset_id}" does not exist.') from None
         raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})') from None
 
 
@@ -188,7 +189,7 @@ def get_collection(collection_id: str, **session_kwargs) -> dict:
         return session.get(f'collections/{collection_id}').json()
     except HTTPError as e:
         if e.response.status_code == 404:
-            raise EntityDoesNotExist(collection_id) from None
+            raise EntityDoesNotExist(f'Collection "{collection_id}" does not exist.') from None
         raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})') from None
 
 
@@ -266,7 +267,7 @@ def get_collection_item(collection_id: str, item_id: str, **session_kwargs) -> d
     if response.ok:
         return response.json()
     if response.status_code == 404:
-        raise EntityDoesNotExist(collection_id)
+        raise EntityDoesNotExist(f'Collection "{collection_id}" does not exist.')
     raise MLHubException(f'An unknown error occurred: {response.status_code} ({response.reason})')
 
 
@@ -289,4 +290,9 @@ def download_archive(archive_id: str, output_path: Path, *, overwrite: bool = Fa
     FileExistsError
         If file at ``output_path`` already exists and ``overwrite==False``.
     """
-    _download(f'archive/{archive_id}', output_path=output_path, overwrite=overwrite, **session_kwargs)
+    try:
+        _download(f'archive/{archive_id}', output_path=output_path, overwrite=overwrite, **session_kwargs)
+    except HTTPError as e:
+        if e.response.status_code != 404:
+            raise
+        raise EntityDoesNotExist(f'Archive "{archive_id}" does not exist and may still be generating. Please try again later.') from None
