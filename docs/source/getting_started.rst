@@ -60,7 +60,7 @@ Work with Dataset Collections
 
 Datasets have 1 or more collections associated with them. Collections fall into 2 types:
 
-* ``source``: Collections of source imagery associated with the dataset
+* ``source_imagery``: Collections of source imagery associated with the dataset
 * ``labels``: Collections of labeled data associated with the dataset (these collections implement the
   `STAC Label Extension <https://github.com/radiantearth/stac-spec/tree/master/extensions/label>`_)
 
