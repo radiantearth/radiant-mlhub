@@ -102,3 +102,24 @@ method. This is the recommended way of fetching a collection. This method return
     'ref_african_crops_kenya_01_labels'
     >>> collection.description
     'African Crops Kenya'
+
+Downloading a Collection
+++++++++++++++++++++++++
+
+The Radiant MLHub ``/archive/{archive_id}`` endpoint allows you to download an archive of all assets associated with a given collection. You
+can use the low-level :func:`~radiant_mlhub.client.download_archive` function to download the archive to your local file system.
+
+.. code-block:: python
+
+    >>> from radiant_mlhub.client import download_archive
+    >>> download_archive('sn1_AOI_1_RIO', './sn1_AOI_1_RIO.tar.gz')
+    28%|██▊       | 985.0/3496.9 [00:35<00:51, 48.31M/s]
+
+You can also download a collection archive using the :meth:`Collection.download <radiant_mlhub.models.Collection.download>`
+method. This is the recommended way of downloading an archive.
+
+.. code-block:: python
+
+    >>> collection = Collection.fetch('sn1_AOI_1_RIO')
+    >>> collection.download('~/Downloads/sn1_AOI_1_RIO.tar.gz', overwrite=True)  # Will overwrite an existing file of the same name
+    28%|██▊       | 985.0/3496.9 [00:35<00:51, 48.31M/s]

@@ -2,7 +2,8 @@
 with the `Radiant MLHub API <https://docs.mlhub.earth/#radiant-mlhub-api>`_."""
 
 from copy import deepcopy
-from typing import Iterator, List, Optional
+from pathlib import Path
+from typing import Iterator, List, Optional, Union
 import concurrent.futures
 from enum import Enum
 from collections.abc import Sequence
@@ -19,8 +20,8 @@ from . import client
 
 
 class Collection(pystac.Collection):
-    """Class inheriting from :class:`pystac.Collection` that overrides the :meth:`pystac.Catalog.get_items` to fetch item links from the
-    ``collections/<collection_id>/items`` MLHub endpoint instead of trying to use static links within the catalog object.
+    """Class inheriting from :class:`pystac.Collection` that adds some convenience methods for listing and fetching from the Radiant
+    MLHub API.
     """
 
     @classmethod
@@ -114,17 +115,43 @@ class Collection(pystac.Collection):
         """
         .. note::
 
-            The ``get_items`` method is not implemented for Radiant MLHub :class:`Collection` instances for performance reasons.
+            The ``get_items`` method is not implemented for Radiant MLHub :class:`Collection` instances for performance reasons. Please use
+            the :meth:`Collection.download` method to download Collection assets.
 
         Raises
         ------
         NotImplementedError
         """
-        raise NotImplementedError('For performance reasons, the get_items method has not been implemented for Collection instances.')
+        raise NotImplementedError('For performance reasons, the get_items method has not been implemented for Collection instances. Please '
+                                  'use the Collection.download method to download Collection assets.')
 
     def fetch_item(self, item_id: str, **session_kwargs) -> pystac.Item:
         response = client.get_collection_item(self.id, item_id)
         return pystac.Item.from_dict(response)
+
+    def download(self, output_path: Union[Path], overwrite: bool = False, **session_kwargs):
+        """Downloads the archive for this collection to an output location (current working directory by default). If the parent directories
+        for ``output_path`` do not exist, they will be created.
+
+        .. note::
+
+            Some collections may be very large and take a significant amount of time to download, depending on your connection speed.
+
+        Parameters
+        ----------
+        output_path : Path
+            Path to which the archive will be downloaded.
+        overwrite : bool, optional
+            Whether to overwrite an existing file of the same name. Defaults to ``False``.
+        **session_kwargs
+            Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
+        Raises
+        ------
+        FileExistsError
+            If file at ``output_path`` already exists and ``overwrite=False``.
+        """
+        client.download_archive(self.id, output_path=output_path, overwrite=overwrite, **session_kwargs)
 
 
 class CollectionType(Enum):
@@ -277,3 +304,33 @@ class Dataset:
         dataset : Dataset
         """
         return cls(**client.get_dataset(dataset_id, **session_kwargs))
+
+    def download(self, output_dir: Union[Path, str], *, overwrite: bool = False, **session_kwargs):
+        """Downloads archives for all collections associated with this dataset to given directory. Each archive will be named using the
+        collection ID (e.g. some_collection.tar.gz). If ``output_dir`` does not exist, it will be created.
+
+        .. note::
+
+            Some collections may be very large and take a significant amount of time to download, depending on your connection speed.
+
+        Parameters
+        ----------
+        output_dir : str or pathlib.Path
+            The directory into which the archives will be written.
+        overwrite : bool, optional
+            Whether to overwrite existing archives at the same location.
+        session_kwargs
+            Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
+        Raises
+        -------
+        IOError
+            If ``output_dir`` exists and is not a directory.
+        """
+        output_dir = Path(output_dir)
+        if output_dir.exists() and not output_dir.is_dir():
+            raise IOError('output_dir must be a path to a local directory')
+
+        for collection in self.collections:
+            output_path = output_dir / f'{collection.id}.tar.gz'
+            collection.download(output_path, overwrite=overwrite, **session_kwargs)

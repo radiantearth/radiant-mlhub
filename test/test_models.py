@@ -17,7 +17,7 @@ class TestCollection:
         assert isinstance(collection, Collection)
         assert collection.description == 'BigEarthNet v1.0'
 
-    def test_get_collection_from_mlhub(self, bigearthnet_v1_source):
+    def test_fetch_collection(self, bigearthnet_v1_source):
         collection = Collection.fetch('bigearthnet_v1_source')
 
         assert isinstance(collection, Collection)
@@ -29,7 +29,8 @@ class TestCollection:
         with pytest.raises(NotImplementedError) as excinfo:
             collection.get_items()
 
-        assert 'For performance reasons, the get_items method has not been implemented for Collection instances.' == str(excinfo.value)
+        assert 'For performance reasons, the get_items method has not been implemented for Collection instances. Please ' \
+               'use the Collection.download method to download Collection assets.' == str(excinfo.value)
 
     def test_fetch_item(self, bigearthnet_v1_source, bigearthnet_v1_source_item):
         collection = Collection.fetch('bigearthnet_v1_source')
@@ -37,6 +38,12 @@ class TestCollection:
 
         assert isinstance(item, pystac.Item)
         assert len(item.assets) == 13
+
+    def test_download_archive(self, collection_archive, bigearthnet_v1_source, tmp_path):
+        collection = Collection.fetch('bigearthnet_v1_source')
+        collection.download(output_path=tmp_path / 'download.tar.gz')
+
+        assert (tmp_path / 'download.tar.gz').exists()
 
 
 class TestDataset:

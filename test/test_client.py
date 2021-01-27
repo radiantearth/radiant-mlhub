@@ -5,22 +5,6 @@ from radiant_mlhub.exceptions import MLHubException, EntityDoesNotExist
 
 class TestClient:
 
-    def test_list_collection_items(self, bigearthnet_v1_source_items):
-        items = list(radiant_mlhub.client.list_collection_items('bigearthnet_v1_source', limit=40))
-
-        assert len(items) == 40
-        assert 'assets' in items[0]
-        assert items[0]['id'] == 'bigearthnet_v1_source_S2A_MSIL2A_20180526T100031_65_62'
-
-    def test_get_collection_item(self, bigearthnet_v1_source_item):
-        item = radiant_mlhub.client.get_collection_item(
-            'bigearthnet_v1_source',
-            'bigearthnet_v1_source_S2A_MSIL2A_20180526T100031_65_62'
-        )
-
-        assert item['stac_extensions'] == ['eo']
-        assert item['id'] == 'bigearthnet_v1_source_S2A_MSIL2A_20180526T100031_65_62'
-
     @pytest.fixture
     def collection_does_not_exist(self, requests_mock):
         endpoint = 'https://api.radiant.earth/mlhub/v1/collections/no_collection'
@@ -74,16 +58,49 @@ class TestClient:
         with pytest.raises(EntityDoesNotExist) as excinfo:
             radiant_mlhub.client.get_collection('no_collection')
 
-        assert 'Entity with ID "no_collection" does not exist' in str(excinfo.value)
+        assert 'Collection "no_collection" does not exist.' == str(excinfo.value)
 
     def test_dataset_does_not_exist(self, dataset_does_not_exist):
         with pytest.raises(EntityDoesNotExist) as excinfo:
             radiant_mlhub.client.get_dataset('no_dataset')
 
-        assert 'Entity with ID "no_dataset" does not exist' in str(excinfo.value)
+        assert 'Dataset "no_dataset" does not exist.' == str(excinfo.value)
 
     def test_internal_server_error(self, internal_server_error):
         with pytest.raises(MLHubException) as excinfo:
             radiant_mlhub.client.get_collection('internal_error')
 
         assert 'Internal Server Error' in str(excinfo.value)
+
+    def test_list_collection_items(self, bigearthnet_v1_source_items):
+        items = list(radiant_mlhub.client.list_collection_items('bigearthnet_v1_source', limit=40))
+
+        assert len(items) == 40
+        assert 'assets' in items[0]
+        assert items[0]['id'] == 'bigearthnet_v1_source_S2A_MSIL2A_20180526T100031_65_62'
+
+    def test_get_collection_item(self, bigearthnet_v1_source_item):
+        item = radiant_mlhub.client.get_collection_item(
+            'bigearthnet_v1_source',
+            'bigearthnet_v1_source_S2A_MSIL2A_20180526T100031_65_62'
+        )
+
+        assert item['stac_extensions'] == ['eo']
+        assert item['id'] == 'bigearthnet_v1_source_S2A_MSIL2A_20180526T100031_65_62'
+
+    def test_download_archive(self, collection_archive, tmp_path):
+        radiant_mlhub.client.download_archive(collection_archive, output_path=tmp_path / 'download.tar.gz')
+
+        assert (tmp_path / 'download.tar.gz').exists()
+
+    def test_download_archive_no_bytes(self, collection_archive_no_bytes, tmp_path):
+        radiant_mlhub.client.download_archive(collection_archive_no_bytes, output_path=tmp_path / 'download.tar.gz')
+
+        assert (tmp_path / 'download.tar.gz').exists()
+
+    def test_download_archive_does_not_exist(self, archive_does_not_exist, tmp_path):
+        with pytest.raises(EntityDoesNotExist) as excinfo:
+            radiant_mlhub.client.download_archive(archive_does_not_exist, output_path=tmp_path / 'download.tar.gz')
+
+        assert f'Archive "{archive_does_not_exist}" does not exist and may still be generating. ' \
+               'Please try again later.' == str(excinfo.value)

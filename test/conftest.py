@@ -5,9 +5,9 @@ import json
 import pytest
 
 
-def read_data_file(file_name):
+def read_data_file(file_name, mode='r'):
     full_path = pathlib.Path(__file__).parent / 'data' / file_name
-    with full_path.open('r') as src:
+    with full_path.open(mode) as src:
         return src.read()
 
 
@@ -113,3 +113,179 @@ def mock_profile(monkeypatch, tmp_path):
         config.write(dst)
 
     yield config
+
+
+@pytest.fixture
+def collection_archive(requests_mock):
+    archive_id = 'bigearthnet_v1_source'
+    url = f'https://api.radiant.earth/mlhub/v1/archive/{archive_id}'
+
+    # Mock the initial endpoint
+    requests_mock.get(
+        url,
+        status_code=302,
+        headers={
+            'Content-Type': 'text/html; charset=utf-8',
+            'Content-Length': '343',
+            'Location': 'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz',
+        },
+        text='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">\n<title>Redirecting...</title>\n<h1>Redirecting...</h1>\n'
+             '<p>You should be redirected automatically to target URL: '
+             '<a href="https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz">'
+             'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz</a>.  If not click the link.'
+    )
+
+    # Mock the head requests
+    requests_mock.head(
+        url,
+        status_code=302,
+        headers={
+            'Content-Type': 'text/html; charset=utf-8',
+            'Content-Length': '343',
+            'Location': 'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz',
+        },
+        text=''
+    )
+    requests_mock.head(
+        'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz',
+        headers={
+            'Accept-Ranges': 'bytes',
+            'Content-Type': 'binary/octet-stream',
+            'Content-Length': '10000000'
+        },
+        text=''
+    )
+
+    # Mock the first byte range of the download content
+    content = read_data_file('bigearthnet_v1_source.first.tar.gz', 'rb')
+    requests_mock.get(
+        'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz',
+        status_code=200,
+        request_headers={
+          'Range': 'bytes=0-4999999'
+        },
+        headers={
+            'Accept-Ranges': 'bytes',
+            'Content-Type': 'binary/octet-stream',
+            'Content-Length': '5000000',
+        },
+        content=content
+    )
+
+    # Mock the second byte range of the download content
+    content = read_data_file('bigearthnet_v1_source.second.tar.gz', 'rb')
+    requests_mock.get(
+        'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz',
+        status_code=200,
+        request_headers={
+            'Range': 'bytes=5000000-9999999'
+        },
+        headers={
+            'Accept-Ranges': 'bytes',
+            'Content-Type': 'binary/octet-stream',
+            'Content-Length': '5000000',
+        },
+        content=content
+    )
+
+    yield archive_id
+
+
+@pytest.fixture
+def collection_archive_no_bytes(requests_mock):
+    archive_id = 'bigearthnet_v1_source'
+    url = f'https://api.radiant.earth/mlhub/v1/archive/{archive_id}'
+
+    # Mock the initial endpoint
+    requests_mock.get(
+        url,
+        status_code=302,
+        headers={
+            'Content-Type': 'text/html; charset=utf-8',
+            'Content-Length': '343',
+            'Location': 'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz',
+        },
+        text='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">\n<title>Redirecting...</title>\n<h1>Redirecting...</h1>\n'
+             '<p>You should be redirected automatically to target URL: '
+             '<a href="https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz">'
+             'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz</a>.  If not click the link.'
+    )
+
+    # Mock the head requests
+    requests_mock.head(
+        url,
+        status_code=302,
+        headers={
+            'Content-Type': 'text/html; charset=utf-8',
+            'Content-Length': '343',
+            'Location': 'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz',
+        },
+        text=''
+    )
+    requests_mock.head(
+        'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz',
+        headers={
+            'Content-Type': 'binary/octet-stream',
+            'Content-Length': '10000000'
+        },
+        text=''
+    )
+
+    # Mock the full download content
+    content = read_data_file('bigearthnet_v1_source.first.tar.gz', 'rb') + read_data_file('bigearthnet_v1_source.first.tar.gz', 'rb')
+    requests_mock.get(
+        'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz',
+        status_code=200,
+        headers={
+            'Content-Type': 'binary/octet-stream',
+            'Content-Length': '10000000',
+        },
+        content=content
+    )
+
+    yield archive_id
+
+
+@pytest.fixture
+def archive_does_not_exist(requests_mock):
+    archive_id = 'no_archive'
+    url = f'https://api.radiant.earth/mlhub/v1/archive/{archive_id}'
+
+    # Mock the initial endpoint
+    requests_mock.get(
+        url,
+        status_code=302,
+        headers={
+            'Content-Type': 'text/html; charset=utf-8',
+            'Content-Length': '343',
+            'Location': 'https://radiant-mlhub.s3.amazonaws.com/archives/bigearthnet_v1_source.tar.gz',
+        },
+        text='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">\n<title>Redirecting...</title>\n<h1>Redirecting...</h1>\n'
+             '<p>You should be redirected automatically to target URL: '
+             '<a href="https://radiant-mlhub.s3.amazonaws.com/archives/no_archive.tar.gz">'
+             'https://radiant-mlhub.s3.amazonaws.com/archives/no_archive.tar.gz</a>.  If not click the link.'
+    )
+
+    # Mock the head requests
+    requests_mock.head(
+        url,
+        status_code=302,
+        headers={
+            'Content-Type': 'text/html; charset=utf-8',
+            'Content-Length': '343',
+            'Location': 'https://radiant-mlhub.s3.amazonaws.com/archives/no_archive.tar.gz',
+        },
+        text=''
+    )
+    requests_mock.head(
+        'https://radiant-mlhub.s3.amazonaws.com/archives/no_archive.tar.gz',
+        status_code=404,
+        reason='Not Found',
+
+        headers={
+            'Content-Type': 'application/xml',
+        },
+        text=''
+    )
+
+    yield archive_id

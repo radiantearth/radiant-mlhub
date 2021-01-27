@@ -3,9 +3,10 @@ Getting Started
 
 This guide will walk you through the basic usage of the ``radiant_mlhub`` library, including:
 
-* Installing the library
-* Configuring the library
-* Making authenticated API requests
+* Installing & configuring the library
+* Discovering & fetching datasets
+* Discovering & fetching collections
+* Downloading assets
 
 Installation
 ++++++++++++
@@ -108,3 +109,16 @@ You can also list the collections by type using the ``collections.source`` and `
      'stac_version': '1.0.0-beta.2',
      'summaries': {},
      'title': None}
+
+Download a Collection Archive
++++++++++++++++++++++++++++++
+
+You can download all the assets associated with a collection using the :meth:`Collection.download <radiant_mlhub.models.Collection.download>`
+method. This method takes a full output path (including file name) where the archive should be saved on the local file system. If a file of
+the same name already exists it will raise an exception (unless you use ``overwrite=True``). Collection archives are gzipped tarballs.
+
+.. code-block:: python
+
+    >>> source_collection.download('~/Downloads/bigearthnet_v1_source.tar.gz')
+    28%|██▊       | 985.0/3496.9 [00:35<00:51, 48.31M/s]
+
