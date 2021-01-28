@@ -1,3 +1,20 @@
 [build-system]
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.tox]
+
+legacy_tox_ini = """
+[tox]
+envlist = py36, py37, py38, py39
+
+[testenv]
+deps = -rrequirements_testing.txt
+isolated_build = true
+commands =
+    pytest
+    flake8
+    flake8_nb examples/
+    mypy radiant_mlhub
+
+"""

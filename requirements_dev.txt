@@ -1,0 +1,4 @@
+bump2version~=0.5.8
+tox~=3.21.0
+jupyter~=1.0.0
+-r requirements_docs.txt

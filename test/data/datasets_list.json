@@ -1,0 +1,463 @@
+[
+    {
+        "collections": [
+            {
+                "id": "bigearthnet_v1_source",
+                "types": [
+                    "source_imagery"
+                ]
+            },
+            {
+                "id": "bigearthnet_v1_labels",
+                "types": [
+                    "labels"
+                ]
+            }
+        ],
+        "id": "bigearthnet_v1",
+        "title": "BigEarthNet"
+    },
+    {
+        "collections": [
+            {
+                "id": "microsoft_chesapeake_naip",
+                "types": [
+                    "source_imagery"
+                ]
+            },
+            {
+                "id": "microsoft_chesapeake_nlcd",
+                "types": [
+                    "labels"
+                ]
+            },
+            {
+                "id": "microsoft_chesapeake_lc",
+                "types": [
+                    "labels"
+                ]
+            },
+            {
+                "id": "microsoft_chesapeake_landsat_leaf_on",
+                "types": [
+                    "source_imagery"
+                ]
+            },
+            {
+                "id": "microsoft_chesapeake_landsat_leaf_off",
+                "types": [
+                    "source_imagery"
+                ]
+            },
+            {
+                "id": "microsoft_chesapeake_buildings",
+                "types": [
+                    "labels"
+                ]
+            }
+        ],
+        "id": "microsoft_chesapeake",
+        "title": "Chesapeake Land Cover"
+    },
+    {
+        "collections": [
+            {
+                "id": "ref_african_crops_kenya_02_labels",
+                "types": [
+                    "labels"
+                ]
+            },
+            {
+                "id": "ref_african_crops_kenya_02_source",
+                "types": [
+                    "source_imagery"
+                ]
+            }
+        ],
+        "id": "ref_african_crops_kenya_02",
+        "title": "CV4A Kenya Crop Type Competition"
+    },
+    {
+        "collections": [
+            {
+                "id": "ref_african_crops_uganda_01_labels",
+                "types": [
+                    "labels"
+                ]
+            },
+            {
+                "id": "ref_african_crops_uganda_01_source",
+                "types": [
+                    "source_imagery"
+                ]
+            }
+        ],
+        "id": "ref_african_crops_uganda_01",
+        "title": "Dalberg Data Insights Crop Type Uganda"
+    },
+    {
+        "collections": [
+            {
+                "id": "ref_african_crops_tanzania_01_labels",
+                "types": [
+                    "labels"
+                ]
+            },
+            {
+                "id": "ref_african_crops_tanzania_01_source",
+                "types": [
+                    "source_imagery"
+                ]
+            }
+        ],
+        "id": "ref_african_crops_tanzania_01",
+        "title": "Great African Food Company Crop Type Tanzania"
+    },
+    {
+        "collections": [
+            {
+                "id": "ref_landcovernet_v1_source",
+                "types": [
+                    "source_imagery"
+                ]
+            },
+            {
+                "id": "ref_landcovernet_v1_labels",
+                "types": [
+                    "labels"
+                ]
+            }
+        ],
+        "id": "landcovernet_v1",
+        "title": "LandCoverNet"
+    },
+    {
+        "collections": [
+            {
+                "id": "open_cities_ai_challenge_test",
+                "types": [
+                    "source_imagery"
+                ]
+            },
+            {
+                "id": "open_cities_ai_challenge_train_tier_1_labels",
+                "types": [
+                    "labels"
+                ]
+            },
+            {
+                "id": "open_cities_ai_challenge_train_tier_1_source",
+                "types": [
+                    "source_imagery"
+                ]
+            },
+            {
+                "id": "open_cities_ai_challenge_train_tier_2_labels",
+                "types": [
+                    "labels"
+                ]
+            },
+            {
+                "id": "open_cities_ai_challenge_train_tier_2_source",
+                "types": [
+                    "source_imagery"
+                ]
+            }
+        ],
+        "id": "open_cities_ai_challenge",
+        "title": "Open Cities AI Challenge"
+    },
+    {
+        "collections": [
+            {
+                "id": "ref_african_crops_kenya_01_labels",
+                "types": [
+                    "labels"
+                ]
+            },
+            {
+                "id": "ref_african_crops_kenya_01_source",
+                "types": [
+                    "source_imagery"
+                ]
+            }
+        ],
+        "id": "ref_african_crops_kenya_01",
+        "title": "PlantVillage Crop Type Kenya"
+    },
+    {
+        "collections": [
+            {
+                "id": "su_african_crops_ghana_labels",
+                "types": [
+                    "labels"
+                ]
+            },
+            {
+                "id": "su_african_crops_ghana_source_planet",
+                "types": [
+                    "source_imagery"
+                ]
+            },
+            {
+                "id": "su_african_crops_ghana_source_s1",
+                "types": [
+                    "source_imagery"
+                ]
+            },
+            {
+                "id": "su_african_crops_ghana_source_s2",
+                "types": [
+                    "source_imagery"
+                ]
+            }
+        ],
+        "id": "su_african_crops_ghana",
+        "title": "Semantic Segmentation of Crop Type in Ghana"
+    },
+    {
+        "collections": [
+            {
+                "id": "su_african_crops_south_sudan_labels",
+                "types": [
+                    "labels"
+                ]
+            },
+            {
+                "id": "su_african_crops_south_sudan_source_planet",
+                "types": [
+                    "source_imagery"
+                ]
+            },
+            {
+                "id": "su_african_crops_south_sudan_source_s1",
+                "types": [
+                    "source_imagery"
+                ]
+            },
+            {
+                "id": "su_african_crops_south_sudan_source_s2",
+                "types": [
+                    "source_imagery"
+                ]
+            }
+        ],
+        "id": "su_african_crops_south_sudan",
+        "title": "Semantic Segmentation of Crop Type in South Sudan"
+    },
+    {
+        "collections": [
+            {
+                "id": "sn1_AOI_1_RIO",
+                "types": [
+                    "source_imagery",
+                    "labels"
+                ]
+            }
+        ],
+        "id": "spacenet1",
+        "title": "Spacenet 1"
+    },
+    {
+        "collections": [
+            {
+                "id": "sn2_AOI_3_Paris",
+                "types": [
+                    "source_imagery",
+                    "labels"
+                ]
+            },
+            {
+                "id": "sn2_AOI_2_Vegas",
+                "types": [
+                    "source_imagery",
+                    "labels"
+                ]
+            },
+            {
+                "id": "sn2_AOI_4_Shanghai",
+                "types": [
+                    "source_imagery",
+                    "labels"
+                ]
+            },
+            {
+                "id": "sn2_AOI_5_Khartoum",
+                "types": [
+                    "source_imagery",
+                    "labels"
+                ]
+            }
+        ],
+        "id": "spacenet2",
+        "title": "Spacenet 2"
+    },
+    {
+        "collections": [
+            {
+                "id": "sn3_AOI_3_Paris",
+                "types": [
+                    "source_imagery",
+                    "labels"
+                ]
+            },
+            {
+                "id": "sn3_AOI_2_Vegas",
+                "types": [
+                    "source_imagery",
+                    "labels"
+                ]
+            },
+            {
+                "id": "sn3_AOI_3_Paris",
+                "types": [
+                    "source_imagery",
+                    "labels"
+                ]
+            },
+            {
+                "id": "sn3_AOI_3_Paris",
+                "types": [
+                    "source_imagery",
+                    "labels"
+                ]
+            },
+            {
+                "id": "sn3_AOI_3_Paris",
+                "types": [
+                    "source_imagery",
+                    "labels"
+                ]
+            },
+            {
+                "id": "sn3_AOI_2_Vegas",
+                "types": [
+                    "source_imagery",
+                    "labels"
+                ]
+            },
+            {
+                "id": "sn3_AOI_4_Shanghai",
+                "types": [
+                    "source_imagery",
+                    "labels"
+                ]
+            },
+            {
+                "id": "sn3_AOI_5_Khartoum",
+                "types": [
+                    "source_imagery",
+                    "labels"
+                ]
+            }
+        ],
+        "id": "spacenet3",
+        "title": "Spacenet 3"
+    },
+    {
+        "collections": [
+            {
+                "id": "sn4_AOI_6_Atlanta",
+                "types": [
+                    "source_imagery",
+                    "labels"
+                ]
+            }
+        ],
+        "id": "spacenet4",
+        "title": "Spacenet 4"
+    },
+    {
+        "collections": [
+            {
+                "id": "sn5_AOI_7_Moscow",
+                "types": [
+                    "source_imagery",
+                    "labels"
+                ]
+            },
+            {
+                "id": "sn5_AOI_8_Mumbai",
+                "types": [
+                    "source_imagery",
+                    "labels"
+                ]
+            }
+        ],
+        "id": "spacenet5",
+        "title": "Spacenet 5"
+    },
+    {
+        "collections": [
+            {
+                "id": "sn6_AOI_11_Rotterdam",
+                "types": [
+                    "source_imagery",
+                    "labels"
+                ]
+            }
+        ],
+        "id": "spacenet6",
+        "title": "Spacenet 6"
+    },
+    {
+        "collections": [
+            {
+                "id": "sn7_train_source",
+                "types": [
+                    "source_imagery"
+                ]
+            },
+            {
+                "id": "sn7_train_labels",
+                "types": [
+                    "labels"
+                ]
+            },
+            {
+                "id": "sn7_test_source",
+                "types": [
+                    "source_imagery"
+                ]
+            }
+        ],
+        "id": "spacenet7",
+        "title": "Spacenet 7"
+    },
+    {
+        "collections": [
+            {
+                "id": "nasa_tropical_storm_competition_train_labels",
+                "types": [
+                    "labels"
+                ]
+            },
+            {
+                "id": "nasa_tropical_storm_competition_train_source",
+                "types": [
+                    "source_imagery"
+                ]
+            },
+            {
+                "id": "nasa_tropical_storm_competition_test_source",
+                "types": [
+                    "source_imagery"
+                ]
+            }
+        ],
+        "id": "nasa_tropical_storm_competition",
+        "title": "Tropical Cyclone Wind Estimation Competition"
+    },
+    {
+        "collections": [
+            {
+                "id": "su_sar_moisture_content",
+                "types": [
+                    "labels"
+                ]
+            }
+        ],
+        "id": "su_sar_moisture_content_main",
+        "title": "Western USA Live Fuel Moisture"
+    }
+]
