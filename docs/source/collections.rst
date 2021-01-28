@@ -16,7 +16,7 @@ Discovering Collections
 
 The Radiant MLHub ``/collections`` endpoint returns a list of objects describing the available collections. You can use the low-level
 :func:`~radiant_mlhub.client.list_collections` function to work with these responses as native Python data types (:class:`list`
-and :class:`dict`). This function is a generator that yields a :class:`dict` for each collection.
+and :class:`dict`). This function returns a list of JSON-like dictionaries representing STAC Collections.
 
 .. code-block:: python
 

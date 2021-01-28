@@ -1,3 +1,5 @@
+import os
+
 import pytest
 import radiant_mlhub.client
 from radiant_mlhub.exceptions import MLHubException, EntityDoesNotExist
@@ -89,7 +91,11 @@ class TestClient:
         assert item['id'] == 'bigearthnet_v1_source_S2A_MSIL2A_20180526T100031_65_62'
 
     def test_download_archive(self, collection_archive, tmp_path):
-        radiant_mlhub.client.download_archive(collection_archive, output_dir=tmp_path)
+        # Set CWD to temp path
+        os.chdir(tmp_path)
+
+        # Let output_dir default to CWD
+        radiant_mlhub.client.download_archive(collection_archive)
 
         assert (tmp_path / 'bigearthnet_v1_source.tar.gz').exists()
 
