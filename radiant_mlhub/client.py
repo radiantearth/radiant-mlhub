@@ -8,7 +8,12 @@ from functools import partial
 import urllib.parse
 
 from requests.exceptions import HTTPError
-from tqdm import tqdm
+
+try:
+    from tqdm.auto import tqdm
+except ImportError:  # pragma: no cover
+    # Handles this issue: https://github.com/tqdm/tqdm/issues/1082
+    from tqdm import tqdm  # type: ignore [no-redef]
 
 from .session import get_session
 from .exceptions import EntityDoesNotExist, MLHubException
