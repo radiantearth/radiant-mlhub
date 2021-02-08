@@ -25,7 +25,7 @@ def _download(
         overwrite: bool = False,
         chunk_size=5000000,
         **session_kwargs
-):
+) -> Path:
     """Internal function used to parallelize downloads from a given URL.
 
     Parameters
@@ -41,6 +41,11 @@ def _download(
         The size of byte range for each concurrent request.
     session_kwargs
         Keyword arguments passed directly to ``get_session``
+
+    Returns
+    -------
+    output_path : Path
+        The path to the downloaded file.
 
     Raises
     ------
@@ -104,6 +109,8 @@ def _download(
                     for chunk in r.iter_content(chunk_size=chunk_size):
                         dst.write(chunk)
                         pbar.update(round(chunk_size / 1000000., 1))
+
+    return output_path
 
 
 def list_datasets(**session_kwargs) -> List[dict]:
@@ -282,7 +289,7 @@ def get_collection_item(collection_id: str, item_id: str, **session_kwargs) -> d
     raise MLHubException(f'An unknown error occurred: {response.status_code} ({response.reason})')
 
 
-def download_archive(archive_id: str, output_dir: Path = None, *, overwrite: bool = False, **session_kwargs):
+def download_archive(archive_id: str, output_dir: Path = None, *, overwrite: bool = False, **session_kwargs) -> Path:
     """Downloads the archive with the given ID to an output location (current working directory by default).
 
     Parameters
@@ -296,6 +303,11 @@ def download_archive(archive_id: str, output_dir: Path = None, *, overwrite: boo
     **session_kwargs
         Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
 
+    Returns
+    -------
+    output_path : Path
+        The path to the downloaded archive file.
+
     Raises
     ------
     FileExistsError
@@ -304,7 +316,7 @@ def download_archive(archive_id: str, output_dir: Path = None, *, overwrite: boo
     output_dir = output_dir if output_dir is not None else Path.cwd()
 
     try:
-        _download(f'archive/{archive_id}', output_dir=output_dir, overwrite=overwrite, **session_kwargs)
+        return _download(f'archive/{archive_id}', output_dir=output_dir, overwrite=overwrite, **session_kwargs)
     except HTTPError as e:
         if e.response.status_code != 404:
             raise

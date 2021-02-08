@@ -114,3 +114,18 @@ details on how to work with these instances.
     Both the low-level client functions and the class methods also accept keyword arguments that are passed directly to
     :func:`~radiant_mlhub.session.get_session` to create a session. See the :ref:`Authentication` documentation for details on how to
     use these arguments or configure the client to read your API key automatically.
+
+Downloading a Dataset
+++++++++++++++++++++++++
+
+The Radiant MLHub ``/archive/{archive_id}`` endpoint allows you to download an archive of all assets associated with a given collection.
+The :meth:`Dataset.download <radiant_mlhub.models.Dataset.download>` method provides a convenient way of using this endpoint to download
+the archives for all collections associated with a given dataset. This method downloads the archives for all associated collections
+into the given output directory and returns a list of the paths to these archives.
+
+.. code-block:: python
+
+    >>> dataset = Collection.fetch('bigearthnet_v1')
+    >>> archive_paths = dataset.download('~/Downloads')  # Will overwrite an existing file of the same name
+    >>> len(archive_paths)
+    2

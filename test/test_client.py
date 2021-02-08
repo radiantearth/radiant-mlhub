@@ -95,9 +95,10 @@ class TestClient:
         os.chdir(tmp_path)
 
         # Let output_dir default to CWD
-        radiant_mlhub.client.download_archive(collection_archive)
+        output_path = radiant_mlhub.client.download_archive(collection_archive)
 
-        assert (tmp_path / 'bigearthnet_v1_source.tar.gz').exists()
+        assert output_path == tmp_path / 'bigearthnet_v1_source.tar.gz'
+        assert output_path.exists()
 
     def test_download_archive_no_bytes(self, collection_archive_no_bytes, tmp_path):
         radiant_mlhub.client.download_archive(collection_archive_no_bytes, output_dir=tmp_path)
