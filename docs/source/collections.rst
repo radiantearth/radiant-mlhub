@@ -127,3 +127,6 @@ method. This is the recommended way of downloading an archive.
     28%|██▊       | 985.0/3496.9 [00:35<00:51, 48.31M/s]
     >>> archive_path
     PosixPath('/Users/someuser/Downloads/sn1_AOI_1_RIO.tar.gz')
+
+You can read more about the structure of these archives in `this Medium post
+<https://medium.com/radiant-earth-insights/archived-training-dataset-downloads-now-available-on-radiant-mlhub-7eb67daf094e>`_.

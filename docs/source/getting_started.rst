@@ -123,3 +123,5 @@ raised). Collection archives are gzipped tarballs.
     >>> source_collection.download('~/Downloads')
     28%|██▊       | 985.0/3496.9 [00:35<00:51, 48.31M/s]
 
+You can read more about the structure of these archives in `this Medium post
+<https://medium.com/radiant-earth-insights/archived-training-dataset-downloads-now-available-on-radiant-mlhub-7eb67daf094e>`_.

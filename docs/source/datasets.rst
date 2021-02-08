@@ -129,3 +129,6 @@ into the given output directory and returns a list of the paths to these archive
     >>> archive_paths = dataset.download('~/Downloads')
     >>> len(archive_paths)
     2
+
+You can read more about the structure of these archives in `this Medium post
+<https://medium.com/radiant-earth-insights/archived-training-dataset-downloads-now-available-on-radiant-mlhub-7eb67daf094e>`_.
