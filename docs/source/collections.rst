@@ -123,7 +123,7 @@ method. This is the recommended way of downloading an archive.
 .. code-block:: python
 
     >>> collection = Collection.fetch('sn1_AOI_1_RIO')
-    >>> archive_path = collection.download('~/Downloads', overwrite=True)  # Will overwrite an existing file of the same name
+    >>> archive_path = collection.download('~/Downloads', exist_okay=False)  # Will raise exception if the file already exists
     28%|██▊       | 985.0/3496.9 [00:35<00:51, 48.31M/s]
     >>> archive_path
     PosixPath('/Users/someuser/Downloads/sn1_AOI_1_RIO.tar.gz')

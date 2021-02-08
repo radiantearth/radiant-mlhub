@@ -39,7 +39,7 @@ class TestCollection:
         assert isinstance(item, pystac.Item)
         assert len(item.assets) == 13
 
-    def test_download_archive(self, collection_archive, bigearthnet_v1_source, tmp_path):
+    def test_download_archive(self, source_collection_archive, bigearthnet_v1_source, tmp_path):
         collection = Collection.fetch('bigearthnet_v1_source')
         output_path = collection.download(output_dir=tmp_path)
 

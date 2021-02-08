@@ -90,12 +90,12 @@ class TestClient:
         assert item['stac_extensions'] == ['eo']
         assert item['id'] == 'bigearthnet_v1_source_S2A_MSIL2A_20180526T100031_65_62'
 
-    def test_download_archive(self, collection_archive, tmp_path):
+    def test_download_archive(self, source_collection_archive, tmp_path):
         # Set CWD to temp path
         os.chdir(tmp_path)
 
         # Let output_dir default to CWD
-        output_path = radiant_mlhub.client.download_archive(collection_archive)
+        output_path = radiant_mlhub.client.download_archive(source_collection_archive)
 
         assert output_path == tmp_path / 'bigearthnet_v1_source.tar.gz'
         assert output_path.exists()
@@ -111,3 +111,22 @@ class TestClient:
 
         assert f'Archive "{archive_does_not_exist}" does not exist and may still be generating. ' \
                'Please try again later.' == str(excinfo.value)
+
+    def test_download_exists(self, source_collection_archive, tmp_path):
+        expected_output_path = tmp_path / f'{source_collection_archive}.tar.gz'
+        expected_output_path.touch(exist_ok=True)
+        original_size = expected_output_path.stat().st_size
+
+        # Test exist_okay True / no overwrite (default)
+        output_path = radiant_mlhub.client.download_archive(source_collection_archive, output_dir=tmp_path)
+        assert output_path.stat().st_size == original_size
+
+        # Test overwrite
+        output_path = radiant_mlhub.client.download_archive(source_collection_archive, overwrite=True)
+        assert output_path.stat().st_size > original_size
+
+        # Test error
+        with pytest.raises(FileExistsError):
+            radiant_mlhub.client.download_archive(source_collection_archive, exist_okay=False)
+
+

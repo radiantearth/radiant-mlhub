@@ -116,7 +116,7 @@ def mock_profile(monkeypatch, tmp_path):
 
 
 @pytest.fixture
-def collection_archive(requests_mock):
+def source_collection_archive(requests_mock):
     archive_id = 'bigearthnet_v1_source'
     url = f'https://api.radiant.earth/mlhub/v1/archive/{archive_id}'
 

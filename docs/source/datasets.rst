@@ -126,6 +126,6 @@ into the given output directory and returns a list of the paths to these archive
 .. code-block:: python
 
     >>> dataset = Collection.fetch('bigearthnet_v1')
-    >>> archive_paths = dataset.download('~/Downloads')  # Will overwrite an existing file of the same name
+    >>> archive_paths = dataset.download('~/Downloads')
     >>> len(archive_paths)
     2
