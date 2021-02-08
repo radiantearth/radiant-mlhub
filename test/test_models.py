@@ -67,3 +67,17 @@ class TestDataset:
         assert len(dataset.collections.labels) == 1
         assert all(isinstance(c, Collection) for c in dataset.collections)
         assert dataset.collections[0] in dataset.collections.source_imagery
+
+    def test_download_collection_archives(
+            self,
+            bigearthnet_v1_dataset,
+            bigearthnet_v1_source,
+            bigearthnet_v1_labels,
+            source_collection_archive,
+            labels_collection_archive,
+            tmp_path,
+    ):
+        dataset = Dataset.fetch('bigearthnet_v1')
+        output_paths = dataset.download(output_dir=tmp_path)
+
+        assert all(p.exists() for p in output_paths)

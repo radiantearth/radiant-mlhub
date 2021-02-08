@@ -128,5 +128,3 @@ class TestClient:
         # Test error
         with pytest.raises(FileExistsError):
             radiant_mlhub.client.download_archive(source_collection_archive, exist_okay=False)
-
-
