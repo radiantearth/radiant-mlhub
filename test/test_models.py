@@ -39,11 +39,12 @@ class TestCollection:
         assert isinstance(item, pystac.Item)
         assert len(item.assets) == 13
 
-    def test_download_archive(self, collection_archive, bigearthnet_v1_source, tmp_path):
+    def test_download_archive(self, source_collection_archive, bigearthnet_v1_source, tmp_path):
         collection = Collection.fetch('bigearthnet_v1_source')
-        collection.download(output_dir=tmp_path)
+        output_path = collection.download(output_dir=tmp_path)
 
-        assert (tmp_path / 'bigearthnet_v1_source.tar.gz').exists()
+        assert output_path == tmp_path / 'bigearthnet_v1_source.tar.gz'
+        assert output_path.exists()
 
 
 class TestDataset:
@@ -66,3 +67,17 @@ class TestDataset:
         assert len(dataset.collections.labels) == 1
         assert all(isinstance(c, Collection) for c in dataset.collections)
         assert dataset.collections[0] in dataset.collections.source_imagery
+
+    def test_download_collection_archives(
+            self,
+            bigearthnet_v1_dataset,
+            bigearthnet_v1_source,
+            bigearthnet_v1_labels,
+            source_collection_archive,
+            labels_collection_archive,
+            tmp_path,
+    ):
+        dataset = Dataset.fetch('bigearthnet_v1')
+        output_paths = dataset.download(output_dir=tmp_path)
+
+        assert all(p.exists() for p in output_paths)

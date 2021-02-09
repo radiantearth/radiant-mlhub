@@ -8,7 +8,12 @@ from functools import partial
 import urllib.parse
 
 from requests.exceptions import HTTPError
-from tqdm import tqdm
+
+try:
+    from tqdm.auto import tqdm
+except ImportError:  # pragma: no cover
+    # Handles this issue: https://github.com/tqdm/tqdm/issues/1082
+    from tqdm import tqdm  # type: ignore [no-redef]
 
 from .session import get_session
 from .exceptions import EntityDoesNotExist, MLHubException
@@ -17,10 +22,12 @@ from .exceptions import EntityDoesNotExist, MLHubException
 def _download(
         url: str,
         output_dir: Path,
+        *,
         overwrite: bool = False,
+        exist_okay: bool = True,
         chunk_size=5000000,
         **session_kwargs
-):
+) -> Path:
     """Internal function used to parallelize downloads from a given URL.
 
     Parameters
@@ -31,16 +38,24 @@ def _download(
         Path to a local directory to which the file will be downloaded. File name will be generated
         automatically based on the download URL.
     overwrite : bool, optional
-        Whether to overwrite an existing file at ``output_path``. Defaults to ``False``.
+        Whether to overwrite an existing file at the same output location. Defaults to ``False``.
+    exist_okay : bool, optional
+        If ``True`` then the download will be skipped if an existing file of the same name is found, otherwise raises
+        a :exc:`FileExistsError` exception. Defaults to ``True``.
     chunk_size : int, optional
         The size of byte range for each concurrent request.
     session_kwargs
         Keyword arguments passed directly to ``get_session``
 
+    Returns
+    -------
+    output_path : Path
+        The path to the downloaded file.
+
     Raises
     ------
     FileExistsError
-        If file of the same name already exists in ``output_dir`` and ``overwrite==False``.
+        If file of the same name already exists in ``output_dir`` and ``exist_okay=False``.
     """
 
     def _get_ranges(total_size, interval):
@@ -74,8 +89,12 @@ def _download(
     output_path = output_dir / output_file_name
 
     # Check for existing output file
-    if output_path.exists() and not overwrite:
-        raise FileExistsError(f'File {output_path} already exists. Use overwrite=True to overwrite this file.')
+    if output_path.exists():
+        if exist_okay and not overwrite:
+            return output_path
+        elif not overwrite:
+            raise FileExistsError(f'File {output_path} already exists and exist_okay=False. '
+                                  f'Use exist_okay=True to skip downloading this file, or remove the existing file.')
 
     # Create the parent directory, if it does not exist
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -99,6 +118,8 @@ def _download(
                     for chunk in r.iter_content(chunk_size=chunk_size):
                         dst.write(chunk)
                         pbar.update(round(chunk_size / 1000000., 1))
+
+    return output_path
 
 
 def list_datasets(**session_kwargs) -> List[dict]:
@@ -277,7 +298,14 @@ def get_collection_item(collection_id: str, item_id: str, **session_kwargs) -> d
     raise MLHubException(f'An unknown error occurred: {response.status_code} ({response.reason})')
 
 
-def download_archive(archive_id: str, output_dir: Path = None, *, overwrite: bool = False, **session_kwargs):
+def download_archive(
+        archive_id: str,
+        output_dir: Path = None,
+        *,
+        overwrite: bool = False,
+        exist_okay: bool = True,
+        **session_kwargs
+) -> Path:
     """Downloads the archive with the given ID to an output location (current working directory by default).
 
     Parameters
@@ -287,19 +315,27 @@ def download_archive(archive_id: str, output_dir: Path = None, *, overwrite: boo
     output_dir : Path
         Path to which the archive will be downloaded. Defaults to the current working directory.
     overwrite : bool, optional
-        Whether to overwrite an existing file of the same name. Defaults to ``False``.
+        Whether to overwrite an existing archive at the same location. Defaults to ``False``.
+    exist_okay : bool, optional
+        If ``True`` then the download will be skipped if an existing file of the same name is found, otherwise raises
+        a :exc:`FileExistsError` exception. Defaults to ``True``.
     **session_kwargs
         Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
+    Returns
+    -------
+    output_path : Path
+        The path to the downloaded archive file.
 
     Raises
     ------
     FileExistsError
-        If file at ``output_path`` already exists and ``overwrite==False``.
+        If file at ``output_path`` already exists and both ``exist_okay`` and ``overwrite`` are ``False``.
     """
     output_dir = output_dir if output_dir is not None else Path.cwd()
 
     try:
-        _download(f'archive/{archive_id}', output_dir=output_dir, overwrite=overwrite, **session_kwargs)
+        return _download(f'archive/{archive_id}', output_dir=output_dir, overwrite=overwrite, exist_okay=exist_okay, **session_kwargs)
     except HTTPError as e:
         if e.response.status_code != 404:
             raise

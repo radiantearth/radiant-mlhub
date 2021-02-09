@@ -129,7 +129,7 @@ class Collection(pystac.Collection):
         response = client.get_collection_item(self.id, item_id)
         return pystac.Item.from_dict(response)
 
-    def download(self, output_dir: Path, overwrite: bool = False, **session_kwargs):
+    def download(self, output_dir: Path, *, overwrite: bool = False, exist_okay: bool = True, **session_kwargs) -> Path:
         """Downloads the archive for this collection to an output location (current working directory by default). If the parent directories
         for ``output_path`` do not exist, they will be created.
 
@@ -143,16 +143,23 @@ class Collection(pystac.Collection):
             Path to a local directory to which the file will be downloaded. File name will be generated
             automatically based on the download URL.
         overwrite : bool, optional
-            Whether to overwrite an existing file of the same name. Defaults to ``False``.
+            Whether to overwrite an existing archive at the same location. Defaults to ``False``.
+        exist_okay : bool, optional
+            If ``True``, then the download will be skipped if an existing file of the same name is found.
         **session_kwargs
             Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
+        Returns
+        -------
+        output_path : pathlib.Path
+            The path to the downloaded archive file.
 
         Raises
         ------
         FileExistsError
-            If file at ``output_path`` already exists and ``overwrite=False``.
+            If file at ``output_path`` already exists and both ``exist_okay`` and ``overwrite`` are ``False``.
         """
-        client.download_archive(self.id, output_dir=output_dir, overwrite=overwrite, **session_kwargs)
+        return client.download_archive(self.id, output_dir=output_dir, overwrite=overwrite, exist_okay=exist_okay, **session_kwargs)
 
 
 class CollectionType(Enum):
@@ -306,7 +313,7 @@ class Dataset:
         """
         return cls(**client.get_dataset(dataset_id, **session_kwargs))
 
-    def download(self, output_dir: Union[Path, str], *, overwrite: bool = False, **session_kwargs):
+    def download(self, output_dir: Union[Path, str], *, overwrite: bool = False, exist_okay: bool = True, **session_kwargs) -> List[Path]:
         """Downloads archives for all collections associated with this dataset to given directory. Each archive will be named using the
         collection ID (e.g. some_collection.tar.gz). If ``output_dir`` does not exist, it will be created.
 
@@ -319,19 +326,30 @@ class Dataset:
         output_dir : str or pathlib.Path
             The directory into which the archives will be written.
         overwrite : bool, optional
-            Whether to overwrite existing archives at the same location.
+            Whether to overwrite any existing archives in ``output_dir``. Defaults to ``False``.
+        exist_okay : bool, optional
+            If ``True`` then the download will be skipped if an existing file of the same name is found, otherwise raises
+            a :exc:`FileExistsError` exception. Defaults to ``True``.
         session_kwargs
             Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
+        Returns
+        -------
+        output_paths : List[pathlib.Path]
+            List of paths to the downloaded archives
 
         Raises
         -------
         IOError
             If ``output_dir`` exists and is not a directory.
+        FileExistsError
+            If one of the archive files already exists in the ``output_dir`` and both ``exist_okay`` and ``overwrite`` are ``False``.
         """
         output_dir = Path(output_dir)
         if output_dir.exists() and not output_dir.is_dir():
             raise IOError('output_dir must be a path to a local directory')
 
-        for collection in self.collections:
-            output_path = output_dir / f'{collection.id}.tar.gz'
-            collection.download(output_path, overwrite=overwrite, **session_kwargs)
+        return [
+            collection.download(output_dir, overwrite=overwrite, exist_okay=exist_okay, **session_kwargs)
+            for collection in self.collections
+        ]
