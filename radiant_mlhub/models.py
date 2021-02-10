@@ -345,10 +345,6 @@ class Dataset:
         FileExistsError
             If one of the archive files already exists in the ``output_dir`` and both ``exist_okay`` and ``overwrite`` are ``False``.
         """
-        output_dir = Path(output_dir)
-        if output_dir.exists() and not output_dir.is_dir():
-            raise IOError('output_dir must be a path to a local directory')
-
         return [
             collection.download(output_dir, overwrite=overwrite, exist_okay=exist_okay, **session_kwargs)
             for collection in self.collections

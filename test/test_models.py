@@ -81,3 +81,7 @@ class TestDataset:
         output_paths = dataset.download(output_dir=tmp_path)
 
         assert all(p.exists() for p in output_paths)
+
+    def test_collections_list(self, dataset, source_collection, labels_collection):
+        dataset_ = Dataset.fetch(dataset)
+        assert dataset_.collections.__repr__() == '[<Collection id=bigearthnet_v1_source>, <Collection id=bigearthnet_v1_labels>]'
