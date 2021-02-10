@@ -157,6 +157,13 @@ class TestClient:
         # Ensure this is being caught as a generic MLHubException and not the EntityDoesNotExist exception
         assert excinfo.type is not EntityDoesNotExist
 
+        # Test error if file path is provided
+        tmp_file = tmp_path / 'test.txt'
+        tmp_file.touch()
+
+        with pytest.raises(ValueError):
+            radiant_mlhub.client.download_archive(archive_id, output_dir=tmp_file)
+
     def test_download_exists(self, source_collection_archive, tmp_path):
         expected_output_path = tmp_path / f'{source_collection_archive}.tar.gz'
         expected_output_path.touch(exist_ok=True)

@@ -72,6 +72,13 @@ def _download(
         """Internal function for fetching a byte range from the url."""
         return session.get(url_, headers={'Range': f'bytes={range_}'}).content
 
+    # Resolve user directory shortcuts and relative paths
+    output_dir = Path(output_dir).expanduser().resolve()
+
+    # If the path exists, make sure it is a directory
+    if output_dir.exists() and not output_dir.is_dir():
+        raise ValueError('output_dir must be a path to a directory')
+    
     # Create a session
     session = get_session(**session_kwargs)
 
@@ -80,9 +87,6 @@ def _download(
     r.raise_for_status()
     content_length = int(r.headers['Content-Length'])
     download_url = r.url
-
-    # Resolve user directory shortcuts and relative paths
-    output_dir = Path(output_dir).expanduser().resolve()
 
     # Get the full file path
     output_file_name = urllib.parse.urlsplit(download_url).path.rsplit('/', 1)[1]
