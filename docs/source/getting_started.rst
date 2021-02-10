@@ -73,13 +73,14 @@ To list all the collections associated with a dataset use the :attr:`~radiant_ml
     >>> type(dataset.collections[0])
     <class 'radiant_mlhub.models.Collection'>
 
-You can also list the collections by type using the ``collections.source`` and ``collections.labels`` properties
+You can also list the collections by type using the ``collections.source_imagery`` and ``collections.labels`` properties
 
 .. code-block:: python
 
-    >>> len(dataset.collections.source)
+    >>> import pprint
+    >>> len(dataset.collections.source_imagery)
     1
-    >>> source_collection = datasets.collections.source[0]
+    >>> source_collection = dataset.collections.source_imagery[0]
     >>> pprint(source_collection)
     {'description': 'BigEarthNet v1.0',
      'extent': {'spatial': {'bbox': [[-9.00023345437725,
