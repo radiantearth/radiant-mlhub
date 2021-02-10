@@ -74,14 +74,14 @@ class TestClient:
 
         assert 'Internal Server Error' in str(excinfo.value)
 
-    def test_list_collection_items(self, bigearthnet_v1_source_items):
+    def test_list_collection_items(self, source_collection_items):
         items = list(radiant_mlhub.client.list_collection_items('bigearthnet_v1_source', limit=40))
 
         assert len(items) == 40
         assert 'assets' in items[0]
         assert items[0]['id'] == 'bigearthnet_v1_source_S2A_MSIL2A_20180526T100031_65_62'
 
-    def test_get_collection_item(self, bigearthnet_v1_source_item):
+    def test_get_collection_item(self, source_collection_item):
         item = radiant_mlhub.client.get_collection_item(
             'bigearthnet_v1_source',
             'bigearthnet_v1_source_S2A_MSIL2A_20180526T100031_65_62'
@@ -89,6 +89,41 @@ class TestClient:
 
         assert item['stac_extensions'] == ['eo']
         assert item['id'] == 'bigearthnet_v1_source_S2A_MSIL2A_20180526T100031_65_62'
+
+    def test_get_collection_item_errors(self, requests_mock):
+        # Mock 404 response for collection and/or item not existing
+        collection_id = 'no_collection'
+        item_id = 'item_id'
+        url = f'https://api.radiant.earth/mlhub/v1/collections/{collection_id}/items/{item_id}'
+
+        requests_mock.get(
+            url,
+            status_code=404,
+            headers={'content-type': 'text/html; charset=utf-8'},
+            text='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">\n<title>404 Not Found</title>\n<h1>Not Found</h1>\n' \
+                 '<p>The requested URL was not found on the server. '
+                 'If you entered the URL manually please check your spelling and try again.</p>'
+        )
+
+        with pytest.raises(EntityDoesNotExist):
+            radiant_mlhub.client.get_collection_item(
+                collection_id,
+                item_id
+            )
+
+        # Mock 500 response for unknown server error
+        requests_mock.get(
+            url,
+            status_code=500,
+            headers={'content-type': 'text/html; charset=utf-8'},
+            text=''
+        )
+
+        with pytest.raises(MLHubException):
+            radiant_mlhub.client.get_collection_item(
+                collection_id,
+                item_id
+            )
 
     def test_download_archive(self, source_collection_archive, tmp_path):
         # Set CWD to temp path

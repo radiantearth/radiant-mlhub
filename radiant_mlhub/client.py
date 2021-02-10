@@ -289,13 +289,13 @@ def get_collection_item(collection_id: str, item_id: str, **session_kwargs) -> d
     """
     session = get_session(**session_kwargs)
 
-    response = session.get(f'collections/{collection_id}/items/{item_id}')
-
-    if response.ok:
+    try:
+        response = session.get(f'collections/{collection_id}/items/{item_id}')
         return response.json()
-    if response.status_code == 404:
-        raise EntityDoesNotExist(f'Collection "{collection_id}" does not exist.')
-    raise MLHubException(f'An unknown error occurred: {response.status_code} ({response.reason})')
+    except HTTPError as e:
+        if e.response.status_code == 404:
+            raise EntityDoesNotExist(f'Collection "{collection_id}" and/or item {item_id} do not exist.')
+        raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})')
 
 
 def download_archive(
