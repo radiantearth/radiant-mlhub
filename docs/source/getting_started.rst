@@ -77,11 +77,11 @@ You can also list the collections by type using the ``collections.source_imagery
 
 .. code-block:: python
 
-    >>> import pprint
+    >>> from pprint import pprint
     >>> len(dataset.collections.source_imagery)
     1
     >>> source_collection = dataset.collections.source_imagery[0]
-    >>> pprint(source_collection)
+    >>> pprint(source_collection.to_dict())
     {'description': 'BigEarthNet v1.0',
      'extent': {'spatial': {'bbox': [[-9.00023345437725,
                                       1.7542686833884724,
