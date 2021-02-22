@@ -78,7 +78,7 @@ def _download(
     # If the path exists, make sure it is a directory
     if output_dir.exists() and not output_dir.is_dir():
         raise ValueError('output_dir must be a path to a directory')
-    
+
     # Create a session
     session = get_session(**session_kwargs)
 
