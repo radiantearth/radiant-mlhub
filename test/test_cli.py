@@ -28,3 +28,7 @@ class TestCLI:
         config.read(profile_path)
 
         assert config.get('default', 'api_key') == 'testapikey'
+
+        # Should abort if an api key exists and user does not confirm overwrite
+        result = isolated_cli_runner.invoke(mlhub, ['configure'], input='testapikey\nn\n')
+        assert result.exit_code == 1, result.output

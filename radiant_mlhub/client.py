@@ -72,6 +72,13 @@ def _download(
         """Internal function for fetching a byte range from the url."""
         return session.get(url_, headers={'Range': f'bytes={range_}'}).content
 
+    # Resolve user directory shortcuts and relative paths
+    output_dir = Path(output_dir).expanduser().resolve()
+
+    # If the path exists, make sure it is a directory
+    if output_dir.exists() and not output_dir.is_dir():
+        raise ValueError('output_dir must be a path to a directory')
+
     # Create a session
     session = get_session(**session_kwargs)
 
@@ -80,9 +87,6 @@ def _download(
     r.raise_for_status()
     content_length = int(r.headers['Content-Length'])
     download_url = r.url
-
-    # Resolve user directory shortcuts and relative paths
-    output_dir = Path(output_dir).expanduser().resolve()
 
     # Get the full file path
     output_file_name = urllib.parse.urlsplit(download_url).path.rsplit('/', 1)[1]
@@ -289,13 +293,12 @@ def get_collection_item(collection_id: str, item_id: str, **session_kwargs) -> d
     """
     session = get_session(**session_kwargs)
 
-    response = session.get(f'collections/{collection_id}/items/{item_id}')
-
-    if response.ok:
-        return response.json()
-    if response.status_code == 404:
-        raise EntityDoesNotExist(f'Collection "{collection_id}" does not exist.')
-    raise MLHubException(f'An unknown error occurred: {response.status_code} ({response.reason})')
+    try:
+        return session.get(f'collections/{collection_id}/items/{item_id}').json()
+    except HTTPError as e:
+        if e.response.status_code == 404:
+            raise EntityDoesNotExist(f'Collection "{collection_id}" and/or item {item_id} do not exist.')
+        raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})')
 
 
 def download_archive(
@@ -337,6 +340,7 @@ def download_archive(
     try:
         return _download(f'archive/{archive_id}', output_dir=output_dir, overwrite=overwrite, exist_okay=exist_okay, **session_kwargs)
     except HTTPError as e:
-        if e.response.status_code != 404:
-            raise
-        raise EntityDoesNotExist(f'Archive "{archive_id}" does not exist and may still be generating. Please try again later.') from None
+        if e.response.status_code == 404:
+            raise EntityDoesNotExist(
+                f'Archive "{archive_id}" does not exist and may still be generating. Please try again later.') from None
+        raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})')

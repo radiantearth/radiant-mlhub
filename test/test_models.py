@@ -5,25 +5,25 @@ from radiant_mlhub.models import Collection, Dataset
 
 class TestCollection:
 
-    def test_list_collections(self, collections_list):
+    def test_list_collections(self, collections):
         collections = Collection.list()
         assert len(collections) == 47
         assert isinstance(collections[0], Collection)
 
-    def test_get_collection_from_file(self, bigearthnet_v1_source):
+    def test_get_collection_from_file(self, source_collection):
         """The collection can be fetched by passing the MLHub URL to the from_file method."""
-        collection = Collection.from_file(bigearthnet_v1_source)
+        collection = Collection.from_file(source_collection)
 
         assert isinstance(collection, Collection)
         assert collection.description == 'BigEarthNet v1.0'
 
-    def test_fetch_collection(self, bigearthnet_v1_source):
+    def test_fetch_collection(self, source_collection):
         collection = Collection.fetch('bigearthnet_v1_source')
 
         assert isinstance(collection, Collection)
         assert collection.description == 'BigEarthNet v1.0'
 
-    def test_get_items_error(self, bigearthnet_v1_source):
+    def test_get_items_error(self, source_collection):
         collection = Collection.fetch('bigearthnet_v1_source')
 
         with pytest.raises(NotImplementedError) as excinfo:
@@ -32,14 +32,14 @@ class TestCollection:
         assert 'For performance reasons, the get_items method has not been implemented for Collection instances. Please ' \
                'use the Collection.download method to download Collection assets.' == str(excinfo.value)
 
-    def test_fetch_item(self, bigearthnet_v1_source, bigearthnet_v1_source_item):
+    def test_fetch_item(self, source_collection, source_collection_item):
         collection = Collection.fetch('bigearthnet_v1_source')
         item = collection.fetch_item('bigearthnet_v1_source_S2A_MSIL2A_20180526T100031_65_62')
 
         assert isinstance(item, pystac.Item)
         assert len(item.assets) == 13
 
-    def test_download_archive(self, source_collection_archive, bigearthnet_v1_source, tmp_path):
+    def test_download_archive(self, source_collection_archive, source_collection, tmp_path):
         collection = Collection.fetch('bigearthnet_v1_source')
         output_path = collection.download(output_dir=tmp_path)
 
@@ -49,18 +49,18 @@ class TestCollection:
 
 class TestDataset:
 
-    def test_list_datasets(self, datasets_list):
+    def test_list_datasets(self, datasets):
         """Dataset.list returns a list of Dataset instances."""
         datasets = list(Dataset.list())
         assert len(datasets) == 19
         assert isinstance(datasets[0], Dataset)
 
-    def test_fetch_dataset(self, bigearthnet_v1_dataset):
+    def test_fetch_dataset(self, dataset):
         dataset = Dataset.fetch('bigearthnet_v1')
         assert isinstance(dataset, Dataset)
         assert dataset.id == 'bigearthnet_v1'
 
-    def test_dataset_collections(self, bigearthnet_v1_dataset, bigearthnet_v1_source, bigearthnet_v1_labels):
+    def test_dataset_collections(self, dataset, source_collection, labels_collection):
         dataset = Dataset.fetch('bigearthnet_v1')
         assert len(dataset.collections) == 2
         assert len(dataset.collections.source_imagery) == 1
@@ -70,9 +70,9 @@ class TestDataset:
 
     def test_download_collection_archives(
             self,
-            bigearthnet_v1_dataset,
-            bigearthnet_v1_source,
-            bigearthnet_v1_labels,
+            dataset,
+            source_collection,
+            labels_collection,
             source_collection_archive,
             labels_collection_archive,
             tmp_path,
@@ -81,3 +81,7 @@ class TestDataset:
         output_paths = dataset.download(output_dir=tmp_path)
 
         assert all(p.exists() for p in output_paths)
+
+    def test_collections_list(self, dataset, source_collection, labels_collection):
+        dataset_ = Dataset.fetch(dataset)
+        assert dataset_.collections.__repr__() == '[<Collection id=bigearthnet_v1_source>, <Collection id=bigearthnet_v1_labels>]'
