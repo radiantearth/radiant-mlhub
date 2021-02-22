@@ -169,14 +169,18 @@ class TestClient:
         expected_output_path.touch(exist_ok=True)
         original_size = expected_output_path.stat().st_size
 
-        # Test exist_okay True / no overwrite (default)
-        output_path = radiant_mlhub.client.download_archive(source_collection_archive, output_dir=tmp_path)
+        # Test if_exists = 'skip' (default)
+        output_path = radiant_mlhub.client.download_archive(
+            source_collection_archive,
+            output_dir=tmp_path,
+            if_exists='skip'
+        )
         assert output_path.stat().st_size == original_size
 
         # Test overwrite
-        output_path = radiant_mlhub.client.download_archive(source_collection_archive, overwrite=True)
+        output_path = radiant_mlhub.client.download_archive(
+            source_collection_archive,
+            output_dir=tmp_path,
+            if_exists='overwrite'
+        )
         assert output_path.stat().st_size > original_size
-
-        # Test error
-        with pytest.raises(FileExistsError):
-            radiant_mlhub.client.download_archive(source_collection_archive, exist_okay=False)
