@@ -7,7 +7,7 @@ from typing import Iterator, List, Optional, Union
 try:
     from typing import Literal  # type: ignore [attr-defined]
 except ImportError:  # pragma: no cover
-    from typing_extensions import Literal
+    from typing_extensions import Literal  # type: ignore [misc]
 import concurrent.futures
 from enum import Enum
 from collections.abc import Sequence

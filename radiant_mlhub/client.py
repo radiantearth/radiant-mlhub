@@ -6,7 +6,7 @@ from typing import Iterator, List
 try:
     from typing import Literal  # type: ignore [attr-defined]
 except ImportError:  # pragma: no cover
-    from typing_extensions import Literal
+    from typing_extensions import Literal  # type: ignore [misc]
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 import urllib.parse
