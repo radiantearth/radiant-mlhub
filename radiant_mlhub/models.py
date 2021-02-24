@@ -5,8 +5,8 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Iterator, List, Optional, Union
 try:
-    from typing import Literal
-except ImportError:
+    from typing import Literal  # type: ignore [attr-defined]
+except ImportError:  # pragma: no cover
     from typing_extensions import Literal
 import concurrent.futures
 from enum import Enum
@@ -24,8 +24,8 @@ from . import client
 
 
 class Collection(pystac.Collection):
-    """Class inheriting from :class:`pystac.Collection` that adds some convenience methods for listing and fetching from the Radiant
-    MLHub API.
+    """Class inheriting from :class:`pystac.Collection` that adds some convenience methods for listing and fetching
+    from the Radiant MLHub API.
     """
 
     @classmethod
@@ -137,7 +137,7 @@ class Collection(pystac.Collection):
             self,
             output_dir: Path,
             *,
-            if_exists: Literal['skip', 'overwrite', 'resume'] = 'resume',
+            if_exists: Literal['skip', 'overwrite', 'resume'] = 'resume',  # type: ignore [name-defined]
             **session_kwargs
     ) -> Path:
         """Downloads the archive for this collection to an output location (current working directory by default). If the parent directories
@@ -332,7 +332,7 @@ class Dataset:
             self,
             output_dir: Union[Path, str],
             *,
-            if_exists: Literal['skip', 'overwrite', 'resume'] = 'resume',
+            if_exists: Literal['skip', 'overwrite', 'resume'] = 'resume',  # type: ignore [name-defined]
             **session_kwargs
     ) -> List[Path]:
         """Downloads archives for all collections associated with this dataset to given directory. Each archive will be named using the
