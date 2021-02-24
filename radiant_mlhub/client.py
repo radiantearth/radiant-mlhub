@@ -3,7 +3,10 @@
 import itertools as it
 from pathlib import Path
 from typing import Iterator, List
-from typing_extensions import Literal
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 import urllib.parse

@@ -4,7 +4,10 @@ with the `Radiant MLHub API <https://docs.mlhub.earth/#radiant-mlhub-api>`_."""
 from copy import deepcopy
 from pathlib import Path
 from typing import Iterator, List, Optional, Union
-from typing_extensions import Literal
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
 import concurrent.futures
 from enum import Enum
 from collections.abc import Sequence
