@@ -128,5 +128,10 @@ method. This is the recommended way of downloading an archive.
     >>> archive_path
     PosixPath('/Users/someuser/Downloads/sn1_AOI_1_RIO.tar.gz')
 
-You can read more about the structure of these archives in `this Medium post
+If a file of the same name already exists, these methods will check whether the downloaded file is complete by comparing its size against the size of the remote
+file. If they are the same size, the download is skipped, otherwise the download will be resumed from the point where it stopped. You can control
+this behavior using the ``if_exists`` argument. Setting this to ``"skip"`` will skip the download for existing files *without* checking for
+completeness (a bit faster since it doesn't require a network request), and setting this to ``"overwrite"`` will overwrite any existing file.
+
+Collection archives are gzipped tarballs. You can read more about the structure of these archives in `this Medium post
 <https://medium.com/radiant-earth-insights/archived-training-dataset-downloads-now-available-on-radiant-mlhub-7eb67daf094e>`_.

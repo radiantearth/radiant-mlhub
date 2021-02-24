@@ -11,10 +11,12 @@ import configparser
 from pathlib import Path
 import functools
 import urllib.parse
+from urllib3.util import Retry
 import platform
 from typing import Optional, Iterator
 
 import requests
+import requests.adapters
 
 from .__version__ import __version__
 from .exceptions import AuthenticationError, APIKeyNotFound
@@ -37,12 +39,25 @@ class Session(requests.Session):
 
     def __init__(self, *, api_key: str):
         super().__init__()
+
+        # Add the API key query parameter
         self.params.update({'key': api_key})  # type: ignore [union-attr]
+
+        # Set the default headers
         self.headers.update({
             'Accept': 'application/json',
             # Add the package name + version and the system info to the user-agent header
             'User-Agent': f'{__name__.split(".")[0]}/{__version__} ({platform.version()})'
         })
+
+        # Configure retries
+        retries = Retry(
+            total=None,
+            connect=5,
+            backoff_factor=0.2
+        )
+        self.mount('https://', requests.adapters.HTTPAdapter(max_retries=retries))
+        self.mount('http://', requests.adapters.HTTPAdapter(max_retries=retries))
 
     @functools.wraps(
         requests.Session.request,
