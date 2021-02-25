@@ -1,0 +1,45 @@
+{% set name = "radiant-mlhub" %}
+{% set version = "0.1.0" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  path: ../radiant_mlhub
+
+build:
+  number: 0
+  entry_points:
+    - mlhub=radiant_mlhub.cli:mlhub
+
+requirements:
+  host:
+    - python
+    - pip
+  run:
+    - backports.cached-property ==1.0.1
+    - click >=7.1.2,<8
+    - pystac >=0.5.4,<0.6
+    - python
+    - requests >=2.25.1,<3
+    - tqdm >=4.56.0,<5
+
+test:
+  requires:
+    - radiant_mlhub
+  commands:
+    - mlhub --help
+
+about:
+  home: "https://github.com/radiantearth/radiant-mlhub"
+  license: Apache Software
+  license_family: APACHE
+  license_file: LICENSE
+  summary: "A Python client for Radiant MLHub"
+  doc_url: https://radiant-mlhub.readthedocs.io
+  dev_url: https://github.com/radiantearth/radiant-mlhub
+
+extra:
+  recipe-maintainers:
+    - duckontheweb
