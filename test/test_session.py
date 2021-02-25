@@ -181,7 +181,7 @@ class TestSessionRequests:
         assert len(history) == 1
 
         assert history[0].headers.get('accept') == 'application/json'
-        assert 'radiant_mlhub/0.1.0' in history[0].headers.get('user-agent')
+        assert 'radiant_mlhub/0.1.1' in history[0].headers.get('user-agent')
 
     def test_relative_path(self, requests_mock):
         """The session uses the default root URL and joins relative paths to the root URL."""

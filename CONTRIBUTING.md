@@ -46,7 +46,7 @@ When the code on the `dev` branch has stabilized, we will cut a new release usin
 1) Create a `release-<version>` branch from `dev`, where `<version>` is the version to be released
 
 2) [Run `tbump`](https://github.com/TankerHQ/tbump#usage) to bump the package to the desired 
-   version.
+   version **using the `--only-patch` option to ensure you don't create and push the tag yet**.
 
 3) Test and make any last-minute changes
 
