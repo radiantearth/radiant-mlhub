@@ -115,11 +115,18 @@ Download a Collection Archive
 +++++++++++++++++++++++++++++
 
 You can download all the assets associated with a collection using the :meth:`Collection.download <radiant_mlhub.models.Collection.download>`
-method. This method takes a full output path (including file name) where the archive should be saved on the local file system. If a file of
-the same name already exists it will raise an exception (unless you use ``overwrite=True``). Collection archives are gzipped tarballs.
+method. This method takes a path to a directory on the local file system where the archive should be saved.
+
+If a file of the same name already exists, the client will check whether the downloaded file is complete by comparing its size against the
+size of the remote file. If they are the same size, the download is skipped, otherwise the download will be resumed from the point where it
+stopped. You can control this behavior using the ``if_exists`` argument. Setting this to ``"skip"`` will skip the download for existing
+files *without* checking for completeness (a bit faster since it doesn't require a network request), and setting this to ``"overwrite"``
+will overwrite any existing file.
 
 .. code-block:: python
 
     >>> source_collection.download('~/Downloads')
     28%|██▊       | 985.0/3496.9 [00:35<00:51, 48.31M/s]
 
+Collection archives are gzipped tarballs. You can read more about the structure of these archives in `this Medium post
+<https://medium.com/radiant-earth-insights/archived-training-dataset-downloads-now-available-on-radiant-mlhub-7eb67daf094e>`_.

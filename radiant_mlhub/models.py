@@ -4,6 +4,10 @@ with the `Radiant MLHub API <https://docs.mlhub.earth/#radiant-mlhub-api>`_."""
 from copy import deepcopy
 from pathlib import Path
 from typing import Iterator, List, Optional, Union
+try:
+    from typing import Literal  # type: ignore [attr-defined]
+except ImportError:  # pragma: no cover
+    from typing_extensions import Literal  # type: ignore [misc]
 import concurrent.futures
 from enum import Enum
 from collections.abc import Sequence
@@ -20,8 +24,8 @@ from . import client
 
 
 class Collection(pystac.Collection):
-    """Class inheriting from :class:`pystac.Collection` that adds some convenience methods for listing and fetching from the Radiant
-    MLHub API.
+    """Class inheriting from :class:`pystac.Collection` that adds some convenience methods for listing and fetching
+    from the Radiant MLHub API.
     """
 
     @classmethod
@@ -129,9 +133,19 @@ class Collection(pystac.Collection):
         response = client.get_collection_item(self.id, item_id)
         return pystac.Item.from_dict(response)
 
-    def download(self, output_dir: Path, overwrite: bool = False, **session_kwargs):
+    def download(
+            self,
+            output_dir: Path,
+            *,
+            if_exists: Literal['skip', 'overwrite', 'resume'] = 'resume',  # type: ignore [name-defined]
+            **session_kwargs
+    ) -> Path:
         """Downloads the archive for this collection to an output location (current working directory by default). If the parent directories
         for ``output_path`` do not exist, they will be created.
+
+        The ``if_exists`` argument determines how to handle an existing archive file in the output directory. See the documentation for
+        the :func:`~radiant_mlhub.client.download_archive` function for details. The default behavior is to resume downloading if the
+        existing file is incomplete and skip the download if it is complete.
 
         .. note::
 
@@ -142,17 +156,25 @@ class Collection(pystac.Collection):
         output_dir : Path
             Path to a local directory to which the file will be downloaded. File name will be generated
             automatically based on the download URL.
-        overwrite : bool, optional
-            Whether to overwrite an existing file of the same name. Defaults to ``False``.
+        if_exists : str, optional
+            How to handle an existing archive at the same location. If ``"skip"``, the download will be skipped. If ``"overwrite"``,
+            the existing file will be overwritten and the entire file will be re-downloaded. If ``"resume"`` (the default), the
+            existing file size will be compared to the size of the download (using the ``Content-Length`` header). If the existing
+            file is smaller, then only the remaining portion will be downloaded. Otherwise, the download will be skipped.
         **session_kwargs
             Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
+        Returns
+        -------
+        output_path : pathlib.Path
+            The path to the downloaded archive file.
 
         Raises
         ------
         FileExistsError
-            If file at ``output_path`` already exists and ``overwrite=False``.
+            If file at ``output_path`` already exists and both ``exist_okay`` and ``overwrite`` are ``False``.
         """
-        client.download_archive(self.id, output_dir=output_dir, overwrite=overwrite, **session_kwargs)
+        return client.download_archive(self.id, output_dir=output_dir, if_exists=if_exists, **session_kwargs)
 
 
 class CollectionType(Enum):
@@ -306,7 +328,13 @@ class Dataset:
         """
         return cls(**client.get_dataset(dataset_id, **session_kwargs))
 
-    def download(self, output_dir: Union[Path, str], *, overwrite: bool = False, **session_kwargs):
+    def download(
+            self,
+            output_dir: Union[Path, str],
+            *,
+            if_exists: Literal['skip', 'overwrite', 'resume'] = 'resume',  # type: ignore [name-defined]
+            **session_kwargs
+    ) -> List[Path]:
         """Downloads archives for all collections associated with this dataset to given directory. Each archive will be named using the
         collection ID (e.g. some_collection.tar.gz). If ``output_dir`` does not exist, it will be created.
 
@@ -318,20 +346,27 @@ class Dataset:
         ----------
         output_dir : str or pathlib.Path
             The directory into which the archives will be written.
-        overwrite : bool, optional
-            Whether to overwrite existing archives at the same location.
+        if_exists : str, optional
+            How to handle an existing archive at the same location. If ``"skip"``, the download will be skipped. If ``"overwrite"``,
+            the existing file will be overwritten and the entire file will be re-downloaded. If ``"resume"`` (the default), the
+            existing file size will be compared to the size of the download (using the ``Content-Length`` header). If the existing
+            file is smaller, then only the remaining portion will be downloaded. Otherwise, the download will be skipped.
         session_kwargs
             Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
+        Returns
+        -------
+        output_paths : List[pathlib.Path]
+            List of paths to the downloaded archives
 
         Raises
         -------
         IOError
             If ``output_dir`` exists and is not a directory.
+        FileExistsError
+            If one of the archive files already exists in the ``output_dir`` and both ``exist_okay`` and ``overwrite`` are ``False``.
         """
-        output_dir = Path(output_dir)
-        if output_dir.exists() and not output_dir.is_dir():
-            raise IOError('output_dir must be a path to a local directory')
-
-        for collection in self.collections:
-            output_path = output_dir / f'{collection.id}.tar.gz'
-            collection.download(output_path, overwrite=overwrite, **session_kwargs)
+        return [
+            collection.download(output_dir, if_exists=if_exists, **session_kwargs)
+            for collection in self.collections
+        ]

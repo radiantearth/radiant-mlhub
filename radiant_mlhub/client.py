@@ -3,12 +3,21 @@
 import itertools as it
 from pathlib import Path
 from typing import Iterator, List
+try:
+    from typing import Literal  # type: ignore [attr-defined]
+except ImportError:  # pragma: no cover
+    from typing_extensions import Literal  # type: ignore [misc]
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 import urllib.parse
 
 from requests.exceptions import HTTPError
-from tqdm import tqdm
+
+try:
+    from tqdm.auto import tqdm
+except ImportError:  # pragma: no cover
+    # Handles this issue: https://github.com/tqdm/tqdm/issues/1082
+    from tqdm import tqdm  # type: ignore [no-redef]
 
 from .session import get_session
 from .exceptions import EntityDoesNotExist, MLHubException
@@ -17,10 +26,11 @@ from .exceptions import EntityDoesNotExist, MLHubException
 def _download(
         url: str,
         output_dir: Path,
-        overwrite: bool = False,
+        *,
+        if_exists: Literal['skip', 'overwrite', 'resume'] = 'resume',  # type: ignore [name-defined]
         chunk_size=5000000,
         **session_kwargs
-):
+) -> Path:
     """Internal function used to parallelize downloads from a given URL.
 
     Parameters
@@ -30,22 +40,31 @@ def _download(
     output_dir : Path
         Path to a local directory to which the file will be downloaded. File name will be generated
         automatically based on the download URL.
-    overwrite : bool, optional
-        Whether to overwrite an existing file at ``output_path``. Defaults to ``False``.
+    if_exists : str, optional
+        How to handle an existing archive at the same location. If ``"skip"``, the download will be skipped. If ``"overwrite"``,
+        the existing file will be overwritten and the entire file will be re-downloaded. If ``"resume"`` (the default), the
+        existing file size will be compared to the size of the download (using the ``Content-Length`` header). If the existing
+        file is smaller, then only the remaining portion will be downloaded. Otherwise, the download will be skipped.
     chunk_size : int, optional
         The size of byte range for each concurrent request.
     session_kwargs
         Keyword arguments passed directly to ``get_session``
 
+    Returns
+    -------
+    output_path : Path
+        The path to the downloaded file.
+
     Raises
     ------
-    FileExistsError
-        If file of the same name already exists in ``output_dir`` and ``overwrite==False``.
+    ValueError
+        If ``if_exists`` is not one of ``"skip"``, ``"overwrite"``, or ``"resume"``.
     """
+    if if_exists not in {'skip', 'overwrite', 'resume'}:
+        raise ValueError('if_exists must be one of "skip", "overwrite", or "resume"')
 
-    def _get_ranges(total_size, interval):
+    def _get_ranges(total_size, interval, start=0):
         """Internal function for getting byte ranges from a total size and interval/chunk size."""
-        start = 0
         while True:
             end = min(start + interval - 1, total_size)
             yield f'{start}-{end}'
@@ -57,6 +76,13 @@ def _download(
         """Internal function for fetching a byte range from the url."""
         return session.get(url_, headers={'Range': f'bytes={range_}'}).content
 
+    # Resolve user directory shortcuts and relative paths
+    output_dir = Path(output_dir).expanduser().resolve()
+
+    # If the path exists, make sure it is a directory
+    if output_dir.exists() and not output_dir.is_dir():
+        raise ValueError('output_dir must be a path to a directory')
+
     # Create a session
     session = get_session(**session_kwargs)
 
@@ -66,39 +92,41 @@ def _download(
     content_length = int(r.headers['Content-Length'])
     download_url = r.url
 
-    # Resolve user directory shortcuts and relative paths
-    output_dir = Path(output_dir).expanduser().resolve()
-
     # Get the full file path
     output_file_name = urllib.parse.urlsplit(download_url).path.rsplit('/', 1)[1]
     output_path = output_dir / output_file_name
 
     # Check for existing output file
-    if output_path.exists() and not overwrite:
-        raise FileExistsError(f'File {output_path} already exists. Use overwrite=True to overwrite this file.')
+    open_mode = 'wb'
+    start = 0
+    if output_path.exists():
+        # Since we check the allowed values of if_exists above, we can be sure that it is either
+        #  skip, resume, or overwrite. If it is overwrite, we treat it as if the file did not exist.
+        if if_exists == 'skip':
+            return output_path
+        if if_exists == 'resume':
+            start = output_path.stat().st_size
+            open_mode = 'ab'
+            # Don't attempt the download if the existing file is the same size as the download
+            if start == content_length:
+                return output_path
 
     # Create the parent directory, if it does not exist
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # Check that the endpoint accepts byte range requests
-    use_range = r.headers.get('Accept-Ranges') == 'bytes'
+    # If we can use range requests, make concurrent requests to the byte ranges we need...
+    with ThreadPoolExecutor(max_workers=20) as executor:
+        with output_path.open(mode=open_mode) as dst:
+            with tqdm(total=round(content_length / 1000000., 1), unit='M') as pbar:
+                pbar.update(round(start / 1000000., 1))
+                for chunk in executor.map(
+                        partial(_fetch_range, download_url),
+                        _get_ranges(content_length, chunk_size, start=start)
+                ):
+                    dst.write(chunk)
+                    pbar.update(round(chunk_size / 1000000., 1))
 
-    if use_range:
-        # If we can use range requests, make concurrent requests to the byte ranges we need...
-        with ThreadPoolExecutor(max_workers=20) as executor:
-            with output_path.open('wb') as dst:
-                with tqdm(total=round(content_length / 1000000., 1), unit='M') as pbar:
-                    for chunk in executor.map(partial(_fetch_range, download_url), _get_ranges(content_length, chunk_size)):
-                        dst.write(chunk)
-                        pbar.update(round(chunk_size / 1000000., 1))
-    else:
-        # ...if not, stream the response
-        with session.get(url, stream=True, allow_redirects=True) as r:
-            with output_path.open('wb') as dst:
-                with tqdm(total=round(content_length / 1000000., 1), unit='M') as pbar:
-                    for chunk in r.iter_content(chunk_size=chunk_size):
-                        dst.write(chunk)
-                        pbar.update(round(chunk_size / 1000000., 1))
+    return output_path
 
 
 def list_datasets(**session_kwargs) -> List[dict]:
@@ -268,17 +296,29 @@ def get_collection_item(collection_id: str, item_id: str, **session_kwargs) -> d
     """
     session = get_session(**session_kwargs)
 
-    response = session.get(f'collections/{collection_id}/items/{item_id}')
+    try:
+        return session.get(f'collections/{collection_id}/items/{item_id}').json()
+    except HTTPError as e:
+        if e.response.status_code == 404:
+            raise EntityDoesNotExist(f'Collection "{collection_id}" and/or item {item_id} do not exist.')
+        raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})')
 
-    if response.ok:
-        return response.json()
-    if response.status_code == 404:
-        raise EntityDoesNotExist(f'Collection "{collection_id}" does not exist.')
-    raise MLHubException(f'An unknown error occurred: {response.status_code} ({response.reason})')
 
-
-def download_archive(archive_id: str, output_dir: Path = None, *, overwrite: bool = False, **session_kwargs):
+def download_archive(
+        archive_id: str,
+        output_dir: Path = None,
+        *,
+        if_exists: Literal['skip', 'overwrite', 'resume'] = 'resume',  # type: ignore [name-defined]
+        **session_kwargs
+) -> Path:
     """Downloads the archive with the given ID to an output location (current working directory by default).
+
+    The ``if_exists`` argument determines how to handle an existing archive file in the output directory. The default
+    behavior (defined by ``if_exists="resume"``) is to resume the download by requesting a byte range starting at the
+    size of the existing file. If the existing file is the same size as the file to be downloaded (as determined by the
+    ``Content-Length`` header), then the download is skipped. You can automatically skip download using ``if_exists="skip"``
+    (this may be faster if you know the download was not interrupted, since no network request is made to get the archive
+    size). You can also overwrite the existing file using ``if_exists="overwrite"``.
 
     Parameters
     ----------
@@ -286,21 +326,35 @@ def download_archive(archive_id: str, output_dir: Path = None, *, overwrite: boo
         The ID of the archive to download.
     output_dir : Path
         Path to which the archive will be downloaded. Defaults to the current working directory.
-    overwrite : bool, optional
-        Whether to overwrite an existing file of the same name. Defaults to ``False``.
+    if_exists : str, optional
+        How to handle an existing archive at the same location. If ``"skip"``, the download will be skipped. If ``"overwrite"``,
+        the existing file will be overwritten and the entire file will be re-downloaded. If ``"resume"`` (the default), the
+        existing file size will be compared to the size of the download (using the ``Content-Length`` header). If the existing
+        file is smaller, then only the remaining portion will be downloaded. Otherwise, the download will be skipped.
     **session_kwargs
         Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
 
+    Returns
+    -------
+    output_path : Path
+        The full path to the downloaded archive file.
+
     Raises
     ------
-    FileExistsError
-        If file at ``output_path`` already exists and ``overwrite==False``.
+    ValueError
+        If ``if_exists`` is not one of ``"skip"``, ``"overwrite"``, or ``"resume"``.
     """
     output_dir = output_dir if output_dir is not None else Path.cwd()
 
     try:
-        _download(f'archive/{archive_id}', output_dir=output_dir, overwrite=overwrite, **session_kwargs)
+        return _download(
+            f'archive/{archive_id}',
+            output_dir=output_dir,
+            if_exists=if_exists,
+            **session_kwargs
+        )
     except HTTPError as e:
-        if e.response.status_code != 404:
-            raise
-        raise EntityDoesNotExist(f'Archive "{archive_id}" does not exist and may still be generating. Please try again later.') from None
+        if e.response.status_code == 404:
+            raise EntityDoesNotExist(
+                f'Archive "{archive_id}" does not exist and may still be generating. Please try again later.') from None
+        raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})')
