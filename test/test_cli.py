@@ -8,7 +8,7 @@ class TestCLI:
 
     def test_version(self, cli_runner):
         result = cli_runner.invoke(mlhub, ['--version'])
-        assert result.output.rstrip('\n') == 'mlhub, version 0.1.0'
+        assert result.output.rstrip('\n') == 'mlhub, version 0.1.1'
 
     def test_configure(self, isolated_cli_runner, monkeypatch):
         new_home = Path.cwd()
