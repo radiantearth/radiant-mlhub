@@ -4,10 +4,6 @@ with the `Radiant MLHub API <https://docs.mlhub.earth/#radiant-mlhub-api>`_."""
 from copy import deepcopy
 from pathlib import Path
 from typing import Iterator, List, Optional, Union
-try:
-    from typing import Literal  # type: ignore [attr-defined]
-except ImportError:  # pragma: no cover
-    from typing_extensions import Literal  # type: ignore [misc]
 import concurrent.futures
 from enum import Enum
 from collections.abc import Sequence
@@ -132,7 +128,7 @@ class Collection(pystac.Collection):
             self,
             output_dir: Path,
             *,
-            if_exists: Literal['skip', 'overwrite', 'resume'] = 'resume',  # type: ignore [name-defined]
+            if_exists: str = 'resume',
             **session_kwargs
     ) -> Path:
         """Downloads the archive for this collection to an output location (current working directory by default). If the parent directories
@@ -339,7 +335,7 @@ class Dataset:
             self,
             output_dir: Union[Path, str],
             *,
-            if_exists: Literal['skip', 'overwrite', 'resume'] = 'resume',  # type: ignore [name-defined]
+            if_exists: str = 'resume',
             **session_kwargs
     ) -> List[Path]:
         """Downloads archives for all collections associated with this dataset to given directory. Each archive will be named using the
