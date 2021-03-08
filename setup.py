@@ -25,7 +25,6 @@ setuptools.setup(
         'pystac~=0.5.4',
         'click~=7.1.2',
         'tqdm~=4.56.0',
-        'backports.cached-property==1.0.0.post2; python_version < "3.8"',
     ],
     classifiers=[
         "Programming Language :: Python",

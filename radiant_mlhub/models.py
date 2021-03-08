@@ -12,11 +12,6 @@ import concurrent.futures
 from enum import Enum
 from collections.abc import Sequence
 
-try:
-    from functools import cached_property  # type: ignore [attr-defined]
-except ImportError:  # pragma: no cover
-    from backports.cached_property import cached_property  # type: ignore [no-redef]
-
 
 import pystac
 
@@ -196,6 +191,9 @@ class _CollectionList(Sequence):
     def __init__(self, collections_with_type: List[_CollectionWithType]):
         self._collections = collections_with_type
 
+        self._source_imagery = None
+        self._labels = None
+
     def __iter__(self):
         for item in self._collections:
             yield item.collection
@@ -209,21 +207,25 @@ class _CollectionList(Sequence):
     def __repr__(self):
         return list(self.__iter__()).__repr__()
 
-    @cached_property
+    @property
     def source_imagery(self):
-        return [
-            c.collection
-            for c in self._collections
-            if any(type_ is CollectionType.SOURCE for type_ in c.types)
-        ]
+        if self._source_imagery is None:
+            self._source_imagery = [
+                c.collection
+                for c in self._collections
+                if any(type_ is CollectionType.SOURCE for type_ in c.types)
+            ]
+        return self._source_imagery
 
-    @cached_property
+    @property
     def labels(self):
-        return [
-            c.collection
-            for c in self._collections
-            if any(type_ is CollectionType.LABELS for type_ in c.types)
-        ]
+        if self._labels is None:
+            self._labels = [
+                c.collection
+                for c in self._collections
+                if any(type_ is CollectionType.LABELS for type_ in c.types)
+            ]
+        return self._labels
 
 
 class Dataset:
@@ -238,7 +240,9 @@ class Dataset:
         self.collection_descriptions = collections
         self.session_kwargs = session_kwargs
 
-    @cached_property
+        self._collections: Optional['_CollectionList'] = None
+
+    @property
     def collections(self) -> _CollectionList:
         """List of collections associated with this dataset. The list that is returned has 2 additional attributes (``source_imagery`` and
         ``labels``) that represent the list of collections corresponding the each type.
@@ -275,24 +279,27 @@ class Dataset:
             >>> for collection in dataset.collections.labels:
             ...     # Do something here
         """
-        # Internal method to return a Collection along with it's CollectionType
-        def _fetch_collection(_collection_description):
-            return _CollectionWithType(
-                Collection.fetch(_collection_description['id'], **self.session_kwargs),
-                [CollectionType(type_) for type_ in _collection_description['types']]
-            )
+        if self._collections is None:
+            # Internal method to return a Collection along with it's CollectionType
+            def _fetch_collection(_collection_description):
+                return _CollectionWithType(
+                    Collection.fetch(_collection_description['id'], **self.session_kwargs),
+                    [CollectionType(type_) for type_ in _collection_description['types']]
+                )
 
-        # Fetch all collections and create Collection instances
-        if len(self.collection_descriptions) == 1:
-            # If there is only 1 collection, fetch it in the same thread
-            only_description = self.collection_descriptions[0]
-            collections = [_fetch_collection(only_description)]
-        else:
-            # If there are multiple collections, fetch them concurrently
-            with concurrent.futures.ThreadPoolExecutor() as exc:
-                collections = list(exc.map(_fetch_collection, self.collection_descriptions))
+            # Fetch all collections and create Collection instances
+            if len(self.collection_descriptions) == 1:
+                # If there is only 1 collection, fetch it in the same thread
+                only_description = self.collection_descriptions[0]
+                collections = [_fetch_collection(only_description)]
+            else:
+                # If there are multiple collections, fetch them concurrently
+                with concurrent.futures.ThreadPoolExecutor() as exc:
+                    collections = list(exc.map(_fetch_collection, self.collection_descriptions))
 
-        return _CollectionList(collections)
+            self._collections = _CollectionList(collections)
+
+        return self._collections
 
     @classmethod
     def list(cls, **session_kwargs) -> Iterator['Dataset']:
