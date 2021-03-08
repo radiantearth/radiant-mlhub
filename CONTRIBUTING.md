@@ -1,6 +1,7 @@
 # Contributing
 
-Contributions to this project are welcome and encouraged!
+Contributions to this project are welcome and encouraged! Please be sure to review our 
+[Code of Conduct](./CODE_OF_CONDUCT.md) before participating in any community discussions in this repo.
 
 ## Issues
 

@@ -7,6 +7,7 @@
 [![PyPI version](https://badge.fury.io/py/radiant-mlhub.svg)](https://pypi.org/project/radiant-mlhub/)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/radiant-mlhub)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/radiantearth/radiant-mlhub/main?filepath=examples%2Findex.ipynb)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](code_of_conduct.md)
 
 *A Python client for the [Radiant MLHub API](https://mlhub.earth/).*
 
