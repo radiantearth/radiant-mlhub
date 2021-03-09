@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Radiant MLHub Slack Organization
+    url: https://mlhubearth.slack.com
+    about: Slack organization for the Radiant MLHub user community
+  - name: Radiant MLHub Support
+    url: "mailto:support@radiant.earth"
+    about: Use this support email for questions/issues related to the Radiant MLHub API and/or specific datasets.
