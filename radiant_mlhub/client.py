@@ -3,10 +3,6 @@
 import itertools as it
 from pathlib import Path
 from typing import Iterator, List
-try:
-    from typing import Literal  # type: ignore [attr-defined]
-except ImportError:  # pragma: no cover
-    from typing_extensions import Literal  # type: ignore [misc]
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 import urllib.parse
@@ -27,7 +23,7 @@ def _download(
         url: str,
         output_dir: Path,
         *,
-        if_exists: Literal['skip', 'overwrite', 'resume'] = 'resume',  # type: ignore [name-defined]
+        if_exists: str = 'resume',
         chunk_size=5000000,
         **session_kwargs
 ) -> Path:
@@ -308,7 +304,7 @@ def download_archive(
         archive_id: str,
         output_dir: Path = None,
         *,
-        if_exists: Literal['skip', 'overwrite', 'resume'] = 'resume',  # type: ignore [name-defined]
+        if_exists: str = 'resume',
         **session_kwargs
 ) -> Path:
     """Downloads the archive with the given ID to an output location (current working directory by default).
