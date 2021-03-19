@@ -62,6 +62,27 @@ class TestResolveAPIKeys:
         session = get_session()
         assert session.params.get('key') == 'environmentprofilekey'
 
+    def test_user_defined_mlhub_home(self, monkeypatch, tmp_path):
+        """If the MLHUB_HOME environment variable is set, the client should look for a profiles file in that directory.
+        """
+        # Create user-defined home directory
+        mlhub_home = tmp_path / 'some-directory' / '.mlhub'
+        mlhub_home.mkdir(parents=True)
+
+        # Create profile
+        config = configparser.ConfigParser()
+        config['default'] = {'api_key': 'userdefinedhome'}
+
+        # Save to profile file
+        with (mlhub_home / 'profiles').open('w') as dst:
+            config.write(dst)
+
+        # Monkeypatch the MLHUB_HOME variable
+        monkeypatch.setenv('MLHUB_HOME', str(mlhub_home.resolve()))
+
+        session = get_session()
+        assert session.params.get('key') == 'userdefinedhome'
+
     def test_from_env_error(self, monkeypatch):
         """Raises an exception if no MLHUB_API_KEY environment variable is found when explicitly loading session from environment."""
         # Ensure there is not MLHUB_API_KEY environment variable
