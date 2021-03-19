@@ -1,9 +1,11 @@
 import configparser
+import os
 from pathlib import Path
 
 import click
 
 from .__version__ import __version__
+from .session import Session
 
 
 @click.group()
@@ -22,13 +24,17 @@ def configure(profile, api_key):
     provide a --profile option, it will update the "default" profile. If you do not provide an --api-key
     option, you will be prompted to enter an API key by the tool.
 
+    If you need to change the location of the profiles file, set the MLHUB_HOME environment variable before
+    running this command.
+
     For details on profiles and authentication for the radiant_mlhub client, please see the official
     Authentication documentation:
 
     https://radiant-mlhub.readthedocs.io
     """
 
-    config_path = Path.home() / '.mlhub' / 'profiles'
+    mlhub_home = Path(os.getenv(Session.MLHUB_HOME_ENV_VARIABLE, Path.home() / '.mlhub'))
+    config_path = mlhub_home / 'profiles'
 
     config = configparser.ConfigParser()
     config.read(config_path)
