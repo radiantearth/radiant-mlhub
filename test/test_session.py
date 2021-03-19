@@ -50,7 +50,7 @@ class TestResolveAPIKeys:
         session = get_session()
         assert session.params.get('key') == 'defaultapikey'
 
-    def test_api_key_from_named_profile(self, tmp_path, mock_profile):
+    def test_api_key_from_named_profile(self, mock_profile):
         """The API key from the given profile in ~/.mlhub/profiles is stored on the session."""
         session = get_session(profile='other-profile')
         assert session.params.get('key') == 'otherapikey'
