@@ -10,14 +10,16 @@ class TestCLI:
         result = cli_runner.invoke(mlhub, ['--version'])
         assert result.output.rstrip('\n') == 'mlhub, version 0.1.2'
 
-    def test_configure(self, isolated_cli_runner, monkeypatch):
+    def test_configure(self, isolated_cli_runner):
         new_home = Path.cwd()
 
         # Monkeypatch the user's home directory to be the temp directory (CWD)
-        monkeypatch.setenv('HOME', str(new_home))  # Linux/Unix
-        monkeypatch.setenv('USERPROFILE', str(new_home))  # Windows
+        env = {
+            'HOME': str(new_home),
+            'USERPROFILE': str(new_home)
+        }
 
-        result = isolated_cli_runner.invoke(mlhub, ['configure'], input='testapikey\n')
+        result = isolated_cli_runner.invoke(mlhub, ['configure'], input='testapikey\n', env=env)
         assert result.exit_code == 0, result.output
 
         # Should create a profiles file in the "HOME" directory
