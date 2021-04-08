@@ -62,16 +62,6 @@ src = "test/test_cli.py"
 src = "binder/requirements.txt"
 search = "radiant-mlhub=={current_version}"
 
-# You can specify a list of commands to
-# run after the files have been patched
-# and before the git commit is made
-
-#  [[tool.tbump.before_commit]]
-#  name = "check changelog"
-#  cmd = "grep -q {new_version} Changelog.rst"
-
-# Or run some commands after the git tag and the branch
-# have been pushed:
-#  [[tool.tbump.after_push]]
-#  name = "publish"
-#  cmd = "./publish.sh"
+[[tool.tbump.file]]
+src = "recipe/meta.yaml"
+search = "set version = \"{current_version}\""
