@@ -11,9 +11,19 @@ This guide will walk you through the basic usage of the ``radiant_mlhub`` librar
 Installation
 ++++++++++++
 
+Install with ``pip``
+--------------------
+
 .. code-block:: console
 
     $ pip install radiant_mlhub
+
+Install with ``conda``
+----------------------
+
+.. code-block:: console
+
+    $ conda install -c conda-forge radiant-mlhub
 
 Configuration
 +++++++++++++

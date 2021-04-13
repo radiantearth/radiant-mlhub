@@ -100,3 +100,7 @@ When the code on the `dev` branch has stabilized, we will cut a new release usin
   This ensures that `dev` stays up-to-date with any changes made during the release process (including updating 
   the package version). There is no need to put in a PR against `dev`, since the changes have already been 
   approved for `main`.
+  
+After the release has been published to PyPi, you should also update the recipe in the [`conda-forge` 
+feedstock](https://github.com/conda-forge/radiant-mlhub-feedstock) to use the new release. See the README in that repo 
+for instructions on how to update the recipe. 
