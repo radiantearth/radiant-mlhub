@@ -11,22 +11,40 @@ This guide will walk you through the basic usage of the ``radiant_mlhub`` librar
 Installation
 ++++++++++++
 
+Install with ``pip``
+--------------------
+
 .. code-block:: console
 
     $ pip install radiant_mlhub
+
+Install with ``conda``
+----------------------
+
+.. code-block:: console
+
+    $ conda install -c conda-forge radiant-mlhub
 
 Configuration
 +++++++++++++
 
 If you have not done so already, you will need to register for an MLHub API key `here <http://dashboard.mlhub.earth/>`_.
 
-Once you have your API key, you will need to create a default profile by setting up a ``.mlhub/profiles`` file in your home directory:
+Once you have your API key, you will need to create a default profile by setting up a ``.mlhub/profiles`` file in your
+home directory. You can use the :ref:`mlhub configure <configure>` command line tool to do this:
 
 .. code-block:: console
 
     $ mlhub configure
     API Key: Enter your API key here...
     Wrote profile to /Users/youruser/.mlhub/profiles
+
+.. hint::
+
+    If you do not have write access to the home directory on your machine, you can change the location of the ``profiles`` file using the ``MLHUB_HOME``
+    environment variables. For instance, setting ``MLHUB_HOME=/tmp/some-directory/.mlhub`` will cause the client to look for your profiles in a
+    ``/tmp/some-directory/.mlhub/profiles`` file. You may want to permanently set this environment variable to ensure the client continues to look in
+    the correct place for your profiles.
 
 List Datasets
 +++++++++++++++++

@@ -33,6 +33,7 @@ class Session(requests.Session):
     * Calls :meth:`requests.Response.raise_for_status` after all requests to raise exceptions for any status codes above 400.
     """
 
+    MLHUB_HOME_ENV_VARIABLE = 'MLHUB_HOME'
     API_KEY_ENV_VARIABLE = 'MLHUB_API_KEY'
     PROFILE_ENV_VARIABLE = 'MLHUB_PROFILE'
     ROOT_URL = 'https://api.radiant.earth/mlhub/v1/'
@@ -131,12 +132,15 @@ class Session(requests.Session):
 
     @classmethod
     def from_config(cls, profile: Optional[str] = None) -> 'Session':
-        """Create a session object by reading an API key from the given profile in the ``.mlhub/profiles`` file.
+        """Create a session object by reading an API key from the given profile in the ``profiles`` file. By default,
+        the client will look for the ``profiles`` file in a ``.mlhub`` directory in the user's home directory (as
+        determined by :meth:`Path.home <pathlib.Path.home>`). However, if an ``MLHUB_HOME`` environment variable is
+        present, the client will look in that directory instead.
 
         Parameters
         ----------
         profile: str, optional
-            The name of a profile configured in the ``.mlhub/profiles`` file.
+            The name of a profile configured in the ``profiles`` file.
 
         Returns
         -------
@@ -148,7 +152,8 @@ class Session(requests.Session):
             If the given config file does not exist, the given profile cannot be found, or there is no ``api_key`` property in the
             given profile section.
         """
-        config_path = Path.home() / '.mlhub/profiles'
+        mlhub_home = Path(os.getenv(Session.MLHUB_HOME_ENV_VARIABLE, Path.home() / '.mlhub'))
+        config_path = mlhub_home / 'profiles'
         if not config_path.exists():
             raise APIKeyNotFound(f'No file found at {config_path}')
 
