@@ -103,6 +103,13 @@ method. This is the recommended way of fetching a collection. This method return
     >>> collection.description
     'African Crops Kenya'
 
+For more information on a Collection, you can check out the MLHub Registry page:
+
+.. code-block:: python
+
+    >>> collection.registry_url
+    https://registry.mlhub.earth/10.14279/depositonce-10149/
+
 Downloading a Collection
 ++++++++++++++++++++++++
 
