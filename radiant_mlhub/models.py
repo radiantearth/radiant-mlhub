@@ -167,6 +167,21 @@ class Collection(pystac.Collection):
         """
         return client.download_archive(self.id, output_dir=output_dir, if_exists=if_exists, **session_kwargs)
 
+    @property
+    def registry_url(self) -> Optional[str]:
+        """The URL of the registry page for this Collection. The URL is based on the DOI identifier
+        for the collection. If the Collection does not have a ``"sci:doi"`` property then
+        ``registry_url`` will be ``None``."""
+
+        # Some Collections don't publish the "scientific" extension in their "stac_extensions"
+        # attribute so we access this via "extra_fields" rather than through self.ext["scientific"].
+        print(self.extra_fields)
+        doi = self.extra_fields.get("sci:doi")
+        if doi is None:
+            return None
+
+        return f'https://registry.mlhub.earth/{doi}'
+
 
 class CollectionType(Enum):
     """Valid values for the type of a collection associated with a Radiant MLHub dataset."""

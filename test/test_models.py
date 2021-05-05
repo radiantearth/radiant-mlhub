@@ -46,6 +46,14 @@ class TestCollection:
         assert output_path == tmp_path / 'bigearthnet_v1_source.tar.gz'
         assert output_path.exists()
 
+    def test_get_registry_url(self, source_collection_with_doi):
+        collection = Collection.fetch('su_african_crops_south_sudan_labels')
+        assert collection.registry_url == 'https://registry.mlhub.earth/10.34911/rdnt.v6kx6n'
+
+    def test_get_registry_url_no_doi(self, source_collection):
+        collection = Collection.fetch('bigearthnet_v1_source')
+        assert collection.registry_url is None
+
 
 class TestDataset:
 

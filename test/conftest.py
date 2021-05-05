@@ -43,6 +43,17 @@ def source_collection(requests_mock):
 
 
 @pytest.fixture(scope='function')
+def source_collection_with_doi(requests_mock):
+    """Response for GET /collections/su_african_crops_south_sudan_labels."""
+    response_text = read_data_file('su_african_crops_south_sudan_labels.json')
+    endpoint = 'https://api.radiant.earth/mlhub/v1/collections/su_african_crops_south_sudan_labels'
+
+    requests_mock.get(endpoint, text=response_text)
+
+    yield endpoint
+
+
+@pytest.fixture(scope='function')
 def labels_collection(requests_mock):
     """Response for GET /collections/bigearthnet_v1_labels."""
     response_text = read_data_file('bigearthnet_v1_labels.json')
