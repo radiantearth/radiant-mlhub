@@ -243,12 +243,38 @@ class Dataset:
     """Class that brings together multiple Radiant MLHub "collections" that are all considered part of a single "dataset". For instance,
     the ``bigearthnet_v1`` dataset is composed of both a source imagery collection (``bigearthnet_v1_source``) and a labels collection
     (``bigearthnet_v1_labels``).
+
+    Attributes
+    ----------
+
+    id : str
+        The dataset ID.
+    title : str or None
+        The title of the dataset (or ``None`` if dataset has no title).
+    registry_url : str or None
+        The URL to the registry page for this dataset, or ``None`` if no registry page exists.
+    doi : str or None
+        The DOI identifier for this dataset, or ``None`` if there is no DOI for this dataset.
+    citation: str or None
+        The citation information for this dataset, or ``None`` if there is no citation information.
     """
 
-    def __init__(self, id: str, collections: List[dict], title: Optional[str] = None, **session_kwargs):
+    def __init__(
+        self,
+        id: str,
+        collections: List[dict],
+        title: Optional[str] = None,
+        registry: Optional[str] = None,
+        doi: Optional[str] = None,
+        citation: Optional[str] = None,
+        **session_kwargs
+    ):
         self.id = id
         self.title = title
         self.collection_descriptions = collections
+        self.registry_url = registry
+        self.doi = doi
+        self.citation = citation
         self.session_kwargs = session_kwargs
 
         self._collections: Optional['_CollectionList'] = None
