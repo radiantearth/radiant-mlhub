@@ -245,10 +245,22 @@ class Dataset:
     (``bigearthnet_v1_labels``).
     """
 
-    def __init__(self, id: str, collections: List[dict], title: Optional[str] = None, **session_kwargs):
+    def __init__(
+        self,
+        id: str,
+        collections: List[dict],
+        title: Optional[str] = None,
+        registry: Optional[str] = None,
+        doi: Optional[str] = None,
+        citation: Optional[str] = None,
+        **session_kwargs
+    ):
         self.id = id
         self.title = title
         self.collection_descriptions = collections
+        self.registry_url = registry
+        self.doi = doi
+        self.citation = citation
         self.session_kwargs = session_kwargs
 
         self._collections: Optional['_CollectionList'] = None

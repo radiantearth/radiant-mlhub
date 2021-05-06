@@ -10,13 +10,6 @@ class TestCollection:
         assert len(collections) == 47
         assert isinstance(collections[0], Collection)
 
-    def test_get_collection_from_file(self, source_collection):
-        """The collection can be fetched by passing the MLHub URL to the from_file method."""
-        collection = Collection.from_file(source_collection)
-
-        assert isinstance(collection, Collection)
-        assert collection.description == 'BigEarthNet v1.0'
-
     def test_fetch_collection(self, source_collection):
         collection = Collection.fetch('bigearthnet_v1_source')
 
@@ -67,6 +60,11 @@ class TestDataset:
         dataset = Dataset.fetch('bigearthnet_v1')
         assert isinstance(dataset, Dataset)
         assert dataset.id == 'bigearthnet_v1'
+        assert dataset.registry_url == 'https://registry.mlhub.earth/10.14279/depositonce-10149'
+        assert dataset.doi == '10.14279/depositonce-10149'
+        assert dataset.citation == 'G. Sumbul, M. Charfuelan, B. Demir, V. Markl, \"BigEarthNet: A Large-Scale '\
+            'Benchmark Archive for Remote Sensing Image Understanding\", IEEE International Geoscience and Remote '\
+            'Sensing Symposium, pp. 5901-5904, Yokohama, Japan, 2019.'
 
     def test_dataset_collections(self, dataset, source_collection, labels_collection):
         dataset = Dataset.fetch('bigearthnet_v1')
