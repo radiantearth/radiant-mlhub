@@ -1,8 +1,9 @@
 import os
 
 import pytest
+
 import radiant_mlhub.client
-from radiant_mlhub.exceptions import MLHubException, EntityDoesNotExist
+from radiant_mlhub.exceptions import EntityDoesNotExist, MLHubException
 
 
 class TestClient:
@@ -86,11 +87,10 @@ class TestClient:
 
         assert output_path == tmp_path / 'ref_african_crops_kenya_02_labels.tar.gz'
         assert output_path.exists()
-    
+
     @pytest.mark.vcr
     def test_download_archive_does_not_exist(self, tmp_path):
         archive_id = 'no_archive'
-        url = f'https://api.radiant.earth/mlhub/v1/archive/{archive_id}'
 
         with pytest.raises(EntityDoesNotExist) as excinfo:
             radiant_mlhub.client.download_archive(archive_id, output_dir=tmp_path)

@@ -6,20 +6,20 @@ of the API key from function arguments, environment variables, and profiles as d
 :func:`get_session` docs for usage examples.
 """
 
-import os
 import configparser
-from pathlib import Path
 import functools
-import urllib.parse
-from urllib3.util import Retry
+import os
 import platform
-from typing import Optional, Iterator
+import urllib.parse
+from pathlib import Path
+from typing import Iterator, Optional
 
 import requests
 import requests.adapters
+from urllib3.util import Retry
 
 from .__version__ import __version__
-from .exceptions import AuthenticationError, APIKeyNotFound
+from .exceptions import APIKeyNotFound, AuthenticationError
 
 
 class Session(requests.Session):

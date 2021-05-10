@@ -1,5 +1,6 @@
-import pytest
 import pystac
+import pytest
+
 from radiant_mlhub.models import Collection, Dataset
 
 
