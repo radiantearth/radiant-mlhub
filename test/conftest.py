@@ -1,7 +1,7 @@
 import re
 
 import pytest
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 
 download_url = re.compile(r'(https?://(?:staging.)?api.radiant.earth/mlhub/v1/download)/[-=\\\w]+/?')
 
@@ -25,6 +25,7 @@ def pytest_recording_configure(config, vcr):
     vcr.before_record_response = before_record_response
 
 
-@pytest.fixture(scope='module', autouse=True)
-def mock_profile():
-    load_dotenv()
+@pytest.fixture(scope='function', autouse=True)
+def mock_profile(monkeypatch):
+    denv = dotenv_values()
+    monkeypatch.setenv('MLHUB_API_KEY', denv['MLHUB_API_KEY'])
