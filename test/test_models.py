@@ -44,7 +44,11 @@ class TestCollection:
         assert collection.registry_url == 'https://registry.mlhub.earth/10.34911/rdnt.v6kx6n'
 
     def test_get_registry_url_no_doi(self, source_collection):
-        collection = Collection.fetch('bigearthnet_v1_source')
+        # Get the example collection as a dict and remove the sci:doi property
+        collection_dict = Collection.fetch('bigearthnet_v1_source').to_dict()
+        collection_dict.pop('sci:doi', None)
+        collection = Collection.from_dict(collection_dict)
+
         assert collection.registry_url is None
 
 
