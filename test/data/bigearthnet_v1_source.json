@@ -1,60 +1,61 @@
 {
-    "description": "BigEarthNet v1.0",
-    "extent": {
-        "spatial": {
-            "bbox": [
-                [
-                    -9.00023345437725,
-                    1.7542686833884724,
-                    83.44558248555553,
-                    68.02168200047284
-                ]
-            ]
-        },
-        "temporal": {
-            "interval": [
-                [
-                    "2017-06-13T10:10:31Z",
-                    "2018-05-29T11:54:01Z"
-                ]
-            ]
-        }
+  "description": "BigEarthNet v1.0",
+  "extent": {
+    "spatial": {
+      "bbox": [
+        [
+          -9.00023345437725,
+          1.7542686833884724,
+          83.44558248555553,
+          68.02168200047284
+        ]
+      ]
     },
-    "id": "bigearthnet_v1_source",
-    "keywords": [],
-    "license": "CDLA-Permissive-1.0",
-    "links": [
-        {
-            "href": "https://api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_source",
-            "rel": "self",
-            "title": null,
-            "type": "application/json"
-        },
-        {
-            "href": "https://api.radiant.earth/mlhub/v1",
-            "rel": "root",
-            "title": null,
-            "type": "application/json"
-        }
-    ],
-    "properties": {},
-    "providers": [
-        {
-            "description": null,
-            "name": "BigEarthNet",
-            "roles": [
-                "processor",
-                "licensor"
-            ],
-            "url": "https://api.radiant.earth/mlhub/v1/download/dummy-download-key"
-        }
-    ],
-    "sci:citation": "G. Sumbul, M. Charfuelan, B. Demir, V. Markl, \"BigEarthNet: A Large-Scale Benchmark Archive for Remote Sensing Image Understanding\", IEEE International Geoscience and Remote Sensing Symposium, pp. 5901-5904, Yokohama, Japan, 2019.",
-    "stac_extensions": [
-        "eo",
-        "sci"
-    ],
-    "stac_version": "1.0.0-beta.2",
-    "summaries": {},
-    "title": null
+    "temporal": {
+      "interval": [
+        [
+          "2017-06-13T10:10:31Z",
+          "2018-05-29T11:54:01Z"
+        ]
+      ]
+    }
+  },
+  "id": "bigearthnet_v1_source",
+  "keywords": [],
+  "license": "CDLA-Permissive-1.0",
+  "links": [
+    {
+      "href": "https://api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_source",
+      "rel": "self",
+      "title": null,
+      "type": "application/json"
+    },
+    {
+      "href": "https://api.radiant.earth/mlhub/v1",
+      "rel": "root",
+      "title": null,
+      "type": "application/json"
+    }
+  ],
+  "properties": {},
+  "providers": [
+    {
+      "description": null,
+      "name": "BigEarthNet",
+      "roles": [
+        "processor",
+        "licensor"
+      ],
+      "url": "http://bigearth.net"
+    }
+  ],
+  "sci:citation": "G. Sumbul, M. Charfuelan, B. Demir, V. Markl, \"BigEarthNet: A Large-Scale Benchmark Archive for Remote Sensing Image Understanding\", IEEE International Geoscience and Remote Sensing Symposium, pp. 5901-5904, Yokohama, Japan, 2019.",
+  "sci:doi": "10.14279/depositonce-10149",
+  "stac_extensions": [
+    "eo",
+    "scientific"
+  ],
+  "stac_version": "1.0.0-beta.2",
+  "summaries": {},
+  "title": null
 }

@@ -230,11 +230,26 @@ class Dataset:
     (``bigearthnet_v1_labels``).
     """
 
-    def __init__(self, id: str, collections: List[dict], title: Optional[str] = None, **session_kwargs):
+    def __init__(
+        self,
+        id: str,
+        collections: List[dict],
+        title: Optional[str] = None,
+        api_key: Optional[str] = None,
+        profile: Optional[str] = None,
+        # Absorbs additional keyword arguments to protect against changes to dataset object from API
+        # https://github.com/radiantearth/radiant-mlhub/issues/41
+        **_
+    ):
         self.id = id
         self.title = title
         self.collection_descriptions = collections
-        self.session_kwargs = session_kwargs
+
+        self.session_kwargs = {}
+        if api_key:
+            self.session_kwargs['api_key'] = api_key
+        if profile:
+            self.session_kwargs['profile'] = profile
 
         self._collections: Optional['_CollectionList'] = None
 
