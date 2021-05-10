@@ -8,12 +8,15 @@ download_url = re.compile(r'(https?://(?:staging.)?api.radiant.earth/mlhub/v1/do
 
 # Scrub any download hashes associated with the API key used during testing
 def before_record_response(response):
-    response['body']['string'] = re.sub(download_url, r'\1/dummy_hash', response['body']['string'].decode('utf-8'))
+    try:
+        response['body']['string'] = re.sub(download_url, r'\1/dummy_hash', response['body']['string'].decode('utf-8')).encode('utf-8')
+    except UnicodeDecodeError:
+        pass
     return response
 
 
 # Filter out the API key from the query parameters
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope='module', autouse=True)
 def vcr_config():
     return {'filter_query_parameters': ['key']}
 

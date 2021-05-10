@@ -26,7 +26,7 @@ interactions:
       Content-Type:
       - text/html; charset=utf-8
       Date:
-      - Mon, 10 May 2021 18:54:30 GMT
+      - Mon, 10 May 2021 19:36:31 GMT
       Location:
       - https://radiant-mlhub.s3.amazonaws.com/archives/ref_african_crops_kenya_02_labels.tar.gz
       Server:
@@ -59,7 +59,7 @@ interactions:
       Content-Type:
       - application/x-tar
       Date:
-      - Mon, 10 May 2021 18:54:31 GMT
+      - Mon, 10 May 2021 19:36:33 GMT
       ETag:
       - '"93949abd0ae82ba564f5a933cefd8215"'
       Last-Modified:
@@ -67,9 +67,9 @@ interactions:
       Server:
       - AmazonS3
       x-amz-id-2:
-      - Xhrpz7kWoOwnaELpg/w25FM7XeyutFPGVfnyjDbgTMnMIHhAGq/j4Cd5JzJe73mLbixwDVkGPPg=
+      - efJXPcDUwiLCLWnpWWIrA4ohEar6ild125u5oHpZVlJRwaIEOrph2fB/umuHPd/QCTVGGLIFQrc=
       x-amz-request-id:
-      - 0KQ1VQP0K55EDFBH
+      - 083E8ZBD3WVNPNKR
       x-amz-storage-class:
       - INTELLIGENT_TIERING
     status:

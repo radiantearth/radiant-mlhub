@@ -11,6 +11,67 @@ interactions:
       User-Agent:
       - 'radiant_mlhub/0.1.3 (Darwin Kernel Version 19.6.0: Mon Apr 12 20:57:45 PDT
         2021; root:xnu-6153.141.28.1~1/RELEASE_X86_64)'
+    method: GET
+    uri: https://api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_labels
+  response:
+    body:
+      string: "{\n    \"description\": \"No Description\",\n    \"extent\": {\n        \"spatial\":
+        {\n            \"bbox\": [\n                [\n                    34.02206853162399,\n
+        \                   0.16703387465341,\n                    34.20323495307315,\n
+        \                   0.441545515895902\n                ],\n                [\n
+        \                   34.022094366964915,\n                    0.441518222808124,\n
+        \                   34.203292802033246,\n                    0.716046625152611\n
+        \               ],\n                [\n                    34.2032045415558,\n
+        \                   0.167021869556755,\n                    34.384363429998224,\n
+        \                   0.441518222808124\n                ],\n                [\n
+        \                   34.20323495307315,\n                    0.44148648939337,\n
+        \                   34.38442998089197,\n                    0.716002363059778\n
+        \               ]\n            ]\n        },\n        \"temporal\": {\n            \"interval\":
+        [\n                [\n                    \"2019-01-01T00:00:00Z\",\n                    \"2019-12-31T00:00:00Z\"\n
+        \               ]\n            ]\n        }\n    },\n    \"id\": \"ref_african_crops_kenya_02_labels\",\n
+        \   \"keywords\": [],\n    \"license\": \"CC-BY-SA-4.0\",\n    \"links\":
+        [\n        {\n            \"href\": \"https://api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_labels\",\n
+        \           \"rel\": \"self\",\n            \"title\": null,\n            \"type\":
+        \"application/json\"\n        },\n        {\n            \"href\": \"https://api.radiant.earth/mlhub/v1\",\n
+        \           \"rel\": \"root\",\n            \"title\": null,\n            \"type\":
+        \"application/json\"\n        }\n    ],\n    \"properties\": {},\n    \"providers\":
+        [\n        {\n            \"description\": null,\n            \"name\": \"Radiant
+        Earth Foundation\",\n            \"roles\": [\n                \"licensor\",\n
+        \               \"host\",\n                \"processor\"\n            ],\n
+        \           \"url\": \"https://radiant.earth\"\n        }\n    ],\n    \"sci:citation\":
+        \"Radiant Earth Foundation (2020) \\\"CV4A Competition Kenya Crop Type Dataset\\\",
+        Version 1.0, Radiant MLHub. [Date Accessed] https://doi.org/10.34911/RDNT.DW605X\",\n
+        \   \"sci:doi\": \"10.34911/rdnt.dw605x\",\n    \"stac_extensions\": [\n        \"scientific\"\n
+        \   ],\n    \"stac_version\": \"1.0.0-beta.2\",\n    \"summaries\": {},\n
+        \   \"title\": null\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2261'
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 10 May 2021 19:36:47 GMT
+      Server:
+      - gunicorn
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - 'radiant_mlhub/0.1.3 (Darwin Kernel Version 19.6.0: Mon Apr 12 20:57:45 PDT
+        2021; root:xnu-6153.141.28.1~1/RELEASE_X86_64)'
     method: HEAD
     uri: https://api.radiant.earth/mlhub/v1/archive/ref_african_crops_kenya_02_labels
   response:
@@ -26,7 +87,7 @@ interactions:
       Content-Type:
       - text/html; charset=utf-8
       Date:
-      - Mon, 10 May 2021 19:36:29 GMT
+      - Mon, 10 May 2021 19:36:47 GMT
       Location:
       - https://radiant-mlhub.s3.amazonaws.com/archives/ref_african_crops_kenya_02_labels.tar.gz
       Server:
@@ -59,7 +120,7 @@ interactions:
       Content-Type:
       - application/x-tar
       Date:
-      - Mon, 10 May 2021 19:36:31 GMT
+      - Mon, 10 May 2021 19:36:49 GMT
       ETag:
       - '"93949abd0ae82ba564f5a933cefd8215"'
       Last-Modified:
@@ -67,9 +128,9 @@ interactions:
       Server:
       - AmazonS3
       x-amz-id-2:
-      - ytkTxNbp0e1uJMqLhQb0Jv9TWrXj6sd+PQlqHdLzZFwtYC3AJ7GvZonqYTtMsr864BT3hnzy17k=
+      - E2oAqzb1eh+n8YZ/VV1+vmlj0UolRWql29UCuahayGhyvtFWD/EBEGYu94iOkAi8K8i8i3RMAaU=
       x-amz-request-id:
-      - 8DBRWBTFJTR5F7DG
+      - 8QBZYGR3KWJC71VZ
       x-amz-storage-class:
       - INTELLIGENT_TIERING
     status:
@@ -4543,7 +4604,7 @@ interactions:
       Content-Type:
       - application/x-tar
       Date:
-      - Mon, 10 May 2021 19:36:31 GMT
+      - Mon, 10 May 2021 19:36:49 GMT
       ETag:
       - '"93949abd0ae82ba564f5a933cefd8215"'
       Last-Modified:
@@ -4551,9 +4612,9 @@ interactions:
       Server:
       - AmazonS3
       x-amz-id-2:
-      - 5ALJlzahZKGLFmXo7Ea9jLN9gkoluBX3dr1m2M+NuFBhZVzN663y5twPNYJ9NF/KHFvcNSuV0kQ=
+      - haUP9VDbn4aZdeIuojblmaB8A1Wm1qTVSxrIyfH1Cx5m73iubtle/7z6z0/+kKeX6MbHYMzSkkQ=
       x-amz-request-id:
-      - 8DBQVHY0SNXW3XS0
+      - 8QBYWAN1ZQNC92S1
       x-amz-storage-class:
       - INTELLIGENT_TIERING
     status:
