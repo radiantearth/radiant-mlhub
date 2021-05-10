@@ -78,6 +78,7 @@ class TestDataset:
             'Benchmark Archive for Remote Sensing Image Understanding\", IEEE International Geoscience and Remote '\
             'Sensing Symposium, pp. 5901-5904, Yokohama, Japan, 2019.'
 
+    # https://github.com/kevin1024/vcrpy/issues/295
     @pytest.mark.vcr
     @pytest.mark.skip(reason="vcrpy does not handle multithreaded requests.")
     def test_dataset_collections(self):
@@ -97,6 +98,7 @@ class TestDataset:
         assert len(output_paths) == 2
         assert all(p.exists() for p in output_paths)
 
+    # https://github.com/kevin1024/vcrpy/issues/295
     @pytest.mark.vcr
     @pytest.mark.skip(reason="vcrpy does not handle multithreaded requests.")
     def test_collections_list(self):
