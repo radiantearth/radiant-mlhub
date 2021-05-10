@@ -267,7 +267,11 @@ class Dataset:
         registry: Optional[str] = None,
         doi: Optional[str] = None,
         citation: Optional[str] = None,
-        **session_kwargs
+        api_key: Optional[str] = None,
+        profile: Optional[str] = None,
+        # Absorbs additional keyword arguments to protect against changes to dataset object from API
+        # https://github.com/radiantearth/radiant-mlhub/issues/41
+        **_
     ):
         self.id = id
         self.title = title
@@ -275,7 +279,12 @@ class Dataset:
         self.registry_url = registry
         self.doi = doi
         self.citation = citation
-        self.session_kwargs = session_kwargs
+
+        self.session_kwargs = {}
+        if api_key:
+            self.session_kwargs['api_key'] = api_key
+        if profile:
+            self.session_kwargs['profile'] = profile
 
         self._collections: Optional['_CollectionList'] = None
 

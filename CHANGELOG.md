@@ -20,6 +20,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     $ conda install -c conda-forge radiant-mlhub
     ```
 
+## [v0.1.3]
+
+### Fixed
+
+* New attributes in the `/dataset` response will no longer break the `Dataset` class
+  ([#42](https://github.com/radiantearth/radiant-mlhub/pull/42))
+
 ## [v0.1.2]
 
 ### Fixed
@@ -48,6 +55,7 @@ Includes support for:
 * Fetching datasets and collections by ID
 * Downloading collection archives
 
+[v0.1.3]: https://github.com/radiantearth/radiant-mlhub/releases/tag/v0.1.3
 [v0.1.2]: https://github.com/radiantearth/radiant-mlhub/releases/tag/v0.1.2
 [v0.1.1]: https://github.com/radiantearth/radiant-mlhub/releases/tag/v0.1.1
 [v0.1.0]: https://github.com/radiantearth/radiant-mlhub/releases/tag/v0.1.0
