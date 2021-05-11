@@ -1,11 +1,11 @@
 """Low-level functions for making requests to MLHub API endpoints."""
 
 import itertools as it
-from pathlib import Path
-from typing import Iterator, List
+import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
-import urllib.parse
+from pathlib import Path
+from typing import Iterator, List
 
 from requests.exceptions import HTTPError
 
@@ -15,8 +15,8 @@ except ImportError:  # pragma: no cover
     # Handles this issue: https://github.com/tqdm/tqdm/issues/1082
     from tqdm import tqdm  # type: ignore [no-redef]
 
-from .session import get_session
 from .exceptions import EntityDoesNotExist, MLHubException
+from .session import get_session
 
 
 def _download(

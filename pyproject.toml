@@ -12,7 +12,7 @@ envlist = py36, py37, py38, py39
 deps = -rrequirements_testing.txt
 isolated_build = true
 commands =
-    pytest
+    pytest --record-mode once --block-network
     flake8
     flake8_nb examples/
     mypy radiant_mlhub

@@ -1,12 +1,12 @@
-import os.path
 import configparser
+import os.path
 import urllib.parse
 
 import pytest
 from requests_mock.exceptions import NoMockAddress
 
-from radiant_mlhub.session import get_session, Session
-from radiant_mlhub.exceptions import AuthenticationError, APIKeyNotFound
+from radiant_mlhub.exceptions import APIKeyNotFound, AuthenticationError
+from radiant_mlhub.session import Session, get_session
 
 
 class TestResolveAPIKeys:

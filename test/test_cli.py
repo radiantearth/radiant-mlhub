@@ -1,5 +1,5 @@
-from pathlib import Path
 import configparser
+from pathlib import Path
 
 from radiant_mlhub.cli import mlhub
 
@@ -32,7 +32,7 @@ class TestCLI:
         assert config.get('default', 'api_key') == 'testapikey'
 
         # Should abort if an api key exists and user does not confirm overwrite
-        result = isolated_cli_runner.invoke(mlhub, ['configure'], input='testapikey\nn\n')
+        result = isolated_cli_runner.invoke(mlhub, ['configure'], input='testapikey\nn\n', env=env)
         assert result.exit_code == 1, result.output
 
     def test_configure_user_defined_home(self, isolated_cli_runner):

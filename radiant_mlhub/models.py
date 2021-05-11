@@ -1,13 +1,12 @@
 """Extensions of the `PySTAC <https://pystac.readthedocs.io/en/latest/>`_ classes that provide convenience methods for interacting
 with the `Radiant MLHub API <https://docs.mlhub.earth/#radiant-mlhub-api>`_."""
 
+import concurrent.futures
+from collections.abc import Sequence
 from copy import deepcopy
+from enum import Enum
 from pathlib import Path
 from typing import Iterator, List, Optional, Union
-import concurrent.futures
-from enum import Enum
-from collections.abc import Sequence
-
 
 import pystac
 

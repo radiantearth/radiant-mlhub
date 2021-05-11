@@ -1,22 +1,26 @@
-import pytest
 import pystac
+import pytest
+
 from radiant_mlhub.models import Collection, Dataset
 
 
 class TestCollection:
 
-    def test_list_collections(self, collections):
+    @pytest.mark.vcr
+    def test_list_collections(self):
         collections = Collection.list()
-        assert len(collections) == 47
+        assert isinstance(collections, list)
         assert isinstance(collections[0], Collection)
 
-    def test_fetch_collection(self, source_collection):
+    @pytest.mark.vcr
+    def test_fetch_collection(self):
         collection = Collection.fetch('bigearthnet_v1_source')
 
         assert isinstance(collection, Collection)
         assert collection.description == 'BigEarthNet v1.0'
 
-    def test_get_items_error(self, source_collection):
+    @pytest.mark.vcr
+    def test_get_items_error(self):
         collection = Collection.fetch('bigearthnet_v1_source')
 
         with pytest.raises(NotImplementedError) as excinfo:
@@ -25,27 +29,31 @@ class TestCollection:
         assert 'For performance reasons, the get_items method has not been implemented for Collection instances. Please ' \
                'use the Collection.download method to download Collection assets.' == str(excinfo.value)
 
-    def test_fetch_item(self, source_collection, source_collection_item):
-        collection = Collection.fetch('bigearthnet_v1_source')
-        item = collection.fetch_item('bigearthnet_v1_source_S2A_MSIL2A_20180526T100031_65_62')
+    @pytest.mark.vcr
+    def test_fetch_item(self):
+        collection = Collection.fetch('ref_african_crops_kenya_02_source')
+        item = collection.fetch_item('ref_african_crops_kenya_02_tile_02_20190721')
 
         assert isinstance(item, pystac.Item)
         assert len(item.assets) == 13
 
-    def test_download_archive(self, source_collection_archive, source_collection, tmp_path):
-        collection = Collection.fetch('bigearthnet_v1_source')
+    @pytest.mark.vcr
+    def test_download_archive(self, tmp_path):
+        collection = Collection.fetch('ref_african_crops_kenya_02_labels')
         output_path = collection.download(output_dir=tmp_path)
 
-        assert output_path == tmp_path / 'bigearthnet_v1_source.tar.gz'
+        assert output_path == tmp_path / 'ref_african_crops_kenya_02_labels.tar.gz'
         assert output_path.exists()
 
-    def test_get_registry_url(self, source_collection_with_doi):
-        collection = Collection.fetch('su_african_crops_south_sudan_labels')
-        assert collection.registry_url == 'https://registry.mlhub.earth/10.34911/rdnt.v6kx6n'
+    @pytest.mark.vcr
+    def test_get_registry_url(self):
+        collection = Collection.fetch('ref_african_crops_kenya_02_labels')
+        assert collection.registry_url == 'https://registry.mlhub.earth/10.34911/rdnt.dw605x'
 
-    def test_get_registry_url_no_doi(self, source_collection):
+    @pytest.mark.vcr
+    def test_get_registry_url_no_doi(self):
         # Get the example collection as a dict and remove the sci:doi property
-        collection_dict = Collection.fetch('bigearthnet_v1_source').to_dict()
+        collection_dict = Collection.fetch('ref_african_crops_kenya_02_labels').to_dict()
         collection_dict.pop('sci:doi', None)
         collection = Collection.from_dict(collection_dict)
 
@@ -54,13 +62,14 @@ class TestCollection:
 
 class TestDataset:
 
-    def test_list_datasets(self, datasets):
+    @pytest.mark.vcr
+    def test_list_datasets(self):
         """Dataset.list returns a list of Dataset instances."""
         datasets = list(Dataset.list())
-        assert len(datasets) == 19
         assert isinstance(datasets[0], Dataset)
 
-    def test_fetch_dataset(self, dataset):
+    @pytest.mark.vcr
+    def test_fetch_dataset(self):
         dataset = Dataset.fetch('bigearthnet_v1')
         assert isinstance(dataset, Dataset)
         assert dataset.id == 'bigearthnet_v1'
@@ -70,7 +79,10 @@ class TestDataset:
             'Benchmark Archive for Remote Sensing Image Understanding\", IEEE International Geoscience and Remote '\
             'Sensing Symposium, pp. 5901-5904, Yokohama, Japan, 2019.'
 
-    def test_dataset_collections(self, dataset, source_collection, labels_collection):
+    # https://github.com/kevin1024/vcrpy/issues/295
+    @pytest.mark.vcr
+    @pytest.mark.skip(reason="vcrpy does not handle multithreaded requests.")
+    def test_dataset_collections(self):
         dataset = Dataset.fetch('bigearthnet_v1')
         assert len(dataset.collections) == 2
         assert len(dataset.collections.source_imagery) == 1
@@ -78,20 +90,18 @@ class TestDataset:
         assert all(isinstance(c, Collection) for c in dataset.collections)
         assert dataset.collections[0] in dataset.collections.source_imagery
 
-    def test_download_collection_archives(
-            self,
-            dataset,
-            source_collection,
-            labels_collection,
-            source_collection_archive,
-            labels_collection_archive,
-            tmp_path,
-    ):
-        dataset = Dataset.fetch('bigearthnet_v1')
+    @pytest.mark.vcr
+    @pytest.mark.skip(reason="Download size is to large to store in cassette.")
+    def test_download_collection_archives(self, tmp_path):
+        dataset = Dataset.fetch('ref_african_crops_kenya_02')
         output_paths = dataset.download(output_dir=tmp_path)
 
+        assert len(output_paths) == 2
         assert all(p.exists() for p in output_paths)
 
-    def test_collections_list(self, dataset, source_collection, labels_collection):
-        dataset_ = Dataset.fetch(dataset)
-        assert dataset_.collections.__repr__() == '[<Collection id=bigearthnet_v1_source>, <Collection id=bigearthnet_v1_labels>]'
+    # https://github.com/kevin1024/vcrpy/issues/295
+    @pytest.mark.vcr
+    @pytest.mark.skip(reason="vcrpy does not handle multithreaded requests.")
+    def test_collections_list(self):
+        dataset = Dataset.fetch('bigearthnet_v1')
+        assert dataset.collections.__repr__() == '[<Collection id=bigearthnet_v1_source>, <Collection id=bigearthnet_v1_labels>]'

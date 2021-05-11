@@ -1,0 +1,57 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - 'radiant_mlhub/0.1.3 (Darwin Kernel Version 19.6.0: Mon Apr 12 20:57:45 PDT
+        2021; root:xnu-6153.141.28.1~1/RELEASE_X86_64)'
+    method: GET
+    uri: https://api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_source
+  response:
+    body:
+      string: "{\n    \"description\": \"BigEarthNet v1.0\",\n    \"extent\": {\n
+        \       \"spatial\": {\n            \"bbox\": [\n                [\n                    -9.00023345437725,\n
+        \                   1.7542686833884724,\n                    83.44558248555553,\n
+        \                   68.02168200047284\n                ]\n            ]\n
+        \       },\n        \"temporal\": {\n            \"interval\": [\n                [\n
+        \                   \"2017-06-13T10:10:31Z\",\n                    \"2018-05-29T11:54:01Z\"\n
+        \               ]\n            ]\n        }\n    },\n    \"id\": \"bigearthnet_v1_source\",\n
+        \   \"keywords\": [],\n    \"license\": \"CDLA-Permissive-1.0\",\n    \"links\":
+        [\n        {\n            \"href\": \"https://api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_source\",\n
+        \           \"rel\": \"self\",\n            \"title\": null,\n            \"type\":
+        \"application/json\"\n        },\n        {\n            \"href\": \"https://api.radiant.earth/mlhub/v1\",\n
+        \           \"rel\": \"root\",\n            \"title\": null,\n            \"type\":
+        \"application/json\"\n        }\n    ],\n    \"properties\": {},\n    \"providers\":
+        [\n        {\n            \"description\": null,\n            \"name\": \"BigEarthNet\",\n
+        \           \"roles\": [\n                \"processor\",\n                \"licensor\"\n
+        \           ],\n            \"url\": \"https://api.radiant.earth/mlhub/v1/download/dummy_hash\"\n
+        \       }\n    ],\n    \"sci:citation\": \"G. Sumbul, M. Charfuelan, B. Demir,
+        V. Markl, \\\"BigEarthNet: A Large-Scale Benchmark Archive for Remote Sensing
+        Image Understanding\\\", IEEE International Geoscience and Remote Sensing
+        Symposium, pp. 5901-5904, Yokohama, Japan, 2019.\",\n    \"sci:doi\": \"10.14279/depositonce-10149\",\n
+        \   \"stac_extensions\": [\n        \"eo\",\n        \"scientific\"\n    ],\n
+        \   \"stac_version\": \"1.0.0-beta.2\",\n    \"summaries\": {},\n    \"title\":
+        null\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1999'
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 10 May 2021 19:36:45 GMT
+      Server:
+      - gunicorn
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -69,7 +69,7 @@ jobs:
       - name: Run tests
         run: |
           pip install .
-          pytest test
+          pytest --record-mode once --block-network
           flake8
           flake8_nb examples/
           mypy radiant_mlhub
@@ -126,7 +126,7 @@ jobs:
       - name: Run tests
         run: |
           pip install .
-          pytest test
+          pytest --record-mode once --block-network
           flake8
           flake8_nb examples/
           mypy radiant_mlhub
