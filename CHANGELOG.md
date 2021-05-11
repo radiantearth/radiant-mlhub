@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## \[Unreleased\]
 
+### Changed
+
+* Pins PySTAC to v0.5.4
+
+   Later versions automatically resolve links, which was leading to unnecessary network requests and
+   issues with matching in VCR.py
+
 ### Fixed
 
 * Allow user-defined `profiles` location ([#27](https://github.com/radiantearth/radiant-mlhub/issues/27))
@@ -19,6 +26,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     ```console
     $ conda install -c conda-forge radiant-mlhub
     ```
+
+### Developer
+
+* Switch to using [pytest-recording](https://pypi.org/project/pytest-recording/) ([VCR.py] under the
+  hood) for mocking API responses
 
 ## [v0.1.3]
 
@@ -59,3 +71,4 @@ Includes support for:
 [v0.1.2]: https://github.com/radiantearth/radiant-mlhub/releases/tag/v0.1.2
 [v0.1.1]: https://github.com/radiantearth/radiant-mlhub/releases/tag/v0.1.1
 [v0.1.0]: https://github.com/radiantearth/radiant-mlhub/releases/tag/v0.1.0
+[VCR.py]: https://vcrpy.readthedocs.io/en/latest/usage.html
