@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-* Pins PySTAC to v0.5.4
+* Pins PySTAC to v0.5.4 ([#43](https://github.com/radiantearth/radiant-mlhub/pull/43))
 
    Later versions automatically resolve links, which was leading to unnecessary network requests and
    issues with matching in VCR.py
@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Developer
 
 * Switch to using [pytest-recording](https://pypi.org/project/pytest-recording/) ([VCR.py] under the
-  hood) for mocking API responses
+  hood) for mocking API responses ([#43](https://github.com/radiantearth/radiant-mlhub/pull/43))
 
 ## [v0.1.3]
 
