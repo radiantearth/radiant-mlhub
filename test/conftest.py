@@ -28,4 +28,4 @@ def pytest_recording_configure(config, vcr):
 @pytest.fixture(scope='function', autouse=True)
 def mock_profile(monkeypatch):
     denv = dotenv_values()
-    monkeypatch.setenv('MLHUB_API_KEY', denv['MLHUB_API_KEY'])
+    monkeypatch.setenv('MLHUB_API_KEY', denv.get('MLHUB_API_KEY', 'test_key'))
