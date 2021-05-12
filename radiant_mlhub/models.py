@@ -11,12 +11,23 @@ from typing import Iterator, List, Optional, Union
 import pystac
 
 from . import client
+from .exceptions import EntityDoesNotExist
 
 
 class Collection(pystac.Collection):
     """Class inheriting from :class:`pystac.Collection` that adds some convenience methods for listing and fetching
     from the Radiant MLHub API.
     """
+
+    def __init__(self, id, description, extent, title, stac_extensions, href, extra_fields, catalog_type, license,
+                 keywords, providers, properties, summaries):
+        super().__init__(id, description, extent, title=title, stac_extensions=stac_extensions, href=href,
+                         extra_fields=extra_fields, catalog_type=catalog_type, license=license, keywords=keywords,
+                         providers=providers, properties=properties, summaries=summaries)
+
+        # Use -1 here instead of None because None represents the case where the archive does not
+        #  exist (HEAD returns a 404).
+        self._archive_size = -1
 
     @classmethod
     def list(cls, **session_kwargs) -> List['Collection']:
@@ -180,6 +191,21 @@ class Collection(pystac.Collection):
             return None
 
         return f'https://registry.mlhub.earth/{doi}'
+
+    @property
+    def archive_size(self) -> Optional[int]:
+        """The size of the tarball archive for this collection in bytes (or ``None`` if the archive
+        does not exist)."""
+
+        # Use -1 here instead of None because None represents the case where the archive does not
+        #  exist (HEAD returns a 404).
+        if self._archive_size == -1:
+            try:
+                self._archive_size = client.get_archive_info(self.id).get('size')
+            except EntityDoesNotExist:
+                self._archive_size = None
+
+        return self._archive_size
 
 
 class CollectionType(Enum):
@@ -422,3 +448,17 @@ class Dataset:
             collection.download(output_dir, if_exists=if_exists, **session_kwargs)
             for collection in self.collections
         ]
+
+    @property
+    def total_archive_size(self) -> Optional[int]:
+        """Gets the total size (in bytes) of the archives for all collections associated with this
+        dataset. If no archives exist, returns ``None``."""
+        # Since self.collections is cached on the Dataset instance, and collection.archive_size is
+        # cached on each Collection, we don't bother to cache this property.
+        archive_sizes = [
+            collection.archive_size
+            for collection in self.collections
+            if collection.archive_size is not None
+        ]
+
+        return None if not archive_sizes else sum(archive_sizes)
