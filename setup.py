@@ -9,6 +9,7 @@ setuptools.setup(
     author="Radiant Earth Foundation",
     author_email="devops@radiant.earth",
     license='Apache License 2.0',
+    license_file='LICENSE',
     description="A Python client for Radiant MLHub",
     long_description=long_description,
     long_description_content_type="text/markdown",

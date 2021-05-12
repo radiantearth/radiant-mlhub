@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 * Allow user-defined `profiles` location ([#27](https://github.com/radiantearth/radiant-mlhub/issues/27))
+* License file is now included in the distribution ([#37](https://github.com/radiantearth/radiant-mlhub/issues/37))
 
 ### Added
 
