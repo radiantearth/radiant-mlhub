@@ -103,6 +103,13 @@ method. This is the recommended way of fetching a collection. This method return
     >>> collection.description
     'African Crops Kenya'
 
+For more information on a Collection, you can check out the MLHub Registry page:
+
+.. code-block:: python
+
+    >>> collection.registry_url
+    https://registry.mlhub.earth/10.14279/depositonce-10149/
+
 Downloading a Collection
 ++++++++++++++++++++++++
 
@@ -132,6 +139,14 @@ If a file of the same name already exists, these methods will check whether the 
 file. If they are the same size, the download is skipped, otherwise the download will be resumed from the point where it stopped. You can control
 this behavior using the ``if_exists`` argument. Setting this to ``"skip"`` will skip the download for existing files *without* checking for
 completeness (a bit faster since it doesn't require a network request), and setting this to ``"overwrite"`` will overwrite any existing file.
+
+To check the size of the download archive without actually downloading it, you can use the 
+:attr:`Collection.total_archive_size` property.
+
+.. code-block:: python
+
+    >>> collection.archive_size
+    3504256089
 
 Collection archives are gzipped tarballs. You can read more about the structure of these archives in `this Medium post
 <https://medium.com/radiant-earth-insights/archived-training-dataset-downloads-now-available-on-radiant-mlhub-7eb67daf094e>`_.

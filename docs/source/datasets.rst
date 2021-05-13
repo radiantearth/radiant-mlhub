@@ -137,5 +137,13 @@ network request), and setting this to ``"overwrite"`` will overwrite any existin
     >>> len(archive_paths)
     2
 
+To check the total size of the download archives for all collections in the dataset without actually
+downloading it, you can use the :attr:`Dataset.total_archive_size` property.
+
+.. code-block:: python
+
+    >>> dataset.total_archive_size
+    71311240007
+
 Collection archives are gzipped tarballs. You can read more about the structure of these archives in `this Medium post
 <https://medium.com/radiant-earth-insights/archived-training-dataset-downloads-now-available-on-radiant-mlhub-7eb67daf094e>`_.

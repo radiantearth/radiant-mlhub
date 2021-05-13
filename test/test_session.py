@@ -1,12 +1,12 @@
-import os.path
 import configparser
+import os.path
 import urllib.parse
 
 import pytest
 from requests_mock.exceptions import NoMockAddress
 
-from radiant_mlhub.session import get_session, Session
-from radiant_mlhub.exceptions import AuthenticationError, APIKeyNotFound
+from radiant_mlhub.exceptions import APIKeyNotFound, AuthenticationError
+from radiant_mlhub.session import Session, get_session
 
 
 class TestResolveAPIKeys:
@@ -202,7 +202,7 @@ class TestSessionRequests:
         assert len(history) == 1
 
         assert history[0].headers.get('accept') == 'application/json'
-        assert 'radiant_mlhub/0.1.3' in history[0].headers.get('user-agent')
+        assert 'radiant_mlhub/0.2.0' in history[0].headers.get('user-agent')
 
     def test_relative_path(self, requests_mock):
         """The session uses the default root URL and joins relative paths to the root URL."""

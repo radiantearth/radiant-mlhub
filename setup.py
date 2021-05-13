@@ -5,10 +5,11 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="radiant_mlhub",
-    version="0.1.3",
+    version="0.2.0",
     author="Radiant Earth Foundation",
     author_email="devops@radiant.earth",
     license='Apache License 2.0',
+    license_file='LICENSE',
     description="A Python client for Radiant MLHub",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -22,7 +23,7 @@ setuptools.setup(
     },
     install_requires=[
         'requests~=2.25.1',
-        'pystac~=0.5.4',
+        'pystac==0.5.4',
         'click~=7.1.2',
         'tqdm~=4.56.0',
     ],

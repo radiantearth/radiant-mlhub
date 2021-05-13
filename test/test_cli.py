@@ -1,5 +1,5 @@
-from pathlib import Path
 import configparser
+from pathlib import Path
 
 from radiant_mlhub.cli import mlhub
 
@@ -8,7 +8,7 @@ class TestCLI:
 
     def test_version(self, cli_runner):
         result = cli_runner.invoke(mlhub, ['--version'])
-        assert result.output.rstrip('\n') == 'mlhub, version 0.1.3'
+        assert result.output.rstrip('\n') == 'mlhub, version 0.2.0'
 
     def test_configure(self, isolated_cli_runner):
         new_home = Path.cwd()
@@ -32,7 +32,7 @@ class TestCLI:
         assert config.get('default', 'api_key') == 'testapikey'
 
         # Should abort if an api key exists and user does not confirm overwrite
-        result = isolated_cli_runner.invoke(mlhub, ['configure'], input='testapikey\nn\n')
+        result = isolated_cli_runner.invoke(mlhub, ['configure'], input='testapikey\nn\n', env=env)
         assert result.exit_code == 1, result.output
 
     def test_configure_user_defined_home(self, isolated_cli_runner):

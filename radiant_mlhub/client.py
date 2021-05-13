@@ -1,11 +1,11 @@
 """Low-level functions for making requests to MLHub API endpoints."""
 
 import itertools as it
-from pathlib import Path
-from typing import Iterator, List
+import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
-import urllib.parse
+from pathlib import Path
+from typing import Iterator, List
 
 from requests.exceptions import HTTPError
 
@@ -15,8 +15,8 @@ except ImportError:  # pragma: no cover
     # Handles this issue: https://github.com/tqdm/tqdm/issues/1082
     from tqdm import tqdm  # type: ignore [no-redef]
 
-from .session import get_session
 from .exceptions import EntityDoesNotExist, MLHubException
+from .session import get_session
 
 
 def _download(
@@ -300,6 +300,40 @@ def get_collection_item(collection_id: str, item_id: str, **session_kwargs) -> d
         raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})')
 
 
+def get_archive_info(archive_id: str, **session_kwargs) -> dict:
+    """Gets info for the given archive from the ``/archive/{archive_id}/info`` endpoint as a
+    JSON-like dictionary.
+
+    The JSON object returned by the API has the following properties:
+
+    - ``collection``: The ID of the Collection that this archive is associated with.
+    - ``dataset``: The ID of the dataset that this archive's Collection belongs to.
+    - ``size``: The size of the archive (in bytes)
+    - ``types``: The types associated with this archive's Collection. Will be one of
+      ``"source_imagery"`` or ``"label"``.
+
+    Parameters
+    ----------
+    archive_id : str
+        The ID of the archive. This is the same as the Collection ID.
+    **session_kwargs
+        Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
+    Returns
+    -------
+    archive_info : dict
+        JSON-like dictionary representing the API response.
+    """
+    session = get_session(**session_kwargs)
+    try:
+        return session.get(f'archive/{archive_id}/info').json()
+
+    except HTTPError as e:
+        if e.response.status_code == 404:
+            raise EntityDoesNotExist(f'Archive "{archive_id}" does not exist.') from None
+        raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})') from None
+
+
 def download_archive(
         archive_id: str,
         output_dir: Path = None,
@@ -319,7 +353,7 @@ def download_archive(
     Parameters
     ----------
     archive_id : str
-        The ID of the archive to download.
+        The ID of the archive to download. This is the same as the Collection ID.
     output_dir : Path
         Path to which the archive will be downloaded. Defaults to the current working directory.
     if_exists : str, optional

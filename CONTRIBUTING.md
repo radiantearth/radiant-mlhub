@@ -50,10 +50,10 @@ Install development dependencies:
 ## Tests
 
 This library uses [`pytest`](https://docs.pytest.org/en/stable/) for unit testing, 
-[`flake8`](https://flake8.pycqa.org/en/latest/) for code style checking, and 
-[`mypy`](https://mypy.readthedocs.io/en/stable/) for type checking. We use 
-[`tox`](https://tox.readthedocs.io/en/latest/examples.html) run each of these tools against all supported Python 
-versions.
+[`flake8`](https://flake8.pycqa.org/en/latest/) and [`flake8-nb`](https://pypi.org/project/flake8-nb/)
+for code style checking, and [`mypy`](https://mypy.readthedocs.io/en/stable/) for type checking.
+We also use [`tox`](https://tox.readthedocs.io/en/latest/examples.html) run each of these tools against
+all supported Python versions.
 
 To run against all supported Python versions in parallel:
 
@@ -69,6 +69,24 @@ To run against just Python 3.8, for example:
 
 *Note that you must have all supported Python versions installed in order to run tests against them. See 
 [`tox-pyenv`](https://pypi.org/project/tox-pyenv/) if you are using `pyenv` to manage your installed Python versions.*  
+
+### VCR.py Cassettes
+
+If you need to re-record any of the VCR.py cassettes, you will need to create a `test/.env` file
+with the following content:
+
+```
+MLHUB_API_KEY=<SUBSTITUTE_VALID_API_KEY_HERE>
+```
+
+The API key will be used to make new requests, but will *not* be recorded in any of the cassettes.
+All user-specific download links are also sanitized before being recorded to a cassette. 
+
+To re-record a cassette use:
+
+```
+pytest {path_to_test(s)} --record-mode rewrite --block-network
+```
 
 ## Releases
 
