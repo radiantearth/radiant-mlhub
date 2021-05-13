@@ -185,7 +185,6 @@ class Collection(pystac.Collection):
 
         # Some Collections don't publish the "scientific" extension in their "stac_extensions"
         # attribute so we access this via "extra_fields" rather than through self.ext["scientific"].
-        print(self.extra_fields)
         doi = self.extra_fields.get("sci:doi")
         if doi is None:
             return None
