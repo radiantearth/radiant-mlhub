@@ -403,7 +403,10 @@ class Dataset:
         -------
         dataset : Dataset
         """
-        return cls(**client.get_dataset(dataset_id, **session_kwargs))
+        return cls(
+            **client.get_dataset(dataset_id, **session_kwargs),
+            **session_kwargs
+        )
 
     def download(
             self,
