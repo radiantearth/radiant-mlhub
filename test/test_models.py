@@ -144,7 +144,7 @@ class TestDatasetNoProfile:
                 "bbox": [
                     [
                         -9.00023345437725, 1.7542686833884724,
-                        83.44558248555553,68.02168200047284
+                        83.44558248555553, 68.02168200047284
                     ]
                 ]
             },
@@ -163,6 +163,7 @@ class TestDatasetNoProfile:
         "properties": {},
         "stac_version": "1.0.0-beta.2"
     }
+
     @pytest.fixture(scope='function', autouse=True)
     def mock_profile(self, monkeypatch, tmp_path):
         """Overwrite the fixture in conftest so we don't set up an API key here"""
