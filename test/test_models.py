@@ -176,9 +176,9 @@ class TestDatasetNoProfile:
 
         yield
 
-    def test_get_collections_with_api_key(self, requests_mock):
-        """The Dataset class should use any API keys passed during instantiation for listing
-        collections."""
+    def test_fetch_with_api_key(self, requests_mock):
+        """The Dataset class should use any API keys passed to Dataset.fetch in methods on the
+        resulting Dataset instance."""
         dataset_id = self.DATASET["id"]
         collection_id = self.COLLECTION["id"]
         api_key = 'test_api_key'
@@ -194,4 +194,25 @@ class TestDatasetNoProfile:
 
         history = requests_mock.request_history
         assert len(history) == 2
-        assert "key=test_api_key" in history[1].url
+        assert f"key={api_key}" in history[1].url
+
+    def test_list_with_api_key(self, requests_mock):
+        """The Dataset class should use any API keys passed to Dataset.list in methods on the
+        resulting dataset instances."""
+
+        collection_id = self.COLLECTION["id"]
+        api_key = 'test_api_key'
+
+        dataset_url = urljoin(Session.ROOT_URL, 'datasets')
+        requests_mock.get(dataset_url, json=[self.DATASET])
+
+        collection_url = urljoin(Session.ROOT_URL, f'collections/{collection_id}')
+        requests_mock.get(collection_url, json=self.COLLECTION)
+
+        datasets = Dataset.list(api_key=api_key)
+        for dataset in datasets:
+            _ = dataset.collections
+
+        history = requests_mock.request_history
+        assert len(history) == 2
+        assert f"key={api_key}" in history[1].url
