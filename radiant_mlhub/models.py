@@ -386,7 +386,7 @@ class Dataset:
         ------
         dataset : Dataset
         """
-        yield from map(lambda d: cls(**d), client.list_datasets(**session_kwargs))
+        yield from map(lambda d: cls(**d, **session_kwargs), client.list_datasets(**session_kwargs))
 
     @classmethod
     def fetch(cls, dataset_id: str, **session_kwargs) -> 'Dataset':
@@ -403,7 +403,10 @@ class Dataset:
         -------
         dataset : Dataset
         """
-        return cls(**client.get_dataset(dataset_id, **session_kwargs))
+        return cls(
+            **client.get_dataset(dataset_id, **session_kwargs),
+            **session_kwargs
+        )
 
     def download(
             self,
