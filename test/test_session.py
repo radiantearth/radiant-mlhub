@@ -242,7 +242,7 @@ class TestSessionRequests:
         with pytest.raises(AuthenticationError) as excinfo:
             session.get('https://api.radiant.earth/mlhub/v1/auth-error')
 
-        assert 'Authentication failed for API key "not-valid"' == str(excinfo.value)
+        assert 'Authentication failed. API Key: not-valid' == str(excinfo.value)
 
 
 class TestAnonymousSession:

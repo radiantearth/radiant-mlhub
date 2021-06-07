@@ -108,7 +108,12 @@ class Session(requests.Session):
 
         # Handle authentication errors
         if response.status_code == 401:
-            raise AuthenticationError(f'Authentication failed for API key "{self.params.get("key")}"')
+            msg = "Authentication failed. "
+            if "key" in self.params:
+                msg += f"API Key: {self.params['key']}"
+            else:
+                msg += "No API key provided."
+            raise AuthenticationError(msg)
 
         # Raise exceptions for any HTTP codes >=400
         response.raise_for_status()
