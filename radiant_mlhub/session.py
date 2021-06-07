@@ -21,6 +21,8 @@ from urllib3.util import Retry
 from .__version__ import __version__
 from .exceptions import APIKeyNotFound, AuthenticationError
 
+ANONYMOUS_PROFILE = "__anonymous__"
+
 
 class Session(requests.Session):
     """Custom class inheriting from :class:`requests.Session` with some additional conveniences:
@@ -38,11 +40,12 @@ class Session(requests.Session):
     PROFILE_ENV_VARIABLE = 'MLHUB_PROFILE'
     ROOT_URL = 'https://api.radiant.earth/mlhub/v1/'
 
-    def __init__(self, *, api_key: str):
+    def __init__(self, *, api_key: Optional[str]):
         super().__init__()
 
         # Add the API key query parameter
-        self.params.update({'key': api_key})  # type: ignore [union-attr]
+        if api_key is not None:
+            self.params.update({'key': api_key})  # type: ignore [union-attr]
 
         # Set the default headers
         self.headers.update({
@@ -241,6 +244,11 @@ def get_session(*, api_key: Optional[str] = None, profile: Optional[str] = None)
     try:
         # Use the profile argument (if not None or empty), otherwise try to get the profile name from the MLHUB_PROFILE env variable.
         profile = profile or os.getenv(Session.PROFILE_ENV_VARIABLE)
+
+        if profile == ANONYMOUS_PROFILE:
+            # For the special case of the "__anonymous__" profile, create a Session with no API key
+            return Session(api_key=None)
+
         return Session.from_config(profile=profile)
     except APIKeyNotFound:
         raise APIKeyNotFound('Could not resolve an API key from arguments, the environment, or a config file.') from None
