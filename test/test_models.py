@@ -1,6 +1,8 @@
+import json
+from pathlib import Path
 import pystac
 import pytest
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlsplit, parse_qs
 
 from radiant_mlhub.models import Collection, Dataset
 from radiant_mlhub.session import Session
@@ -67,12 +69,77 @@ class TestCollection:
         assert collection.archive_size == 173029030
 
 
+class TestAnonymousCollection:
+    @pytest.fixture(scope='function', autouse=True)
+    def mock_profile(self):
+        pass
+
+    def test_list_anonymously_has_no_key(self, requests_mock):
+        url = urljoin(Session.ROOT_URL, 'collections')
+
+        # Don't really care about the response here, since we're just interested in the request
+        # parameters. We test that this gives a valid response in a different test
+        requests_mock.get(url, json={"collections": []})
+
+        _ = Collection.list(profile="__anonymous__")
+
+        history = requests_mock.request_history
+
+        actual_url = history[0].url
+        qs = parse_qs(urlsplit(actual_url).query)
+        assert "key" not in qs
+
+    def test_fetch_anonymously_has_no_key(self, requests_mock):
+        collection_id = 'bigearthnet_v1_source'
+        url = urljoin(Session.ROOT_URL, f'collections/{collection_id}')
+
+        example_collection = Path(__file__).parent / "data" / "bigearthnet_v1_source.json"
+        with open(example_collection) as src:
+            requests_mock.get(url, json=json.load(src))
+
+        _ = Collection.fetch(collection_id, profile="__anonymous__")
+
+        history = requests_mock.request_history
+
+        actual_url = history[0].url
+        qs = parse_qs(urlsplit(actual_url).query)
+        assert "key" not in qs
+
+    def test_fetch_passes_session_to_instance(self, requests_mock):
+        collection_id = 'bigearthnet_v1_source'
+        collection_url = urljoin(Session.ROOT_URL, f'collections/{collection_id}')
+
+        example_collection = Path(__file__).parent / "data" / "bigearthnet_v1_source.json"
+        with open(example_collection) as src:
+            requests_mock.get(collection_url, json=json.load(src))
+
+        collection = Collection.fetch(collection_id, profile="__anonymous__")
+        assert collection.session_kwargs.get("profile") == "__anonymous__"
+
+    def test_anonymous_archive_size(self, requests_mock):
+        collection_id = 'bigearthnet_v1_source'
+        example_collection = Path(__file__).parent / "data" / "bigearthnet_v1_source.json"
+        with open(example_collection) as src:
+            collection = Collection.from_dict(json.load(src), profile="__anonymous__")
+
+        info_url = urljoin(Session.ROOT_URL, f'archive/{collection_id}/info')
+        requests_mock.get(info_url, json={})
+
+        _ = collection.archive_size
+
+        history = requests_mock.request_history
+
+        actual_url = history[0].url
+        qs = parse_qs(urlsplit(actual_url).query)
+        assert "key" not in qs
+
+
 class TestDataset:
 
     @pytest.mark.vcr
     def test_list_datasets(self):
         """Dataset.list returns a list of Dataset instances."""
-        datasets = list(Dataset.list())
+        datasets = Dataset.list()
         assert isinstance(datasets[0], Dataset)
 
     @pytest.mark.vcr
@@ -118,6 +185,12 @@ class TestDataset:
     def test_total_archive_size(self):
         dataset = Dataset.fetch('bigearthnet_v1')
         assert dataset.total_archive_size == 71311240007
+
+
+class TestAnonymousDataset:
+    @pytest.fixture(scope='function', autouse=True)
+    def mock_profile(self):
+        pass
 
 
 class TestDatasetNoProfile:
