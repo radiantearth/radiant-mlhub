@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+* Ability to create anonymous (unauthenticated) `Session` using `profile="__anonymous__"`
+  ([#52](https://github.com/radiantearth/radiant-mlhub/pull/52))
+
 ### Changed
 
 ### Fixed
