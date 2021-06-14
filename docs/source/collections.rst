@@ -23,7 +23,7 @@ and :class:`dict`). This function returns a list of JSON-like dictionaries repre
     >>> from radiant_mlhub.client import list_collections
     >>> from pprint import pprint
     >>> collections = list_collections()
-    >>> first_collection = next(collections)
+    >>> first_collection = collections[0]
     >>> pprint(first_collection)
     {'description': 'African Crops Kenya',
      'extent': {'spatial': {'bbox': [[34.18191992149459,
@@ -58,13 +58,13 @@ and :class:`dict`). This function returns a list of JSON-like dictionaries repre
      'title': None}
 
 You can also discover collections using the :meth:`Collection.list <radiant_mlhub.models.Collection.list>` method. This is the recommended way of
-listing datasets. This method is a generator that yields :class:`Collection <radiant_mlhub.models.Collection>` instances.
+listing datasets. This method returns a list of :class:`Collection <radiant_mlhub.models.Collection>` instances.
 
 .. code-block:: python
 
     >>> from radiant_mlhub import Collection
     >>> collections = Collection.list()
-    >>> first_collection = next(collections)
+    >>> first_collection = collections[0]
     >>> first_collection.ref_african_crops_kenya_01_labels
     'ref_african_crops_kenya_01_labels'
     >>> first_collection.description

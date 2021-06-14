@@ -390,7 +390,7 @@ class Dataset:
 
     @classmethod
     def list(cls, **session_kwargs) -> List['Dataset']:
-        """Yields :class:`Dataset` instances for all datasets hosted by MLHub.
+        """Returns a list of :class:`Dataset` instances for each datasets hosted by MLHub.
 
         See the :ref:`Authentication` documentation for details on how authentication is handled for this request.
 
