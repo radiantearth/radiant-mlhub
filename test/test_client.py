@@ -1,9 +1,11 @@
 import os
+from radiant_mlhub.session import Session
+from urllib.parse import urljoin, parse_qs, urlsplit
 
 import pytest
 
 import radiant_mlhub.client
-from radiant_mlhub.exceptions import EntityDoesNotExist, MLHubException
+from radiant_mlhub.exceptions import EntityDoesNotExist, MLHubException, AuthenticationError
 
 
 class TestClient:
@@ -135,3 +137,96 @@ class TestClient:
             if_exists='overwrite'
         )
         assert output_path.stat().st_size > original_size
+
+
+class TestAnonymousClient:
+    @pytest.fixture(scope='function', autouse=True)
+    def mock_profile(self):
+        pass
+
+    def test_list_datasets_anonymously_has_no_key(self, requests_mock):
+        url = urljoin(Session.ROOT_URL, 'datasets')
+
+        # Don't really care about the response here, since we're just interested in the request
+        # parameters. We test that this gives a valid response in a different test
+        requests_mock.get(url, json=[])
+
+        _ = radiant_mlhub.client.list_datasets(profile="__anonymous__")
+
+        history = requests_mock.request_history
+
+        actual_url = history[0].url
+        qs = parse_qs(urlsplit(actual_url).query)
+        assert "key" not in qs
+
+    @pytest.mark.vcr
+    def test_list_datasets_anonymously_works(self):
+        datasets = radiant_mlhub.client.list_datasets(profile="__anonymous__")
+        assert len(datasets) > 0
+
+    def test_list_collections_anonymously_has_no_key(self, requests_mock):
+        url = urljoin(Session.ROOT_URL, 'collections')
+
+        # Don't really care about the response here, since we're just interested in the request
+        # parameters. We test that this gives a valid response in a different test
+        requests_mock.get(url, json={"collections": []})
+
+        _ = radiant_mlhub.client.list_collections(profile="__anonymous__")
+
+        history = requests_mock.request_history
+
+        actual_url = history[0].url
+        qs = parse_qs(urlsplit(actual_url).query)
+        assert "key" not in qs
+
+    @pytest.mark.vcr
+    def test_list_collections_anonymously_works(self):
+        collections = radiant_mlhub.client.list_collections(profile="__anonymous__")
+        assert len(collections) > 0
+
+    def test_get_collection_anonymously_has_no_key(self, requests_mock):
+        collection_id = 'bigearthnet_v1_source'
+        url = urljoin(Session.ROOT_URL, f'collections/{collection_id}')
+
+        # Don't really care about the response here, since we're just interested in the request
+        # parameters. We test that this gives a valid response in a different test
+        requests_mock.get(url, json={})
+
+        _ = radiant_mlhub.client.get_collection(collection_id, profile="__anonymous__")
+
+        history = requests_mock.request_history
+
+        actual_url = history[0].url
+        qs = parse_qs(urlsplit(actual_url).query)
+        assert "key" not in qs
+
+    @pytest.mark.vcr
+    def test_get_collection_anonymously_works(self):
+        collection_id = 'bigearthnet_v1_source'
+        collection = radiant_mlhub.client.get_collection(collection_id, profile="__anonymous__")
+        assert isinstance(collection, dict)
+
+    def test_list_collection_items_anonymously_has_no_key(self, requests_mock):
+        collection_id = "bigearthnet_v1_source"
+        url = urljoin(Session.ROOT_URL, f'collections/{collection_id}/items')
+
+        # Don't really care about the response here, since we're just interested in the request
+        # parameters. We test that this gives a valid response in a different test
+        requests_mock.get(url, json={"features": []})
+
+        _ = list(radiant_mlhub.client.list_collection_items(collection_id, profile="__anonymous__"))
+
+        history = requests_mock.request_history
+
+        actual_url = history[0].url
+        qs = parse_qs(urlsplit(actual_url).query)
+        assert "key" not in qs
+
+    @pytest.mark.vcr
+    def test_list_collection_items_anonymously_does_not_work(self):
+        collection_id = "bigearthnet_v1_source"
+
+        with pytest.raises(AuthenticationError) as excinfo:
+            _ = list(radiant_mlhub.client.list_collection_items(collection_id, profile="__anonymous__"))
+
+        assert "No API key provided" in str(excinfo.value)

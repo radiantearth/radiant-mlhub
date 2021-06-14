@@ -242,4 +242,21 @@ class TestSessionRequests:
         with pytest.raises(AuthenticationError) as excinfo:
             session.get('https://api.radiant.earth/mlhub/v1/auth-error')
 
-        assert 'Authentication failed for API key "not-valid"' == str(excinfo.value)
+        assert 'Authentication failed. API Key: not-valid' == str(excinfo.value)
+
+
+class TestAnonymousSession:
+    @pytest.fixture(scope='function', autouse=True)
+    def mock_profile(self):
+        pass
+
+    def test_anonymous_session_has_no_key(self):
+        """Session instantiated with api_key=None should not include a "key" query parameter."""
+        session = Session(api_key=None)
+        assert 'key' not in session.params
+
+    def get_anonymous_session(self):
+        """get_session called with the anonymouse profile should return a session that does not
+        include a "key" query parameter."""
+        session = get_session(profile="__anonymous__")
+        assert 'key' not in session.params

@@ -31,7 +31,7 @@ can use the low-level :func:`~radiant_mlhub.client.list_datasets` function to wo
     >>> from radiant_mlhub.client import list_datasets
     >>> from pprint import pprint
     >>> datasets = list_datasets()
-    >>> first_dataset = next(datasets)
+    >>> first_dataset = datasets[0]
     >>> pprint(first_dataset)
     {'collections': [{'id': 'bigearthnet_v1_source', 'types': ['source_imagery']},
                  {'id': 'bigearthnet_v1_labels', 'types': ['labels']}],
@@ -39,13 +39,13 @@ can use the low-level :func:`~radiant_mlhub.client.list_datasets` function to wo
      'title': 'BigEarthNet V1'}
 
 You can also discover datasets using the :meth:`Dataset.list <radiant_mlhub.models.Dataset.list>` method. This is the recommended way of
-listing datasets. This method is a generator that yields :class:`Dataset <radiant_mlhub.models.Dataset>` instances.
+listing datasets. This method returns a list of :class:`Dataset <radiant_mlhub.models.Dataset>` instances.
 
 .. code-block:: python
 
     >>> from radiant_mlhub import Dataset
     >>> datasets = Dataset.list()
-    >>> first_dataset = next(datasets)
+    >>> first_dataset = datasets[0]
     >>> first_dataset.id
     'bigearthnet_v1'
     >>> first_dataset.title
