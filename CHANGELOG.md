@@ -22,6 +22,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Documentation example in Authentication docs (([#53](https://github.com/radiantearth/radiant-mlhub/pull/53)))
 
+### Developer
+
+- Moving to [One Flow](https://www.endoflineblog.com/oneflow-a-git-branching-model-and-workflow)
+  branching strategy instead of Git Flow for simplicity
+  ([#49](https://github.com/radiantearth/radiant-mlhub/issues/49))
+
 ## [v0.2.1]
 
 ### Fixed
