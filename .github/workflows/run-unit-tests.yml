@@ -28,7 +28,7 @@ on:
 
 jobs:
 
-  test_linux:
+  test:
 
     strategy:
       matrix:
@@ -37,6 +37,7 @@ jobs:
           - 3.7
           - 3.8
           - 3.9
+          - "3.10.0-beta.3"
         os:
           - ubuntu-latest
           - macos-latest
@@ -58,8 +59,7 @@ jobs:
         if: startsWith(runner.os, 'Linux')
         with:
           path: ~/.cache/pip
-          key: unit-tests-${{ matrix.os }}-python${{ matrix.python-version }}-${{
-          hashFiles('requirements_testing.txt') }}
+          key: unit-tests-${{ matrix.os }}-python${{ matrix.python-version }}-${{ hashFiles('requirements_testing.txt') }}
           
       - name: Cache test dependencies (Mac)
         uses: actions/cache@v2
