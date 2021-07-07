@@ -20,10 +20,16 @@ class Collection(pystac.Collection):
     """
 
     def __init__(self, id, description, extent, title, stac_extensions, href, extra_fields, catalog_type, license,
-                 keywords, providers, properties, summaries):
+                 keywords, providers, properties, summaries, *, api_key=None, profile=None):
         super().__init__(id, description, extent, title=title, stac_extensions=stac_extensions, href=href,
                          extra_fields=extra_fields, catalog_type=catalog_type, license=license, keywords=keywords,
                          providers=providers, properties=properties, summaries=summaries)
+
+        self.session_kwargs = {}
+        if api_key is not None:
+            self.session_kwargs['api_key'] = api_key
+        if profile is not None:
+            self.session_kwargs['profile'] = profile
 
         # Use -1 here instead of None because None represents the case where the archive does not
         #  exist (HEAD returns a 404).
@@ -50,7 +56,7 @@ class Collection(pystac.Collection):
         ]
 
     @classmethod
-    def from_dict(cls, d, href=None, root=None):
+    def from_dict(cls, d, href=None, root=None, *, api_key=None, profile=None):
         """Patches the :meth:`pystac.Collection.from_dict` method so that it returns the calling class instead of always returning
         a :class:`pystac.Collection` instance."""
         catalog_type = pystac.CatalogType.determine_type(d)
@@ -85,7 +91,9 @@ class Collection(pystac.Collection):
             properties=properties,
             summaries=summaries,
             href=href,
-            catalog_type=catalog_type
+            catalog_type=catalog_type,
+            api_key=api_key,
+            profile=profile
         )
 
         for link in links:
@@ -114,7 +122,7 @@ class Collection(pystac.Collection):
         collection : Collection
         """
         response = client.get_collection(collection_id, **session_kwargs)
-        return cls.from_dict(response)
+        return cls.from_dict(response, **session_kwargs)
 
     def get_items(self, **session_kwargs) -> Iterator[pystac.Item]:
         """
@@ -131,7 +139,11 @@ class Collection(pystac.Collection):
                                   'use the Collection.download method to download Collection assets.')
 
     def fetch_item(self, item_id: str, **session_kwargs) -> pystac.Item:
-        response = client.get_collection_item(self.id, item_id)
+        session_kwargs = {
+            **self.session_kwargs,
+            **session_kwargs
+        }
+        response = client.get_collection_item(self.id, item_id, **session_kwargs)
         return pystac.Item.from_dict(response)
 
     def download(
@@ -175,6 +187,10 @@ class Collection(pystac.Collection):
         FileExistsError
             If file at ``output_path`` already exists and both ``exist_okay`` and ``overwrite`` are ``False``.
         """
+        session_kwargs = {
+            **self.session_kwargs,
+            **session_kwargs
+        }
         return client.download_archive(self.id, output_dir=output_dir, if_exists=if_exists, **session_kwargs)
 
     @property
@@ -200,7 +216,7 @@ class Collection(pystac.Collection):
         #  exist (HEAD returns a 404).
         if self._archive_size == -1:
             try:
-                self._archive_size = client.get_archive_info(self.id).get('size')
+                self._archive_size = client.get_archive_info(self.id, **self.session_kwargs).get('size')
             except EntityDoesNotExist:
                 self._archive_size = None
 
@@ -291,6 +307,7 @@ class Dataset:
         registry: Optional[str] = None,
         doi: Optional[str] = None,
         citation: Optional[str] = None,
+        *,
         api_key: Optional[str] = None,
         profile: Optional[str] = None,
         # Absorbs additional keyword arguments to protect against changes to dataset object from API
@@ -372,8 +389,8 @@ class Dataset:
         return self._collections
 
     @classmethod
-    def list(cls, **session_kwargs) -> Iterator['Dataset']:
-        """Yields :class:`Dataset` instances for all datasets hosted by MLHub.
+    def list(cls, **session_kwargs) -> List['Dataset']:
+        """Returns a list of :class:`Dataset` instances for each datasets hosted by MLHub.
 
         See the :ref:`Authentication` documentation for details on how authentication is handled for this request.
 
@@ -386,7 +403,10 @@ class Dataset:
         ------
         dataset : Dataset
         """
-        yield from map(lambda d: cls(**d, **session_kwargs), client.list_datasets(**session_kwargs))
+        return [
+            cls(**d, **session_kwargs)
+            for d in client.list_datasets(**session_kwargs)
+        ]
 
     @classmethod
     def fetch(cls, dataset_id: str, **session_kwargs) -> 'Dataset':

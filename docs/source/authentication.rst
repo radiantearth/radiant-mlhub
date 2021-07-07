@@ -30,7 +30,7 @@ The :class:`~radiant_mlhub.session.Session` resolves an API key by trying each o
 
    .. code-block:: python
 
-        >>> session = get_session(api_key='myapikey)
+        >>> session = get_session(api_key='myapikey')
 
 2) Use an ``MLHUB_API_KEY`` environment variable
 
