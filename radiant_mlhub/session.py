@@ -98,7 +98,7 @@ class Session(requests.Session):
         # Parse the url argument and substitute the base URL if this is a relative path
         parsed_url = urllib.parse.urlsplit(url)
         if not parsed_url.scheme:
-            parsed_root = urllib.parse.urlsplit(self.DEFAULT_ROOT_URL)
+            parsed_root = urllib.parse.urlsplit(self.root_url)
             url = urllib.parse.SplitResult(
                 parsed_root.scheme,
                 parsed_root.netloc,
