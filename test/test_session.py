@@ -9,6 +9,22 @@ from radiant_mlhub.exceptions import APIKeyNotFound, AuthenticationError
 from radiant_mlhub.session import Session, get_session
 
 
+class TestOverwriteRootURL:
+    def test_default_root_url(self):
+        # Use anonymous session since we don't need to make actual requests
+        session = Session(api_key=None)
+
+        assert session.root_url == Session.DEFAULT_ROOT_URL
+
+    def test_env_variable_root_url(self, monkeypatch):
+        custom_root_url = "https://some-other-url"
+        monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
+        # Use anonymous session since we don't need to make actual requests
+        session = Session(api_key=None)
+
+        assert session.root_url == custom_root_url
+
+
 class TestResolveAPIKeys:
 
     @pytest.fixture(scope='function')

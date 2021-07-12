@@ -75,7 +75,7 @@ class TestAnonymousCollection:
         pass
 
     def test_list_anonymously_has_no_key(self, requests_mock):
-        url = urljoin(Session.ROOT_URL, 'collections')
+        url = urljoin(Session.DEFAULT_ROOT_URL, 'collections')
 
         # Don't really care about the response here, since we're just interested in the request
         # parameters. We test that this gives a valid response in a different test
@@ -91,7 +91,7 @@ class TestAnonymousCollection:
 
     def test_fetch_anonymously_has_no_key(self, requests_mock):
         collection_id = 'bigearthnet_v1_source'
-        url = urljoin(Session.ROOT_URL, f'collections/{collection_id}')
+        url = urljoin(Session.DEFAULT_ROOT_URL, f'collections/{collection_id}')
 
         example_collection = Path(__file__).parent / "data" / "bigearthnet_v1_source.json"
         with open(example_collection) as src:
@@ -107,7 +107,7 @@ class TestAnonymousCollection:
 
     def test_fetch_passes_session_to_instance(self, requests_mock):
         collection_id = 'bigearthnet_v1_source'
-        collection_url = urljoin(Session.ROOT_URL, f'collections/{collection_id}')
+        collection_url = urljoin(Session.DEFAULT_ROOT_URL, f'collections/{collection_id}')
 
         example_collection = Path(__file__).parent / "data" / "bigearthnet_v1_source.json"
         with open(example_collection) as src:
@@ -122,7 +122,7 @@ class TestAnonymousCollection:
         with open(example_collection) as src:
             collection = Collection.from_dict(json.load(src), profile="__anonymous__")
 
-        info_url = urljoin(Session.ROOT_URL, f'archive/{collection_id}/info')
+        info_url = urljoin(Session.DEFAULT_ROOT_URL, f'archive/{collection_id}/info')
         requests_mock.get(info_url, json={})
 
         _ = collection.archive_size
@@ -256,10 +256,10 @@ class TestDatasetNoProfile:
         collection_id = self.COLLECTION["id"]
         api_key = 'test_api_key'
 
-        dataset_url = urljoin(Session.ROOT_URL, f'datasets/{dataset_id}')
+        dataset_url = urljoin(Session.DEFAULT_ROOT_URL, f'datasets/{dataset_id}')
         requests_mock.get(dataset_url, json=self.DATASET)
 
-        collection_url = urljoin(Session.ROOT_URL, f'collections/{collection_id}')
+        collection_url = urljoin(Session.DEFAULT_ROOT_URL, f'collections/{collection_id}')
         requests_mock.get(collection_url, json=self.COLLECTION)
 
         dataset = Dataset.fetch(dataset_id, api_key=api_key)
@@ -276,10 +276,10 @@ class TestDatasetNoProfile:
         collection_id = self.COLLECTION["id"]
         api_key = 'test_api_key'
 
-        dataset_url = urljoin(Session.ROOT_URL, 'datasets')
+        dataset_url = urljoin(Session.DEFAULT_ROOT_URL, 'datasets')
         requests_mock.get(dataset_url, json=[self.DATASET])
 
-        collection_url = urljoin(Session.ROOT_URL, f'collections/{collection_id}')
+        collection_url = urljoin(Session.DEFAULT_ROOT_URL, f'collections/{collection_id}')
         requests_mock.get(collection_url, json=self.COLLECTION)
 
         datasets = Dataset.list(api_key=api_key)

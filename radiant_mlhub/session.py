@@ -38,10 +38,14 @@ class Session(requests.Session):
     MLHUB_HOME_ENV_VARIABLE = 'MLHUB_HOME'
     API_KEY_ENV_VARIABLE = 'MLHUB_API_KEY'
     PROFILE_ENV_VARIABLE = 'MLHUB_PROFILE'
-    ROOT_URL = 'https://api.radiant.earth/mlhub/v1/'
+    ROOT_URL_ENV_VARIABLE = 'MLHUB_ROOT_URL'
+
+    DEFAULT_ROOT_URL = 'https://api.radiant.earth/mlhub/v1/'
 
     def __init__(self, *, api_key: Optional[str]):
         super().__init__()
+
+        self.root_url = os.getenv(self.ROOT_URL_ENV_VARIABLE, self.DEFAULT_ROOT_URL)
 
         # Add the API key query parameter
         if api_key is not None:
@@ -94,7 +98,7 @@ class Session(requests.Session):
         # Parse the url argument and substitute the base URL if this is a relative path
         parsed_url = urllib.parse.urlsplit(url)
         if not parsed_url.scheme:
-            parsed_root = urllib.parse.urlsplit(self.ROOT_URL)
+            parsed_root = urllib.parse.urlsplit(self.DEFAULT_ROOT_URL)
             url = urllib.parse.SplitResult(
                 parsed_root.scheme,
                 parsed_root.netloc,
