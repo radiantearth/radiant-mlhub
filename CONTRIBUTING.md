@@ -27,14 +27,12 @@ request, please open an issue to discuss the feature or bug fix that you intend 
 rest of our user community, give input on the design for any changes and ensure that we are not already doing work on 
 similar features.
 
-All PRs for *new features* should be made against the `dev` branch, and all PRs for critical bug fixes (hotfixes) should 
-be made against the `main` branch. Please be sure to create your feature branch from the same branch that it will be 
-merged into.
+All branches should originate from the `main` branch and all PRs should be made against the `main` branch.
 
 New PRs will use our PR template, which includes the following checklist:
 
-* Checking that the PR is against the correct branch (`dev` for features, `main` for critical bug fixes)
 * Unit tests have been added/updated to cover changes
+* Documentation has been added/updated
 * An entry has been added to the [CHANGELOG](./CHANGELOG.md) (if necessary)
 
 ## Development
@@ -92,14 +90,19 @@ pytest {path_to_test(s)} --record-mode rewrite --block-network
 
 *NOTE: This section is primarily for the maintainers and will almost never be necessary for community contributions.*
 
-When the code on the `dev` branch has stabilized, we will cut a new release using the following procedure:
+When the code on the `main` branch has stabilized, we will cut a new release using the following procedure:
 
-1) Create a `release-<version>` branch from `dev`, where `<version>` is the version to be released
+1) Create a `release/<version>` branch from `main`, where `<version>` is the version to be released
+   (e.g. `v1.0.0`).
 
 2) [Run `tbump`](https://github.com/TankerHQ/tbump#usage) to bump the package to the desired 
-   version **using the `--only-patch` option to ensure you don't create and push the tag yet**.
+   version:
 
-3) Test and make any last-minute changes
+   ```shell
+   tbump --no-push --no-tag <NEW_VERSION>
+   ```
+
+3) Test and make any final changes on the `release/*` branch
 
 4) Put in a PR against `main`
 
@@ -112,12 +115,6 @@ When the code on the `dev` branch has stabilized, we will cut a new release usin
 6) Tag and publish release
 
    This will trigger the CI to publish the package to PyPi
-
-7) Merge release branch into `dev`
-
-  This ensures that `dev` stays up-to-date with any changes made during the release process (including updating 
-  the package version). There is no need to put in a PR against `dev`, since the changes have already been 
-  approved for `main`.
   
 After the release has been published to PyPi, you should also update the recipe in the [`conda-forge` 
 feedstock](https://github.com/conda-forge/radiant-mlhub-feedstock) to use the new release. See the README in that repo 

@@ -145,7 +145,7 @@ class TestAnonymousClient:
         pass
 
     def test_list_datasets_anonymously_has_no_key(self, requests_mock):
-        url = urljoin(Session.ROOT_URL, 'datasets')
+        url = urljoin(Session.DEFAULT_ROOT_URL, 'datasets')
 
         # Don't really care about the response here, since we're just interested in the request
         # parameters. We test that this gives a valid response in a different test
@@ -165,7 +165,7 @@ class TestAnonymousClient:
         assert len(datasets) > 0
 
     def test_list_collections_anonymously_has_no_key(self, requests_mock):
-        url = urljoin(Session.ROOT_URL, 'collections')
+        url = urljoin(Session.DEFAULT_ROOT_URL, 'collections')
 
         # Don't really care about the response here, since we're just interested in the request
         # parameters. We test that this gives a valid response in a different test
@@ -186,7 +186,7 @@ class TestAnonymousClient:
 
     def test_get_collection_anonymously_has_no_key(self, requests_mock):
         collection_id = 'bigearthnet_v1_source'
-        url = urljoin(Session.ROOT_URL, f'collections/{collection_id}')
+        url = urljoin(Session.DEFAULT_ROOT_URL, f'collections/{collection_id}')
 
         # Don't really care about the response here, since we're just interested in the request
         # parameters. We test that this gives a valid response in a different test
@@ -208,7 +208,7 @@ class TestAnonymousClient:
 
     def test_list_collection_items_anonymously_has_no_key(self, requests_mock):
         collection_id = "bigearthnet_v1_source"
-        url = urljoin(Session.ROOT_URL, f'collections/{collection_id}/items')
+        url = urljoin(Session.DEFAULT_ROOT_URL, f'collections/{collection_id}/items')
 
         # Don't really care about the response here, since we're just interested in the request
         # parameters. We test that this gives a valid response in a different test

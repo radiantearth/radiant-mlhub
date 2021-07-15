@@ -9,6 +9,33 @@ from radiant_mlhub.exceptions import APIKeyNotFound, AuthenticationError
 from radiant_mlhub.session import Session, get_session
 
 
+class TestOverwriteRootURL:
+    def test_default_root_url(self):
+        # Use anonymous session since we don't need to make actual requests
+        session = Session(api_key=None)
+
+        assert session.root_url == Session.DEFAULT_ROOT_URL
+
+    def test_env_variable_root_url(self, monkeypatch):
+        custom_root_url = "https://some-other-url"
+        monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
+        # Use anonymous session since we don't need to make actual requests
+        session = Session(api_key=None)
+
+        assert session.root_url == custom_root_url
+
+    @pytest.mark.vcr
+    def test_request_to_custom_url(self, monkeypatch):
+        custom_root_url = "https://www.google.com"
+        monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
+        # Use anonymous session since we don't need to make actual requests
+        session = Session(api_key=None)
+
+        r = session.request("GET", "")
+
+        assert r.request.url == custom_root_url + "/"
+
+
 class TestResolveAPIKeys:
 
     @pytest.fixture(scope='function')
@@ -202,7 +229,7 @@ class TestSessionRequests:
         assert len(history) == 1
 
         assert history[0].headers.get('accept') == 'application/json'
-        assert 'radiant_mlhub/0.2.1' in history[0].headers.get('user-agent')
+        assert 'radiant_mlhub/0.2.2' in history[0].headers.get('user-agent')
 
     def test_relative_path(self, requests_mock):
         """The session uses the default root URL and joins relative paths to the root URL."""
