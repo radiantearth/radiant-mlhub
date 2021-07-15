@@ -218,7 +218,7 @@ class Collection(pystac.Collection):
             try:
                 self._archive_size = client.get_archive_info(self.id, **self.session_kwargs).get('size')
             except EntityDoesNotExist:
-                self._archive_size = None
+                self._archive_size = 0
 
         return self._archive_size
 

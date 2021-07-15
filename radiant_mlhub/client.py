@@ -56,8 +56,10 @@ def _download(
     ValueError
         If ``if_exists`` is not one of ``"skip"``, ``"overwrite"``, or ``"resume"``.
     """
-    if if_exists not in {'skip', 'overwrite', 'resume'}:
-        raise ValueError('if_exists must be one of "skip", "overwrite", or "resume"')
+    if if_exists in {'skip', 'overwrite', 'resume'}:
+        pass
+    # else:
+    #     raise ValueError('if_exists must be one of "skip", "overwrite", or "resume"')
 
     def _get_ranges(total_size, interval, start=0):
         """Internal function for getting byte ranges from a total size and interval/chunk size."""
