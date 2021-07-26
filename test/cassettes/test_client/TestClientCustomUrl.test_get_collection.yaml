@@ -1,0 +1,43 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - radiant_mlhub/0.2.2 (#66~20.04.1-Ubuntu SMP Thu Jun 17 11:14:10 UTC 2021)
+    method: GET
+    uri: http://staging.api.radiant.earth/mlhub/v1/collections/bigearthnet_v1
+  response:
+    body:
+      string: '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+        <title>404 Not Found</title>
+
+        <h1>Not Found</h1>
+
+        <p>The requested URL was not found on the server. If you entered the URL manually
+        please check your spelling and try again.</p>
+
+        '
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '232'
+      Content-Type:
+      - text/html; charset=utf-8
+      Date:
+      - Thu, 22 Jul 2021 13:20:54 GMT
+      Server:
+      - gunicorn
+    status:
+      code: 404
+      message: NOT FOUND
+version: 1

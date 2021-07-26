@@ -49,8 +49,6 @@ class TestCollection:
         assert output_path == tmp_path / 'ref_african_crops_kenya_02_labels.tar.gz'
         assert output_path.exists()
 
-    
-
     @pytest.mark.vcr
     def test_get_registry_url(self):
         collection = Collection.fetch('ref_african_crops_kenya_02_labels')
@@ -68,10 +66,6 @@ class TestCollection:
     @pytest.mark.vcr
     def test_get_archive_size(self):
         collection = Collection.fetch('bigearthnet_v1_labels')
-        if collection.archive_size == "-1":
-            pass
-
-
         assert collection.archive_size == 173029030
 
 
