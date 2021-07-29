@@ -276,8 +276,7 @@ def list_collection_items(
     yield from it.islice(_list_items(), limit)
 
 
-def get_collection_item(collection_id: str, item_id: str, **session_kwargs) -> dict:    
-    
+def get_collection_item(collection_id: str, item_id: str, **session_kwargs) -> dict:
     """Returns a JSON-like dictionary representing the response from the Radiant MLHub ``GET /collections/{p1}/items/{p2}`` endpoint.
 
     Parameters
