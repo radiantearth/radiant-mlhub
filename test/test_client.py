@@ -8,7 +8,6 @@ import radiant_mlhub.client
 from radiant_mlhub.exceptions import EntityDoesNotExist, MLHubException, AuthenticationError
 
 
-
 class TestCustomUrl:
 
     def test_custom_url_list_datasets(self, monkeypatch, requests_mock):
@@ -28,7 +27,6 @@ class TestCustomUrl:
         assert len(history) == 1
         assert history[0].url == "https://staging.api.radiant.earth/datasets?key=test_key"
 
-
     def test_custom_url_get_collection(self, monkeypatch, requests_mock):
         # Set up custom URL
         custom_root_url = "https://staging.api.radiant.earth"
@@ -46,7 +44,6 @@ class TestCustomUrl:
         assert len(history) == 1
         assert history[0].url == "https://staging.api.radiant.earth/datasets?key=test_key"
 
-
     def test_custom_url_list_collection_item(self, monkeypatch, requests_mock):
         # Set up custom URL
         custom_root_url = "https://staging.api.radiant.earth"
@@ -63,7 +60,6 @@ class TestCustomUrl:
         history = requests_mock.request_history
         assert len(history) == 1
         assert history[0].url == "https://staging.api.radiant.earth/datasets?key=test_key"
-
 
 
 class TestClient:
