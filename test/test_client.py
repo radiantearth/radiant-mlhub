@@ -35,7 +35,7 @@ class TestCustomUrl:
         monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
 
         # Mock this using requests-mock
-        url = 'https://staging.api.radiant.earth/datasets?key=test_key'
+        url = 'https://staging.api.radiant.earth/collections/collection_id?key=test_key'
         requests_mock.get(url, status_code=200, json=[])
 
         # Making request to API
@@ -44,27 +44,30 @@ class TestCustomUrl:
         # Get request history and check that request was made to custom URL
         history = requests_mock.request_history
         assert len(history) == 1
-        assert history[0].url == "https://staging.api.radiant.earth/datasets?key=test_key"
+        assert history[0].url == "https://staging.api.radiant.earth/collections/collection_id?key=test_key"
 
 
-    def test_custom_url_list_collection_item(self, monkeypatch, requests_mock):
+    def test_custom_url_list_collection_items(self, monkeypatch, requests_mock):
         # Set up custom URL
         custom_root_url = "https://staging.api.radiant.earth"
         monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
 
         # Mock this using requests-mock
-        url = 'https://staging.api.radiant.earth/datasets?key=test_key'
+        url = 'https://staging.api.radiant.earth/collections/collection_id/items?key=test_key'
         requests_mock.get(url, status_code=200, json=[])
 
         # Making request to API
-        radiant_mlhub.client.list_collection_item()
+        list(radiant_mlhub.client.list_collection_items("collection_id"))
+        
 
         # Get request history and check that request was made to custom URL
         history = requests_mock.request_history
         assert len(history) == 1
-        assert history[0].url == "https://staging.api.radiant.earth/datasets?key=test_key"
+        assert history[0].url == "https://staging.api.radiant.earth/collections/collection_id/items?key=test_key"
 
 
+        
+    
 
 class TestClient:
 

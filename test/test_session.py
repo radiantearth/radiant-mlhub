@@ -37,14 +37,13 @@ class TestOverwriteRootURL:
 
         assert r.request.url == custom_root_url + "/"
 
-
-
+        
     @pytest.mark.vcr
     def test_request_to_custom_url(self, monkeypatch):
         custom_root_url = "https://www.google.com"
         monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
         # Use anonymous session since we don't need to make actual requests
-        session = get_session()
+        session = get_session(profile="__anonymous__")
 
         r = session.request("GET", "")
 
