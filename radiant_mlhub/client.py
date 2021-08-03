@@ -192,11 +192,11 @@ def get_dataset_by_id(dataset_id: str, **session_kwargs) -> dict:
         if e.response.status_code == 404:
             raise EntityDoesNotExist(f'Dataset "{dataset_id}" does not exist.') from None
         raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})') from None
-        
+
 
 def get_dataset(dataset_id_or_doi: str, **session_kwargs) -> dict:
     """Returns a JSON-like dictionary representing a dataset by first trying to look up the dataset
-    by ID, then falling back to finding the dataset by DOI. 
+    by ID, then falling back to finding the dataset by DOI.
 
     See the `MLHub API docs <https://docs.mlhub.earth/#radiant-mlhub-api>`_ for details.
 
