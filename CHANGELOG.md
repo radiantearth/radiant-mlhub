@@ -16,11 +16,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Developer
 
+- Set different API root URL using `MLHUB_ROOT_URL` environment variable ([#56](https://github.com/radiantearth/radiant-mlhub/pull/56))
+
 ## [v0.2.2]
 
 ### Fixed
 
-- Documentation example in Authentication docs (([#53](https://github.com/radiantearth/radiant-mlhub/pull/53)))
+- Documentation example in Authentication docs ([#53](https://github.com/radiantearth/radiant-mlhub/pull/53))
 
 ### Developer
 
