@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `client.get_dataset_by_id` and `client.get_dataset_by_doi` methods to look up datasets by ID or
+  DOI, respectively ([#58](https://github.com/radiantearth/radiant-mlhub/pull/58))
+- `Dataset.fetch_by_id` and `Dataset.fetch_by_doi` methods analagous to new client methods described
+  above ([#58](https://github.com/radiantearth/radiant-mlhub/pull/58))
+
+### Changed
+
+- `client.get_dataset` first attempts to get dataset using `get_dataset_by_id` then falls back to
+  using `get_dataset_by_doi` if unsuccessful
+  ([#58](https://github.com/radiantearth/radiant-mlhub/pull/58))
+- `Dataset.fetch` uses `client.get_dataset` to first attempt getting dataset by ID, then falling
+  back to fetching by DOI if unsuccessful
+  ([#58](https://github.com/radiantearth/radiant-mlhub/pull/58))
+
 ### Removed
 
 ### Fixed
