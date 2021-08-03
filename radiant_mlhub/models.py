@@ -409,7 +409,27 @@ class Dataset:
         ]
 
     @classmethod
-    def fetch(cls, dataset_id: str, **session_kwargs) -> 'Dataset':
+    def fetch_by_doi(cls, dataset_doi: str, **session_kwargs) -> "Dataset":
+        """Creates a :class:`Dataset` instance by fetching the dataset with the given DOI from the Radiant MLHub API.
+
+        Parameters
+        ----------
+        dataset_doi : str
+            The DOI of the dataset to fetch (e.g. ``10.6084/m9.figshare.12047478.v2``).
+        **session_kwargs
+            Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`.
+
+        Returns
+        -------
+        dataset : Dataset
+        """
+        return cls(
+            **client.get_dataset_by_doi(dataset_doi, **session_kwargs),
+            **session_kwargs
+        )
+
+    @classmethod
+    def fetch_by_id(cls, dataset_id: str, **session_kwargs) -> 'Dataset':
         """Creates a :class:`Dataset` instance by fetching the dataset with the given ID from the Radiant MLHub API.
 
         Parameters
@@ -424,7 +444,28 @@ class Dataset:
         dataset : Dataset
         """
         return cls(
-            **client.get_dataset(dataset_id, **session_kwargs),
+            **client.get_dataset_by_id(dataset_id, **session_kwargs),
+            **session_kwargs
+        )
+
+    @classmethod
+    def fetch(cls, dataset_id_or_doi: str, **session_kwargs) -> 'Dataset':
+        """Creates a :class:`Dataset` instance by first trying to fetching the dataset based on ID,
+        then falling back to fetching by DOI.
+
+        Parameters
+        ----------
+        dataset_id_or_doi : str
+            The ID or DOI of the dataset to fetch (e.g. ``bigearthnet_v1``).
+        **session_kwargs
+            Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`.
+
+        Returns
+        -------
+        dataset : Dataset
+        """
+        return cls(
+            **client.get_dataset(dataset_id_or_doi, **session_kwargs),
             **session_kwargs
         )
 

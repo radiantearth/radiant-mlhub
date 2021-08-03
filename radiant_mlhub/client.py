@@ -143,7 +143,33 @@ def list_datasets(**session_kwargs) -> List[dict]:
     return session.get('datasets').json()
 
 
-def get_dataset(dataset_id: str, **session_kwargs) -> dict:
+def get_dataset_by_doi(dataset_doi: str, **session_kwargs) -> dict:
+    """Returns a JSON-like dictionary representing the response from the Radiant MLHub ``GET
+    /datasets/doi/{dataset_id}`` endpoint.
+
+    See the `MLHub API docs <https://docs.mlhub.earth/#radiant-mlhub-api>`_ for details.
+
+    Parameters
+    ----------
+    dataset_doi : str
+        The DOI of the dataset to fetch
+    **session_kwargs
+        Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
+    Returns
+    -------
+    dataset : dict"""
+
+    session = get_session(**session_kwargs)
+    try:
+        return session.get(f'datasets/doi/{dataset_doi}').json()
+    except HTTPError as e:
+        if e.response.status_code == 404:
+            raise EntityDoesNotExist(f'Dataset with DOI "{dataset_doi}" does not exist.') from None
+        raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})') from None
+
+
+def get_dataset_by_id(dataset_id: str, **session_kwargs) -> dict:
     """Returns a JSON-like dictionary representing the response from the Radiant MLHub ``GET /datasets/{dataset_id}`` endpoint.
 
     See the `MLHub API docs <https://docs.mlhub.earth/#radiant-mlhub-api>`_ for details.
@@ -166,6 +192,32 @@ def get_dataset(dataset_id: str, **session_kwargs) -> dict:
         if e.response.status_code == 404:
             raise EntityDoesNotExist(f'Dataset "{dataset_id}" does not exist.') from None
         raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})') from None
+
+
+def get_dataset(dataset_id_or_doi: str, **session_kwargs) -> dict:
+    """Returns a JSON-like dictionary representing a dataset by first trying to look up the dataset
+    by ID, then falling back to finding the dataset by DOI.
+
+    See the `MLHub API docs <https://docs.mlhub.earth/#radiant-mlhub-api>`_ for details.
+
+    Parameters
+    ----------
+    dataset_id_or_doi : str
+        The ID of the dataset to fetch
+    **session_kwargs
+        Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
+    Returns
+    -------
+    dataset : dict
+    """
+    try:
+        return get_dataset_by_id(dataset_id_or_doi, **session_kwargs)
+    except EntityDoesNotExist:
+        try:
+            return get_dataset_by_doi(dataset_id_or_doi, **session_kwargs)
+        except EntityDoesNotExist:
+            raise EntityDoesNotExist(f"Could not find dataset with ID or DOI matching '{dataset_id_or_doi}'")
 
 
 def list_collections(**session_kwargs) -> List[dict]:
