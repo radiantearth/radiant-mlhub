@@ -1,4 +1,3 @@
-
 """Extensions of the `PySTAC <https://pystac.readthedocs.io/en/latest/>`_ classes that provide convenience methods for interacting
 with the `Radiant MLHub API <https://docs.mlhub.earth/#radiant-mlhub-api>`_."""
 
@@ -39,11 +38,14 @@ class Collection(pystac.Collection):
     @classmethod
     def list(cls, **session_kwargs) -> List['Collection']:
         """Returns a list of :class:`Collection` instances for all collections hosted by MLHub.
+
         See the :ref:`Authentication` documentation for details on how authentication is handled for this request.
+
         Parameters
         ----------
         **session_kwargs
             Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
         Returns
         ------
         collections : List[Collection]
@@ -107,12 +109,14 @@ class Collection(pystac.Collection):
     @classmethod
     def fetch(cls, collection_id: str, **session_kwargs) -> 'Collection':
         """Creates a :class:`Collection` instance by fetching the collection with the given ID from the Radiant MLHub API.
+
         Parameters
         ----------
         collection_id : str
             The ID of the collection to fetch (e.g. ``bigearthnet_v1_source``).
         **session_kwargs
             Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
         Returns
         -------
         collection : Collection
@@ -123,8 +127,10 @@ class Collection(pystac.Collection):
     def get_items(self, **session_kwargs) -> Iterator[pystac.Item]:
         """
         .. note::
+
             The ``get_items`` method is not implemented for Radiant MLHub :class:`Collection` instances for performance reasons. Please use
             the :meth:`Collection.download` method to download Collection assets.
+
         Raises
         ------
         NotImplementedError
@@ -149,11 +155,15 @@ class Collection(pystac.Collection):
     ) -> Path:
         """Downloads the archive for this collection to an output location (current working directory by default). If the parent directories
         for ``output_path`` do not exist, they will be created.
+
         The ``if_exists`` argument determines how to handle an existing archive file in the output directory. See the documentation for
         the :func:`~radiant_mlhub.client.download_archive` function for details. The default behavior is to resume downloading if the
         existing file is incomplete and skip the download if it is complete.
+
         .. note::
+
             Some collections may be very large and take a significant amount of time to download, depending on your connection speed.
+
         Parameters
         ----------
         output_dir : Path
@@ -166,10 +176,12 @@ class Collection(pystac.Collection):
             file is smaller, then only the remaining portion will be downloaded. Otherwise, the download will be skipped.
         **session_kwargs
             Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
         Returns
         -------
         output_path : pathlib.Path
             The path to the downloaded archive file.
+
         Raises
         ------
         FileExistsError
@@ -271,8 +283,10 @@ class Dataset:
     """Class that brings together multiple Radiant MLHub "collections" that are all considered part of a single "dataset". For instance,
     the ``bigearthnet_v1`` dataset is composed of both a source imagery collection (``bigearthnet_v1_source``) and a labels collection
     (``bigearthnet_v1_labels``).
+
     Attributes
     ----------
+
     id : str
         The dataset ID.
     title : str or None
@@ -319,11 +333,15 @@ class Dataset:
     def collections(self) -> _CollectionList:
         """List of collections associated with this dataset. The list that is returned has 2 additional attributes (``source_imagery`` and
         ``labels``) that represent the list of collections corresponding the each type.
+
         .. note::
+
             This is a cached property, so updating ``self.collection_descriptions`` after calling ``self.collections`` the first time
             will have no effect on the results. See :func:`functools.cached_property` for details on clearing the cached value.
+
         Examples
         --------
+
         >>> from radiant_mlhub import Dataset
         >>> dataset = Dataset.fetch('bigearthnet_v1')
         >>> len(dataset.collections)
@@ -332,13 +350,19 @@ class Dataset:
         1
         >>> len(dataset.collections.labels)
         1
+
         To loop through all collections
+
             >>> for collection in dataset.collections:
             ...     # Do something here
+
         To loop through only the source imagery collections:
+
             >>> for collection in dataset.collections.source_imagery:
             ...     # Do something here
+
         To loop through only the label collections:
+
             >>> for collection in dataset.collections.labels:
             ...     # Do something here
         """
@@ -367,11 +391,14 @@ class Dataset:
     @classmethod
     def list(cls, **session_kwargs) -> List['Dataset']:
         """Returns a list of :class:`Dataset` instances for each datasets hosted by MLHub.
+
         See the :ref:`Authentication` documentation for details on how authentication is handled for this request.
+
         Parameters
         ----------
         **session_kwargs
             Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
         Yields
         ------
         dataset : Dataset
@@ -384,12 +411,14 @@ class Dataset:
     @classmethod
     def fetch(cls, dataset_id: str, **session_kwargs) -> 'Dataset':
         """Creates a :class:`Dataset` instance by fetching the dataset with the given ID from the Radiant MLHub API.
+
         Parameters
         ----------
         dataset_id : str
             The ID of the dataset to fetch (e.g. ``bigearthnet_v1``).
         **session_kwargs
             Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`.
+
         Returns
         -------
         dataset : Dataset
@@ -408,8 +437,11 @@ class Dataset:
     ) -> List[Path]:
         """Downloads archives for all collections associated with this dataset to given directory. Each archive will be named using the
         collection ID (e.g. some_collection.tar.gz). If ``output_dir`` does not exist, it will be created.
+
         .. note::
+
             Some collections may be very large and take a significant amount of time to download, depending on your connection speed.
+
         Parameters
         ----------
         output_dir : str or pathlib.Path
@@ -421,10 +453,12 @@ class Dataset:
             file is smaller, then only the remaining portion will be downloaded. Otherwise, the download will be skipped.
         session_kwargs
             Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+
         Returns
         -------
         output_paths : List[pathlib.Path]
             List of paths to the downloaded archives
+
         Raises
         -------
         IOError

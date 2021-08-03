@@ -1,5 +1,6 @@
 """
 Methods and classes to simplify constructing and authenticating requests to the MLHub API.
+
 It is generally recommended that you use the :func:`get_session` function to create sessions, since this will propertly handle resolution
 of the API key from function arguments, environment variables, and profiles as described in :ref:`Authentication`. See the
 :func:`get_session` docs for usage examples.
@@ -25,6 +26,7 @@ ANONYMOUS_PROFILE = "__anonymous__"
 
 class Session(requests.Session):
     """Custom class inheriting from :class:`requests.Session` with some additional conveniences:
+
     * Adds the API key as a ``key`` query parameter
     * Adds an ``Accept: application/json`` header
     * Adds a ``User-Agent`` header that contains the package name and version, plus basic system information like the OS name
@@ -73,6 +75,7 @@ class Session(requests.Session):
         """Overwrites the default :meth:`requests.Session.request` method to prepend the MLHub root URL if the given
         ``url`` does not include a scheme. This will raise an :exc:`~radiant_mlhub.exceptions.AuthenticationError` if a 401 response is
         returned by the server, and a :class:`~requests.exceptions.HTTPError` if any other status code of 400 or above is returned.
+
         Parameters
         ----------
         method : str
@@ -83,10 +86,12 @@ class Session(requests.Session):
         **kwargs
             All other keyword arguments are passed directly to :meth:`requests.Session.request` (see that documentation for an explanation
             of these keyword arguments).
+
         Raises
         ------
         AuthenticationError
             If the response status code is 401
+
         HTTPError
             For all other response status codes at or above 400
         """
@@ -122,9 +127,11 @@ class Session(requests.Session):
     @classmethod
     def from_env(cls) -> 'Session':
         """Create a session object from an API key from the environment variable.
+
         Returns
         -------
         session : Session
+
         Raises
         ------
         APIKeyNotFound
@@ -141,13 +148,16 @@ class Session(requests.Session):
         the client will look for the ``profiles`` file in a ``.mlhub`` directory in the user's home directory (as
         determined by :meth:`Path.home <pathlib.Path.home>`). However, if an ``MLHUB_HOME`` environment variable is
         present, the client will look in that directory instead.
+
         Parameters
         ----------
         profile: str, optional
             The name of a profile configured in the ``profiles`` file.
+
         Returns
         -------
         session : Session
+
         Raises
         ------
         APIKeyNotFound
@@ -175,11 +185,13 @@ class Session(requests.Session):
     def paginate(self, url: str, **kwargs) -> Iterator[dict]:
         """Makes a GET request to the given ``url`` and paginates through all results by looking for a link in each response with a
         ``rel`` type of ``"next"``. Any additional keyword arguments are passed directly to :meth:`requests.Session.get`.
+
         Parameters
         ----------
         url : str
             The URL to which the initial request will be made. Note that this may either be a full URL or a path relative to the
             :attr:`ROOT_URL` as described in :meth:`Session.request`.
+
         Yields
         ------
         page : dict
@@ -197,9 +209,11 @@ class Session(requests.Session):
 def get_session(*, api_key: Optional[str] = None, profile: Optional[str] = None) -> Session:
     """Gets a :class:`Session` object that uses the given ``api_key`` for all requests. If no ``api_key`` argument is
     provided then the function will try to resolve an API key by finding the following values (in order of preference):
+
     1) An ``MLHUB_API_KEY`` environment variable
     2) A ``api_key`` value found in the given ``profile`` section of ``~/.mlhub/profiles``
     3) A ``api_key`` value found in the given ``default`` section of ``~/.mlhub/profiles``
+
     Parameters
     ----------
     api_key : str, optional
@@ -207,13 +221,16 @@ def get_session(*, api_key: Optional[str] = None, profile: Optional[str] = None)
         argument.
     profile : str, optional
         The name of a profile configured in the ``.mlhub/profiles`` file. This will be passed directly to :func:`~Session.from_config`.
+
     Returns
     -------
     session : Session
+
     Raises
     ------
     APIKeyNotFound
         If no API key can be resolved.
+
     Examples
     --------
     >>> from radiant_mlhub import get_session
