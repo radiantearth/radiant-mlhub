@@ -9,7 +9,7 @@ from radiant_mlhub.exceptions import EntityDoesNotExist, MLHubException, Authent
 
 
 class TestCustomUrl:
-
+    
     def test_custom_url_list_datasets(self, monkeypatch, requests_mock):
         # Set up custom URL
         custom_root_url = "https://staging.api.radiant.earth"
@@ -44,12 +44,8 @@ class TestCustomUrl:
         assert len(history) == 1
         assert history[0].url == "https://staging.api.radiant.earth/collections/collection_id?key=test_key"
 
-<<<<<<< HEAD
 
     def test_custom_url_list_collection_items(self, monkeypatch, requests_mock):
-=======
-    def test_custom_url_list_collection_item(self, monkeypatch, requests_mock):
->>>>>>> c045cab94cd75f65153eb8ce09ff5bc228ef76ab
         # Set up custom URL
         custom_root_url = "https://staging.api.radiant.earth"
         monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
@@ -68,12 +64,7 @@ class TestCustomUrl:
         assert history[0].url == "https://staging.api.radiant.earth/collections/collection_id/items?key=test_key"
 
 
-<<<<<<< HEAD
-        
-    
 
-=======
->>>>>>> c045cab94cd75f65153eb8ce09ff5bc228ef76ab
 class TestClient:
 
     @pytest.mark.vcr
