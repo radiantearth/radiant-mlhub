@@ -195,7 +195,7 @@ def get_collection(collection_id: str, **session_kwargs) -> dict:
 
     See the `MLHub API docs <https://docs.mlhub.earth/#radiant-mlhub-api>`_ for details.
 
-    Parametersgit
+    Parameters
     ----------
     collection_id : str
         The ID of the collection to fetch
