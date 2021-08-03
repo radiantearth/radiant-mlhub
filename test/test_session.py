@@ -24,7 +24,6 @@ class TestOverwriteRootURL:
 
         assert session.root_url == custom_root_url
 
-        
     @pytest.mark.vcr
     def test_request_to_custom_url(self, monkeypatch):
         custom_root_url = "https://www.google.com"
@@ -36,17 +35,16 @@ class TestOverwriteRootURL:
 
         assert r.request.url == custom_root_url + "/"
 
-        
     @pytest.mark.vcr
     def test_request_to_custom_url_using_get_session(self, monkeypatch):
         custom_root_url = "https://www.google.com"
         monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
         # Use anonymous session since we don't need to make actual requests
-        session = get_session(profile="__anonymous__")
+        session = get_session()
 
         r = session.request("GET", "")
 
-        assert r.request.url == custom_root_url + "/"
+        assert r.request.url == custom_root_url + "/?key=test_key"
 
 
 class TestResolveAPIKeys:
