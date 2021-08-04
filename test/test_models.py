@@ -181,16 +181,13 @@ class TestDataset:
         assert len(history) == 1
         assert urlsplit(history[0].url).path == urlsplit(endpoint).path
 
-    def test_get_dataset_uses_id_first(self, requests_mock):
+    def test_get_dataset_uses_id_when_appropriate(self, requests_mock):
         dataset_id = "ref_african_crops_kenya_02"
-        dataset_doi = "10.6084/m9.figshare.12047478.v2"
 
         response_content = util.get_api_response(f"datasets/{dataset_id}.json")
-        doi_endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/doi/{dataset_doi}"
         id_endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/{dataset_id}"
 
         requests_mock.get(id_endpoint, status_code=200, text=response_content)
-        requests_mock.get(doi_endpoint, status_code=404)
 
         Dataset.fetch(dataset_id)
 
@@ -199,23 +196,20 @@ class TestDataset:
         assert len(history) == 1
         assert urlsplit(history[0].url).path == urlsplit(id_endpoint).path
 
-    def test_get_dataset_falls_back_to_doi(self, requests_mock):
+    def test_get_dataset_uses_doi_when_appropriate(self, requests_mock):
         dataset_doi = "10.6084/m9.figshare.12047478.v2"
 
         response_content = util.get_api_response("datasets/ref_african_crops_kenya_02.json")
         doi_endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/doi/{dataset_doi}"
-        id_endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/{dataset_doi}"
 
-        requests_mock.get(id_endpoint, status_code=404)
         requests_mock.get(doi_endpoint, status_code=200, text=response_content)
 
         Dataset.fetch(dataset_doi)
 
         history = requests_mock.request_history
 
-        assert len(history) == 2
-        assert urlsplit(history[0].url).path == urlsplit(id_endpoint).path
-        assert urlsplit(history[1].url).path == urlsplit(doi_endpoint).path
+        assert len(history) == 1
+        assert urlsplit(history[0].url).path == urlsplit(doi_endpoint).path
 
     # https://github.com/kevin1024/vcrpy/issues/295
     @pytest.mark.vcr

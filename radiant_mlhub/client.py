@@ -211,13 +211,13 @@ def get_dataset(dataset_id_or_doi: str, **session_kwargs) -> dict:
     -------
     dataset : dict
     """
-    try:
+    # DOI RegExs are pretty tricky
+    # (https://stackoverflow.com/questions/27910/finding-a-doi-in-a-document-or-page), so instead we
+    # rely on the fact that we'll never have a "/" in a dataset ID.
+    if "/" in dataset_id_or_doi:
+        return get_dataset_by_doi(dataset_id_or_doi, **session_kwargs)
+    else:
         return get_dataset_by_id(dataset_id_or_doi, **session_kwargs)
-    except EntityDoesNotExist:
-        try:
-            return get_dataset_by_doi(dataset_id_or_doi, **session_kwargs)
-        except EntityDoesNotExist:
-            raise EntityDoesNotExist(f"Could not find dataset with ID or DOI matching '{dataset_id_or_doi}'")
 
 
 def list_collections(**session_kwargs) -> List[dict]:

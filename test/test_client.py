@@ -76,15 +76,13 @@ class TestClient:
     def test_dataset_does_not_exist(self, requests_mock):
         dataset_id = 'no_dataset'
 
-        doi_endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/doi/{dataset_id}"
         id_endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/{dataset_id}"
 
         requests_mock.get(id_endpoint, status_code=404)
-        requests_mock.get(doi_endpoint, status_code=404)
 
         with pytest.raises(EntityDoesNotExist) as excinfo:
             radiant_mlhub.client.get_dataset(dataset_id)
-        assert f"Could not find dataset with ID or DOI matching '{dataset_id}'" == str(excinfo.value)
+        assert f'Dataset "{dataset_id}" does not exist.' == str(excinfo.value)
 
     def test_internal_server_dataset_error(self, requests_mock):
         # Mock this using requests-mock instead of VCRPY so we can simulate a 500 response
@@ -129,15 +127,12 @@ class TestClient:
         assert len(history) == 1
         assert urlsplit(history[0].url).path == urlsplit(endpoint).path
 
-    def test_get_dataset_uses_id_first(self, requests_mock):
+    def test_get_dataset_uses_id_when_appropriate(self, requests_mock):
         dataset_id = "some_dataset"
-        dataset_doi = "10.6084/m9.figshare.12047478.v2"
 
-        doi_endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/doi/{dataset_doi}"
         id_endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/{dataset_id}"
 
         requests_mock.get(id_endpoint, status_code=200, json={})
-        requests_mock.get(doi_endpoint, status_code=404)
 
         radiant_mlhub.client.get_dataset(dataset_id)
 
@@ -146,22 +141,19 @@ class TestClient:
         assert len(history) == 1
         assert urlsplit(history[0].url).path == urlsplit(id_endpoint).path
 
-    def test_get_dataset_falls_back_to_doi(self, requests_mock):
+    def test_get_dataset_uses_doi_when_appropriate(self, requests_mock):
         dataset_doi = "10.6084/m9.figshare.12047478.v2"
 
         doi_endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/doi/{dataset_doi}"
-        id_endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/{dataset_doi}"
 
-        requests_mock.get(id_endpoint, status_code=404)
         requests_mock.get(doi_endpoint, status_code=200, json={})
 
         radiant_mlhub.client.get_dataset(dataset_doi)
 
         history = requests_mock.request_history
 
-        assert len(history) == 2
-        assert urlsplit(history[0].url).path == urlsplit(id_endpoint).path
-        assert urlsplit(history[1].url).path == urlsplit(doi_endpoint).path
+        assert len(history) == 1
+        assert urlsplit(history[0].url).path == urlsplit(doi_endpoint).path
 
     @pytest.mark.vcr
     def test_list_collection_items(self):
