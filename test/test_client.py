@@ -156,6 +156,21 @@ class TestClient:
         assert "segmentation" in query_params["tags"], "'segmentation' was not in 'tags' query parameter"
         assert "sar" in query_params["tags"], "'sar' was not in 'tags' query parameter"
 
+    def test_list_dataset_text_filter(self, requests_mock):
+        route_match = re.compile(r"^https://api\.radiant\.earth/mlhub/v1/datasets")
+        requests_mock.get(route_match, status_code=200, text="[]")
+
+        radiant_mlhub.client.list_datasets(text="buildings")
+
+        history = requests_mock.request_history
+        assert len(history) == 1
+
+        parsed = urlsplit(history[0].url)
+        query_params = parse_qs(parsed.query)
+
+        assert "text" in query_params, "Call to API was missing 'text' query parameter"
+        assert "buildings" in query_params["text"], "'buildings' was not in 'text' query parameter"
+
 
 class TestAnonymousClient:
     @pytest.fixture(scope='function', autouse=True)
