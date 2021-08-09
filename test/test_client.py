@@ -6,7 +6,6 @@ from urllib.parse import urljoin, parse_qs, urlsplit
 import pytest
 
 import radiant_mlhub.client
-from radiant_mlhub.session import ANONYMOUS_PROFILE
 from radiant_mlhub.exceptions import EntityDoesNotExist, MLHubException, AuthenticationError
 
 
@@ -152,6 +151,9 @@ class TestClient:
         parsed = urlsplit(history[0].url)
         query_params = parse_qs(parsed.query)
 
+        print(history[0].url)
+        print(query_params)
+
         assert "tags" in query_params, "Call to API was missing 'tags' query parameter"
         assert "segmentation" in query_params["tags"], "'segmentation' was not in 'tags' query parameter"
         assert "sar" in query_params["tags"], "'sar' was not in 'tags' query parameter"
@@ -160,7 +162,7 @@ class TestClient:
         route_match = re.compile(r"^https://api\.radiant\.earth/mlhub/v1/datasets")
         requests_mock.get(route_match, status_code=200, text="[]")
 
-        radiant_mlhub.client.list_datasets(text="buildings")
+        radiant_mlhub.client.list_datasets(text=["buildings"])
 
         history = requests_mock.request_history
         assert len(history) == 1

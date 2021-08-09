@@ -5,7 +5,7 @@ import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from pathlib import Path
-from typing import Iterator, List
+from typing import Iterator, List, Optional
 
 from requests.exceptions import HTTPError
 
@@ -125,7 +125,7 @@ def _download(
     return output_path
 
 
-def list_datasets(tags=None,**session_kwargs) -> List[dict]:
+def list_datasets(tags: Optional[List[str]] = None, text: Optional[List[str]] = None, **session_kwargs) -> List[dict]:
     """Gets a list of JSON-like dictionaries representing dataset objects returned by the Radiant MLHub ``GET /datasets`` endpoint.
 
     See the `MLHub API docs <https://docs.mlhub.earth/#radiant-mlhub-api>`_ for details.
@@ -144,8 +144,10 @@ def list_datasets(tags=None,**session_kwargs) -> List[dict]:
 
     params = {}
     if tags is not None:
-        params["tags"]=tags
-    return session.get('datasets',params=params).json()
+        params["tags"] = tags
+    if text is not None:
+        params["text"] = text
+    return session.get('datasets', params=params).json()
 
 
 def get_dataset(dataset_id: str, **session_kwargs) -> dict:
