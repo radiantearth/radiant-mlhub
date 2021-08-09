@@ -389,13 +389,17 @@ class Dataset:
         return self._collections
 
     @classmethod
-    def list(cls, **session_kwargs) -> List['Dataset']:
+    def list(cls, *,  tags: Optional[List[str]] = None, text: Optional[List[str]] = None, **session_kwargs) -> List['Dataset']:
         """Returns a list of :class:`Dataset` instances for each datasets hosted by MLHub.
 
         See the :ref:`Authentication` documentation for details on how authentication is handled for this request.
 
         Parameters
         ----------
+        tags : A list of tags to filter datasets by. If not ``None``, only datasets containing all
+            provided tags will be returned.
+        text : A list of text phrases to filter datasets by. If not ``None``, only datasets
+            containing all phrases will be returned.
         **session_kwargs
             Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
 
@@ -405,7 +409,7 @@ class Dataset:
         """
         return [
             cls(**d, **session_kwargs)
-            for d in client.list_datasets(**session_kwargs)
+            for d in client.list_datasets(tags=tags, text=text, **session_kwargs)
         ]
 
     @classmethod

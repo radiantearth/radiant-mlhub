@@ -125,14 +125,17 @@ def _download(
     return output_path
 
 
-def list_datasets(tags: Optional[List[str]] = None, text: Optional[List[str]] = None, **session_kwargs) -> List[dict]:
+def list_datasets(*, tags: Optional[List[str]] = None, text: Optional[List[str]] = None, **session_kwargs) -> List[dict]:
     """Gets a list of JSON-like dictionaries representing dataset objects returned by the Radiant MLHub ``GET /datasets`` endpoint.
 
     See the `MLHub API docs <https://docs.mlhub.earth/#radiant-mlhub-api>`_ for details.
 
     Parameters
     ----------
-    tags : A list of tags to filter on the dataset
+    tags : A list of tags to filter datasets by. If not ``None``, only datasets containing all
+        provided tags will be returned.
+    text : A list of text phrases to filter datasets by. If not ``None``, only datasets
+        containing all phrases will be returned.
     **session_kwargs
         Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
 
