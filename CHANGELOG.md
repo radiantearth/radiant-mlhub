@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `tags` and `text` arguments to `Dataset.list` and `client.list_datasets` methods to allow
+  filtering by datasets tags or free text search, respectively ([#60](https://github.com/radiantearth/radiant-mlhub/pull/60))
 - `client.get_dataset_by_id` and `client.get_dataset_by_doi` methods to look up datasets by ID or
   DOI, respectively ([#58](https://github.com/radiantearth/radiant-mlhub/pull/58))
 - `Dataset.fetch_by_id` and `Dataset.fetch_by_doi` methods analagous to new client methods described

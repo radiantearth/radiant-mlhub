@@ -51,6 +51,17 @@ listing datasets. This method returns a list of :class:`Dataset <radiant_mlhub.m
     >>> first_dataset.title
     'BigEarthNet V1'
 
+Each of these functions/methods also accepts ``tags`` and ``text`` arguments that can be used to filter
+datasets by their tags or a free text search, respectively. The ``tags`` argument may be either a
+single string or a list of strings. Only datasets that contain all of provided tags will be returned
+and these tags must be an `exact` match. The `text` argument may, similarly, be either a string or a
+list of strings. These will be used to search all of the text-based metadata fields for a dataset
+(e.g. description, title, citation, etc.). Each argument is treated as a phrase by the text search
+engine and only datasets with matches for all of the provided phrases will be returned. So, for
+instance, ``text=["land", "cover"]`` will return all datasets with either ``"land"`` or ``"cover"``
+somewhere in their text metadata, while ``text="land cover"`` will return all datasets with the
+`phrase` ``"land cover"`` in their text metadata.
+
 Fetching a Dataset
 ++++++++++++++++++
 

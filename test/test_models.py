@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 import pystac
 import pytest
+import re
 from urllib.parse import urljoin, urlsplit, parse_qs
 
 from radiant_mlhub.models import Collection, Dataset
@@ -144,6 +145,37 @@ class TestDataset:
         datasets = Dataset.list()
         assert isinstance(datasets[0], Dataset)
 
+    def test_list_datasets_tags_filter(self, requests_mock):
+        route_match = re.compile(r"^https://api\.radiant\.earth/mlhub/v1/datasets")
+        requests_mock.get(route_match, status_code=200, text="[]")
+
+        Dataset.list(tags=["segmentation", "sar"])
+
+        history = requests_mock.request_history
+        assert len(history) == 1
+
+        parsed = urlsplit(history[0].url)
+        query_params = parse_qs(parsed.query)
+
+        assert "tags" in query_params, "Call to API was missing 'tags' query parameter"
+        assert "segmentation" in query_params["tags"], "'segmentation' was not in 'tags' query parameter"
+        assert "sar" in query_params["tags"], "'sar' was not in 'tags' query parameter"
+
+    def test_list_datasets_text_filter(self, requests_mock):
+        route_match = re.compile(r"^https://api\.radiant\.earth/mlhub/v1/datasets")
+        requests_mock.get(route_match, status_code=200, text="[]")
+
+        Dataset.list(text="buildings")
+
+        history = requests_mock.request_history
+        assert len(history) == 1
+
+        parsed = urlsplit(history[0].url)
+        query_params = parse_qs(parsed.query)
+
+        assert "text" in query_params, "Call to API was missing 'text' query parameter"
+        assert "buildings" in query_params["text"], "'buildings' was not in 'text' query parameter"
+
     @pytest.mark.vcr
     def test_fetch_dataset(self):
         dataset = Dataset.fetch('bigearthnet_v1')
@@ -243,6 +275,22 @@ class TestDataset:
     def test_total_archive_size(self):
         dataset = Dataset.fetch('bigearthnet_v1')
         assert dataset.total_archive_size == 71311240007
+
+    def test_dataset_list_tags_filter(self, requests_mock):
+        route_match = re.compile(r"^https://api\.radiant\.earth/mlhub/v1/datasets")
+        requests_mock.get(route_match, status_code=200, text="[]")
+
+        Dataset.list(tags=["segmentation", "sar"])
+
+        history = requests_mock.request_history
+        assert len(history) == 1
+
+        parsed = urlsplit(history[0].url)
+        query_params = parse_qs(parsed.query)
+
+        assert "tags" in query_params, "Call to API was missing 'tags' query parameter"
+        assert "segmentation" in query_params["tags"], "'segmentation' was not in 'tags' query parameter"
+        assert "sar" in query_params["tags"], "'sar' was not in 'tags' query parameter"
 
 
 class TestAnonymousDataset:

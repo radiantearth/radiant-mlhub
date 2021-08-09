@@ -5,7 +5,7 @@ import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from pathlib import Path
-from typing import Iterator, List
+from typing import Iterator, List, Optional, Iterable, Union
 
 from requests.exceptions import HTTPError
 
@@ -17,6 +17,9 @@ except ImportError:  # pragma: no cover
 
 from .exceptions import EntityDoesNotExist, MLHubException
 from .session import get_session
+
+TagOrTagList = Union[str, Iterable[str]]
+TextOrTextList = Union[str, Iterable[str]]
 
 
 def _download(
@@ -125,13 +128,17 @@ def _download(
     return output_path
 
 
-def list_datasets(**session_kwargs) -> List[dict]:
+def list_datasets(*, tags: Optional[TagOrTagList] = None, text: Optional[TextOrTextList] = None, **session_kwargs) -> List[dict]:
     """Gets a list of JSON-like dictionaries representing dataset objects returned by the Radiant MLHub ``GET /datasets`` endpoint.
 
     See the `MLHub API docs <https://docs.mlhub.earth/#radiant-mlhub-api>`_ for details.
 
     Parameters
     ----------
+    tags : A tag or list of tags to filter datasets by. If not ``None``, only datasets
+        containing all provided tags will be returned.
+    text : A text phrase or list of text phrases to filter datasets by. If not ``None``,
+        only datasets containing all phrases will be returned.
     **session_kwargs
         Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
 
@@ -140,7 +147,21 @@ def list_datasets(**session_kwargs) -> List[dict]:
     datasets : List[dict]
     """
     session = get_session(**session_kwargs)
-    return session.get('datasets').json()
+
+    params = {}
+    if tags is not None:
+        if isinstance(tags, str):
+            tags = [tags]
+        else:
+            tags = list(tags)
+        params["tags"] = tags
+    if text is not None:
+        if isinstance(text, str):
+            text = [text]
+        else:
+            text = list(text)
+        params["text"] = text
+    return session.get('datasets', params=params).json()
 
 
 def get_dataset_by_doi(dataset_doi: str, **session_kwargs) -> dict:
