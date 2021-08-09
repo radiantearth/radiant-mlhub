@@ -6,12 +6,15 @@ from collections.abc import Sequence
 from copy import deepcopy
 from enum import Enum
 from pathlib import Path
-from typing import Iterator, List, Optional, Union
+from typing import Iterable, Iterator, List, Optional, Union
 
 import pystac
 
 from . import client
 from .exceptions import EntityDoesNotExist
+
+TagOrTagList = Union[str, Iterable[str]]
+TextOrTextList = Union[str, Iterable[str]]
 
 
 class Collection(pystac.Collection):
@@ -389,7 +392,7 @@ class Dataset:
         return self._collections
 
     @classmethod
-    def list(cls, *,  tags: Optional[List[str]] = None, text: Optional[List[str]] = None, **session_kwargs) -> List['Dataset']:
+    def list(cls, *,  tags: Optional[TagOrTagList] = None, text: Optional[TextOrTextList] = None, **session_kwargs) -> List['Dataset']:
         """Returns a list of :class:`Dataset` instances for each datasets hosted by MLHub.
 
         See the :ref:`Authentication` documentation for details on how authentication is handled for this request.
