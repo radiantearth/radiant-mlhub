@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `tags` and `text` arguments to `Dataset.list` and `client.list_datasets` methods to allow
+  filtering by datasets tags or free text search, respectively ([#60](https://github.com/radiantearth/radiant-mlhub/pull/60))
+
 ### Removed
 
 ### Fixed
@@ -20,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Documentation example in Authentication docs (([#53](https://github.com/radiantearth/radiant-mlhub/pull/53)))
+- Documentation example in Authentication docs ([#53](https://github.com/radiantearth/radiant-mlhub/pull/53))
 
 ### Developer
 
