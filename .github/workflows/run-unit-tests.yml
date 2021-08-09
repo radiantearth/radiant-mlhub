@@ -18,6 +18,7 @@ on:
 
     branches:
       - main
+      - new-api
 
     paths:
       - 'radiant_mlhub/**'

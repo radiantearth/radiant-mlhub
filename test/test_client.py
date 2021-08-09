@@ -9,6 +9,60 @@ import radiant_mlhub.client
 from radiant_mlhub.exceptions import EntityDoesNotExist, MLHubException, AuthenticationError
 
 
+class TestCustomUrl:
+
+    def test_custom_url_list_datasets(self, monkeypatch, requests_mock):
+        # Set up custom URL
+        custom_root_url = "https://staging.api.radiant.earth"
+        monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
+
+        # Mock this using requests-mock
+        url = 'https://staging.api.radiant.earth/datasets?key=test_key'
+        requests_mock.get(url, status_code=200, json=[])
+
+        # Making request to API
+        radiant_mlhub.client.list_datasets()
+
+        # Get request history and check that request was made to custom URL
+        history = requests_mock.request_history
+        assert len(history) == 1
+        assert history[0].url == "https://staging.api.radiant.earth/datasets?key=test_key"
+
+    def test_custom_url_get_collection(self, monkeypatch, requests_mock):
+        # Set up custom URL
+        custom_root_url = "https://staging.api.radiant.earth"
+        monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
+
+        # Mock this using requests-mock
+        url = 'https://staging.api.radiant.earth/collections/collection_id?key=test_key'
+        requests_mock.get(url, status_code=200, json=[])
+
+        # Making request to API
+        radiant_mlhub.client.get_collection("collection_id")
+
+        # Get request history and check that request was made to custom URL
+        history = requests_mock.request_history
+        assert len(history) == 1
+        assert history[0].url == "https://staging.api.radiant.earth/collections/collection_id?key=test_key"
+
+    def test_custom_url_list_collection_items(self, monkeypatch, requests_mock):
+        # Set up custom URL
+        custom_root_url = "https://staging.api.radiant.earth"
+        monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
+
+        # Mock this using requests-mock
+        url = 'https://staging.api.radiant.earth/collections/collection_id/items?key=test_key'
+        requests_mock.get(url, status_code=200, json={"features": []})
+
+        # Making request to API
+        list(radiant_mlhub.client.list_collection_items("collection_id"))
+
+        # Get request history and check that request was made to custom URL
+        history = requests_mock.request_history
+        assert len(history) == 1
+        assert history[0].url == "https://staging.api.radiant.earth/collections/collection_id/items?key=test_key"
+
+
 class TestClient:
 
     @pytest.mark.vcr
@@ -20,9 +74,12 @@ class TestClient:
 
         assert f'Collection "{collection_id}" does not exist.' == str(excinfo.value)
 
-    @pytest.mark.vcr
-    def test_dataset_does_not_exist(self):
+    def test_dataset_does_not_exist(self, requests_mock):
         dataset_id = 'no_dataset'
+
+        id_endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/{dataset_id}"
+
+        requests_mock.get(id_endpoint, status_code=404)
 
         with pytest.raises(EntityDoesNotExist) as excinfo:
             radiant_mlhub.client.get_dataset(dataset_id)
@@ -46,6 +103,58 @@ class TestClient:
             radiant_mlhub.client.get_collection(collection_id)
 
         assert 'Internal Server Error' in str(excinfo.value)
+
+    def test_get_dataset_by_doi(self, requests_mock):
+        dataset_doi = "10.6084/m9.figshare.12047478.v2"
+        endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/doi/{dataset_doi}"
+        requests_mock.get(endpoint, status_code=200, json={})
+
+        radiant_mlhub.client.get_dataset_by_doi(dataset_doi)
+
+        history = requests_mock.request_history
+
+        assert len(history) == 1
+        assert urlsplit(history[0].url).path == urlsplit(endpoint).path
+
+    def test_get_dataset_by_id(self, requests_mock):
+        dataset_id = "some_dataset"
+        endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/{dataset_id}"
+        requests_mock.get(endpoint, status_code=200, json={})
+
+        radiant_mlhub.client.get_dataset_by_id(dataset_id)
+
+        history = requests_mock.request_history
+
+        assert len(history) == 1
+        assert urlsplit(history[0].url).path == urlsplit(endpoint).path
+
+    def test_get_dataset_uses_id_when_appropriate(self, requests_mock):
+        dataset_id = "some_dataset"
+
+        id_endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/{dataset_id}"
+
+        requests_mock.get(id_endpoint, status_code=200, json={})
+
+        radiant_mlhub.client.get_dataset(dataset_id)
+
+        history = requests_mock.request_history
+
+        assert len(history) == 1
+        assert urlsplit(history[0].url).path == urlsplit(id_endpoint).path
+
+    def test_get_dataset_uses_doi_when_appropriate(self, requests_mock):
+        dataset_doi = "10.6084/m9.figshare.12047478.v2"
+
+        doi_endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/doi/{dataset_doi}"
+
+        requests_mock.get(doi_endpoint, status_code=200, json={})
+
+        radiant_mlhub.client.get_dataset(dataset_doi)
+
+        history = requests_mock.request_history
+
+        assert len(history) == 1
+        assert urlsplit(history[0].url).path == urlsplit(doi_endpoint).path
 
     @pytest.mark.vcr
     def test_list_collection_items(self):
@@ -180,7 +289,7 @@ class TestAnonymousClient:
         pass
 
     def test_list_datasets_anonymously_has_no_key(self, requests_mock):
-        url = urljoin(Session.ROOT_URL, 'datasets')
+        url = urljoin(Session.DEFAULT_ROOT_URL, 'datasets')
 
         # Don't really care about the response here, since we're just interested in the request
         # parameters. We test that this gives a valid response in a different test
@@ -200,7 +309,7 @@ class TestAnonymousClient:
         assert len(datasets) > 0
 
     def test_list_collections_anonymously_has_no_key(self, requests_mock):
-        url = urljoin(Session.ROOT_URL, 'collections')
+        url = urljoin(Session.DEFAULT_ROOT_URL, 'collections')
 
         # Don't really care about the response here, since we're just interested in the request
         # parameters. We test that this gives a valid response in a different test
@@ -221,7 +330,7 @@ class TestAnonymousClient:
 
     def test_get_collection_anonymously_has_no_key(self, requests_mock):
         collection_id = 'bigearthnet_v1_source'
-        url = urljoin(Session.ROOT_URL, f'collections/{collection_id}')
+        url = urljoin(Session.DEFAULT_ROOT_URL, f'collections/{collection_id}')
 
         # Don't really care about the response here, since we're just interested in the request
         # parameters. We test that this gives a valid response in a different test
@@ -243,7 +352,7 @@ class TestAnonymousClient:
 
     def test_list_collection_items_anonymously_has_no_key(self, requests_mock):
         collection_id = "bigearthnet_v1_source"
-        url = urljoin(Session.ROOT_URL, f'collections/{collection_id}/items')
+        url = urljoin(Session.DEFAULT_ROOT_URL, f'collections/{collection_id}/items')
 
         # Don't really care about the response here, since we're just interested in the request
         # parameters. We test that this gives a valid response in a different test

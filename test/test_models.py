@@ -8,6 +8,8 @@ from urllib.parse import urljoin, urlsplit, parse_qs
 from radiant_mlhub.models import Collection, Dataset
 from radiant_mlhub.session import Session
 
+from . import util
+
 
 class TestCollection:
 
@@ -76,7 +78,7 @@ class TestAnonymousCollection:
         pass
 
     def test_list_anonymously_has_no_key(self, requests_mock):
-        url = urljoin(Session.ROOT_URL, 'collections')
+        url = urljoin(Session.DEFAULT_ROOT_URL, 'collections')
 
         # Don't really care about the response here, since we're just interested in the request
         # parameters. We test that this gives a valid response in a different test
@@ -92,7 +94,7 @@ class TestAnonymousCollection:
 
     def test_fetch_anonymously_has_no_key(self, requests_mock):
         collection_id = 'bigearthnet_v1_source'
-        url = urljoin(Session.ROOT_URL, f'collections/{collection_id}')
+        url = urljoin(Session.DEFAULT_ROOT_URL, f'collections/{collection_id}')
 
         example_collection = Path(__file__).parent / "data" / "bigearthnet_v1_source.json"
         with open(example_collection) as src:
@@ -108,7 +110,7 @@ class TestAnonymousCollection:
 
     def test_fetch_passes_session_to_instance(self, requests_mock):
         collection_id = 'bigearthnet_v1_source'
-        collection_url = urljoin(Session.ROOT_URL, f'collections/{collection_id}')
+        collection_url = urljoin(Session.DEFAULT_ROOT_URL, f'collections/{collection_id}')
 
         example_collection = Path(__file__).parent / "data" / "bigearthnet_v1_source.json"
         with open(example_collection) as src:
@@ -123,7 +125,7 @@ class TestAnonymousCollection:
         with open(example_collection) as src:
             collection = Collection.from_dict(json.load(src), profile="__anonymous__")
 
-        info_url = urljoin(Session.ROOT_URL, f'archive/{collection_id}/info')
+        info_url = urljoin(Session.DEFAULT_ROOT_URL, f'archive/{collection_id}/info')
         requests_mock.get(info_url, json={})
 
         _ = collection.archive_size
@@ -184,6 +186,62 @@ class TestDataset:
         assert dataset.citation == 'G. Sumbul, M. Charfuelan, B. Demir, V. Markl, \"BigEarthNet: A Large-Scale '\
             'Benchmark Archive for Remote Sensing Image Understanding\", IEEE International Geoscience and Remote '\
             'Sensing Symposium, pp. 5901-5904, Yokohama, Japan, 2019.'
+
+    def test_get_dataset_by_doi(self, requests_mock):
+        dataset_doi = "10.6084/m9.figshare.12047478.v2"
+        endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/doi/{dataset_doi}"
+        response_content = util.get_api_response("datasets/ref_african_crops_kenya_02.json")
+        requests_mock.get(endpoint, status_code=200, text=response_content)
+
+        Dataset.fetch_by_doi(dataset_doi)
+
+        history = requests_mock.request_history
+
+        assert len(history) == 1
+        assert urlsplit(history[0].url).path == urlsplit(endpoint).path
+
+    def test_get_dataset_by_id(self, requests_mock):
+        dataset_id = "ref_african_crops_kenya_02"
+        endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/{dataset_id}"
+        response_content = util.get_api_response(f"datasets/{dataset_id}.json")
+        requests_mock.get(endpoint, status_code=200, text=response_content)
+
+        Dataset.fetch_by_id(dataset_id)
+
+        history = requests_mock.request_history
+
+        assert len(history) == 1
+        assert urlsplit(history[0].url).path == urlsplit(endpoint).path
+
+    def test_get_dataset_uses_id_when_appropriate(self, requests_mock):
+        dataset_id = "ref_african_crops_kenya_02"
+
+        response_content = util.get_api_response(f"datasets/{dataset_id}.json")
+        id_endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/{dataset_id}"
+
+        requests_mock.get(id_endpoint, status_code=200, text=response_content)
+
+        Dataset.fetch(dataset_id)
+
+        history = requests_mock.request_history
+
+        assert len(history) == 1
+        assert urlsplit(history[0].url).path == urlsplit(id_endpoint).path
+
+    def test_get_dataset_uses_doi_when_appropriate(self, requests_mock):
+        dataset_doi = "10.6084/m9.figshare.12047478.v2"
+
+        response_content = util.get_api_response("datasets/ref_african_crops_kenya_02.json")
+        doi_endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/doi/{dataset_doi}"
+
+        requests_mock.get(doi_endpoint, status_code=200, text=response_content)
+
+        Dataset.fetch(dataset_doi)
+
+        history = requests_mock.request_history
+
+        assert len(history) == 1
+        assert urlsplit(history[0].url).path == urlsplit(doi_endpoint).path
 
     # https://github.com/kevin1024/vcrpy/issues/295
     @pytest.mark.vcr
@@ -304,10 +362,10 @@ class TestDatasetNoProfile:
         collection_id = self.COLLECTION["id"]
         api_key = 'test_api_key'
 
-        dataset_url = urljoin(Session.ROOT_URL, f'datasets/{dataset_id}')
+        dataset_url = urljoin(Session.DEFAULT_ROOT_URL, f'datasets/{dataset_id}')
         requests_mock.get(dataset_url, json=self.DATASET)
 
-        collection_url = urljoin(Session.ROOT_URL, f'collections/{collection_id}')
+        collection_url = urljoin(Session.DEFAULT_ROOT_URL, f'collections/{collection_id}')
         requests_mock.get(collection_url, json=self.COLLECTION)
 
         dataset = Dataset.fetch(dataset_id, api_key=api_key)
@@ -324,10 +382,10 @@ class TestDatasetNoProfile:
         collection_id = self.COLLECTION["id"]
         api_key = 'test_api_key'
 
-        dataset_url = urljoin(Session.ROOT_URL, 'datasets')
+        dataset_url = urljoin(Session.DEFAULT_ROOT_URL, 'datasets')
         requests_mock.get(dataset_url, json=[self.DATASET])
 
-        collection_url = urljoin(Session.ROOT_URL, f'collections/{collection_id}')
+        collection_url = urljoin(Session.DEFAULT_ROOT_URL, f'collections/{collection_id}')
         requests_mock.get(collection_url, json=self.COLLECTION)
 
         datasets = Dataset.list(api_key=api_key)
