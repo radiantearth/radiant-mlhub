@@ -15,6 +15,15 @@
 
 API reference and Getting Started guides are available on [Read the Docs](https://radiant-mlhub.readthedocs.io/en/latest/).
 
+## Python Version Support
+
+The `radiant_mlhub` Python client requires Python >= 3.7. 
+
+This library aligns with PySTAC in following the recommendations of
+[NEP-29](https://numpy.org/neps/nep-0029-deprecation_policy.html) in deprecating support for Python
+versions. This means that users can expect support for Python 3.7 to be removed from the `main` branch
+after Dec 26, 2021 and therefore from the next release after that date. 
+
 ## Design Decisions
 
 Major architectural and design decisions are documented using [Architectural Design Records](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) stored in the [`docs/adr`](./docs/adr) directory.
