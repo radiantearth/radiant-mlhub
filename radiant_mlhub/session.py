@@ -7,7 +7,6 @@ of the API key from function arguments, environment variables, and profiles as d
 """
 
 import configparser
-import functools
 import os
 import platform
 import urllib.parse
