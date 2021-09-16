@@ -2,11 +2,16 @@ import os
 import re
 from radiant_mlhub.session import Session
 from urllib.parse import urljoin, parse_qs, urlsplit
+from typing import TYPE_CHECKING
 
 import pytest
 
 import radiant_mlhub.client
 from radiant_mlhub.exceptions import EntityDoesNotExist, MLHubException, AuthenticationError
+
+if TYPE_CHECKING:
+    from requests_mock import Mocker as Mocker_Type
+    from pathlib import Path as Path_Type
 
 
 class TestCustomUrl:
@@ -66,7 +71,7 @@ class TestCustomUrl:
 class TestClient:
 
     @pytest.mark.vcr
-    def test_collection_does_not_exist(self):
+    def test_collection_does_not_exist(self) -> None:
         collection_id = 'no_collection'
 
         with pytest.raises(EntityDoesNotExist) as excinfo:
@@ -74,7 +79,7 @@ class TestClient:
 
         assert f'Collection "{collection_id}" does not exist.' == str(excinfo.value)
 
-    def test_dataset_does_not_exist(self, requests_mock):
+    def test_dataset_does_not_exist(self, requests_mock) -> None:
         dataset_id = 'no_dataset'
 
         id_endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/{dataset_id}"
@@ -85,7 +90,7 @@ class TestClient:
             radiant_mlhub.client.get_dataset(dataset_id)
         assert f'Dataset "{dataset_id}" does not exist.' == str(excinfo.value)
 
-    def test_internal_server_dataset_error(self, requests_mock):
+    def test_internal_server_dataset_error(self, requests_mock: "Mocker_Type") -> None:
         # Mock this using requests-mock instead of VCRPY so we can simulate a 500 response
         dataset_id = 'internal_server_error'
         url = f'https://api.radiant.earth/mlhub/v1/datasets/{dataset_id}'
@@ -94,7 +99,7 @@ class TestClient:
         with pytest.raises(MLHubException):
             radiant_mlhub.client.get_dataset(dataset_id)
 
-    def test_internal_server_collections_error(self, requests_mock):
+    def test_internal_server_collections_error(self, requests_mock: "Mocker_Type") -> None:
         collection_id = 'internal_error'
         endpoint = f'https://api.radiant.earth/mlhub/v1/collections/{collection_id}'
 
@@ -157,7 +162,7 @@ class TestClient:
         assert urlsplit(history[0].url).path == urlsplit(doi_endpoint).path
 
     @pytest.mark.vcr
-    def test_list_collection_items(self):
+    def test_list_collection_items(self) -> None:
         items = list(radiant_mlhub.client.list_collection_items('ref_african_crops_kenya_02_source', limit=40))
 
         assert len(items) == 40
@@ -169,7 +174,7 @@ class TestClient:
         assert len(items) == 52
 
     @pytest.mark.vcr
-    def test_get_collection_item(self):
+    def test_get_collection_item(self) -> None:
         item = radiant_mlhub.client.get_collection_item(
             'ref_african_crops_kenya_02_source',
             'ref_african_crops_kenya_02_tile_02_20190721'
@@ -178,7 +183,7 @@ class TestClient:
         assert item['id'] == 'ref_african_crops_kenya_02_tile_02_20190721'
 
     @pytest.mark.vcr
-    def test_get_collection_item_errors(self):
+    def test_get_collection_item_errors(self) -> None:
         # Mock 404 response for collection and/or item not existing
         collection_id = 'no_collection'
         item_id = 'item_id'
@@ -190,7 +195,7 @@ class TestClient:
             )
 
     @pytest.mark.vcr
-    def test_download_archive(self, tmp_path):
+    def test_download_archive(self, tmp_path: "Path_Type") -> None:
         # Set CWD to temp path
         os.chdir(tmp_path)
 
@@ -201,7 +206,7 @@ class TestClient:
         assert output_path.exists()
 
     @pytest.mark.vcr
-    def test_download_archive_does_not_exist(self, tmp_path):
+    def test_download_archive_does_not_exist(self, tmp_path: "Path_Type") -> None:
         archive_id = 'no_archive'
 
         with pytest.raises(EntityDoesNotExist) as excinfo:
@@ -210,7 +215,7 @@ class TestClient:
         assert f'Archive "{archive_id}" does not exist and may still be generating. ' \
                'Please try again later.' == str(excinfo.value)
 
-    def test_download_archive_only_accepts_dir(self, tmp_path):
+    def test_download_archive_only_accepts_dir(self, tmp_path: "Path_Type") -> None:
         # Test error if file path is provided
         tmp_file = tmp_path / 'test.txt'
         tmp_file.touch()
@@ -219,7 +224,7 @@ class TestClient:
             radiant_mlhub.client.download_archive('_', output_dir=tmp_file)
 
     @pytest.mark.vcr
-    def test_skip_download_exists(self, tmp_path):
+    def test_skip_download_exists(self, tmp_path: "Path_Type") -> None:
         collection_id = 'ref_african_crops_kenya_02_labels'
         expected_output_path = tmp_path / f'{collection_id}.tar.gz'
         expected_output_path.touch(exist_ok=True)
@@ -234,7 +239,7 @@ class TestClient:
         assert output_path.stat().st_size == original_size
 
     @pytest.mark.vcr
-    def test_overwrite_download_exists(self, tmp_path):
+    def test_overwrite_download_exists(self, tmp_path: "Path_Type") -> None:
         collection_id = 'ref_african_crops_kenya_02_labels'
         expected_output_path = tmp_path / f'{collection_id}.tar.gz'
         expected_output_path.touch(exist_ok=True)
@@ -285,10 +290,10 @@ class TestClient:
 
 class TestAnonymousClient:
     @pytest.fixture(scope='function', autouse=True)
-    def mock_profile(self):
+    def mock_profile(self) -> None:
         pass
 
-    def test_list_datasets_anonymously_has_no_key(self, requests_mock):
+    def test_list_datasets_anonymously_has_no_key(self, requests_mock: "Mocker_Type") -> None:
         url = urljoin(Session.DEFAULT_ROOT_URL, 'datasets')
 
         # Don't really care about the response here, since we're just interested in the request
@@ -304,11 +309,11 @@ class TestAnonymousClient:
         assert "key" not in qs
 
     @pytest.mark.vcr
-    def test_list_datasets_anonymously_works(self):
+    def test_list_datasets_anonymously_works(self) -> None:
         datasets = radiant_mlhub.client.list_datasets(profile="__anonymous__")
         assert len(datasets) > 0
 
-    def test_list_collections_anonymously_has_no_key(self, requests_mock):
+    def test_list_collections_anonymously_has_no_key(self, requests_mock: "Mocker_Type") -> None:
         url = urljoin(Session.DEFAULT_ROOT_URL, 'collections')
 
         # Don't really care about the response here, since we're just interested in the request
@@ -324,11 +329,11 @@ class TestAnonymousClient:
         assert "key" not in qs
 
     @pytest.mark.vcr
-    def test_list_collections_anonymously_works(self):
+    def test_list_collections_anonymously_works(self) -> None:
         collections = radiant_mlhub.client.list_collections(profile="__anonymous__")
         assert len(collections) > 0
 
-    def test_get_collection_anonymously_has_no_key(self, requests_mock):
+    def test_get_collection_anonymously_has_no_key(self, requests_mock: "Mocker_Type") -> None:
         collection_id = 'bigearthnet_v1_source'
         url = urljoin(Session.DEFAULT_ROOT_URL, f'collections/{collection_id}')
 
@@ -345,12 +350,12 @@ class TestAnonymousClient:
         assert "key" not in qs
 
     @pytest.mark.vcr
-    def test_get_collection_anonymously_works(self):
+    def test_get_collection_anonymously_works(self) -> None:
         collection_id = 'bigearthnet_v1_source'
         collection = radiant_mlhub.client.get_collection(collection_id, profile="__anonymous__")
         assert isinstance(collection, dict)
 
-    def test_list_collection_items_anonymously_has_no_key(self, requests_mock):
+    def test_list_collection_items_anonymously_has_no_key(self, requests_mock: "Mocker_Type") -> None:
         collection_id = "bigearthnet_v1_source"
         url = urljoin(Session.DEFAULT_ROOT_URL, f'collections/{collection_id}/items')
 
@@ -367,7 +372,7 @@ class TestAnonymousClient:
         assert "key" not in qs
 
     @pytest.mark.vcr
-    def test_list_collection_items_anonymously_does_not_work(self):
+    def test_list_collection_items_anonymously_does_not_work(self) -> None:
         collection_id = "bigearthnet_v1_source"
 
         with pytest.raises(AuthenticationError) as excinfo:

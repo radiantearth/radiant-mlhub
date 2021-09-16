@@ -12,7 +12,7 @@ import os
 import platform
 import urllib.parse
 from pathlib import Path
-from typing import Iterator, Optional
+from typing import Any, Dict, Iterator, Optional
 
 import requests
 import requests.adapters
@@ -182,7 +182,7 @@ class Session(requests.Session):
 
         return cls(api_key=api_key)
 
-    def paginate(self, url: str, **kwargs) -> Iterator[dict]:
+    def paginate(self, url: str, **kwargs: Any) -> Iterator[Dict[str, Any]]:
         """Makes a GET request to the given ``url`` and paginates through all results by looking for a link in each response with a
         ``rel`` type of ``"next"``. Any additional keyword arguments are passed directly to :meth:`requests.Session.get`.
 
@@ -197,13 +197,17 @@ class Session(requests.Session):
         page : dict
             An individual response as a dictionary.
         """
+        current_url: Optional[str] = str(url)
         while True:
-            page = self.get(url, **kwargs).json()
+            if current_url is None:
+                break
+            page = self.get(current_url, **kwargs).json()
             yield page
 
-            url = dict(next((link for link in page.get('links', []) if link['rel'] == 'next'), {})).get('href')
-            if not url:
-                break
+            current_url = dict(next((
+                link for link in page.get('links', [])
+                if link['rel'] == 'next'), {}
+            )).get('href')
 
 
 def get_session(*, api_key: Optional[str] = None, profile: Optional[str] = None) -> Session:

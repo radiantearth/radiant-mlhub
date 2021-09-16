@@ -5,8 +5,9 @@ import concurrent.futures
 from collections.abc import Sequence
 from copy import deepcopy
 from enum import Enum
+import os
 from pathlib import Path
-from typing import Iterable, Iterator, List, Optional, Union
+from typing import Any, Dict, Iterable, Iterator, List, Optional, Union
 
 import pystac
 
@@ -39,15 +40,18 @@ class Collection(pystac.Collection):
         self._archive_size = -1
 
     @classmethod
-    def list(cls, **session_kwargs) -> List['Collection']:
+    def list(cls, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> List['Collection']:
         """Returns a list of :class:`Collection` instances for all collections hosted by MLHub.
 
         See the :ref:`Authentication` documentation for details on how authentication is handled for this request.
 
         Parameters
         ----------
-        **session_kwargs
-            Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+        api_key : str
+            An API key to use for this request. This will override an API key set in a profile on using
+            an environment variable
+        profile: str
+            A profile to use when making this request.
 
         Returns
         ------
@@ -55,11 +59,19 @@ class Collection(pystac.Collection):
         """
         return [
             cls.from_dict(collection)
-            for collection in client.list_collections(**session_kwargs)
+            for collection in client.list_collections(api_key=api_key, profile=profile)
         ]
 
     @classmethod
-    def from_dict(cls, d, href=None, root=None, *, api_key=None, profile=None):
+    def from_dict(
+        cls,
+        d: Dict[str, Any],
+        href: Optional[str] = None,
+        root: Optional[pystac.Catalog] = None,
+        *,
+        api_key: Optional[str] = None,
+        profile: Optional[str] = None
+    ) -> "Collection":
         """Patches the :meth:`pystac.Collection.from_dict` method so that it returns the calling class instead of always returning
         a :class:`pystac.Collection` instance."""
         catalog_type = pystac.CatalogType.determine_type(d)
@@ -74,7 +86,10 @@ class Collection(pystac.Collection):
         keywords = d.get('keywords')
         providers = d.get('providers')
         if providers is not None:
-            providers = list(map(lambda x: pystac.Provider.from_dict(x), providers))
+            providers = list(map(
+                lambda x: pystac.Provider.from_dict(x),
+                providers
+            ))
         properties = d.get('properties')
         summaries = d.get('summaries')
         links = d.pop('links')
@@ -110,24 +125,27 @@ class Collection(pystac.Collection):
         return collection
 
     @classmethod
-    def fetch(cls, collection_id: str, **session_kwargs) -> 'Collection':
+    def fetch(cls, collection_id: str, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> 'Collection':
         """Creates a :class:`Collection` instance by fetching the collection with the given ID from the Radiant MLHub API.
 
         Parameters
         ----------
         collection_id : str
             The ID of the collection to fetch (e.g. ``bigearthnet_v1_source``).
-        **session_kwargs
-            Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+        api_key : str
+            An API key to use for this request. This will override an API key set in a profile on using
+            an environment variable
+        profile: str
+            A profile to use when making this request.
 
         Returns
         -------
         collection : Collection
         """
-        response = client.get_collection(collection_id, **session_kwargs)
-        return cls.from_dict(response, **session_kwargs)
+        response = client.get_collection(collection_id, api_key=api_key, profile=profile)
+        return cls.from_dict(response, api_key=api_key, profile=profile)
 
-    def get_items(self, **session_kwargs) -> Iterator[pystac.Item]:
+    def get_items(self, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> Iterator[pystac.Item]:
         """
         .. note::
 
@@ -141,20 +159,19 @@ class Collection(pystac.Collection):
         raise NotImplementedError('For performance reasons, the get_items method has not been implemented for Collection instances. Please '
                                   'use the Collection.download method to download Collection assets.')
 
-    def fetch_item(self, item_id: str, **session_kwargs) -> pystac.Item:
-        session_kwargs = {
-            **self.session_kwargs,
-            **session_kwargs
-        }
-        response = client.get_collection_item(self.id, item_id, **session_kwargs)
+    def fetch_item(self, item_id: str, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> pystac.Item:
+        api_key = api_key or self.session_kwargs.get("api_key")
+        profile = profile or self.session_kwargs.get("profile")
+        response = client.get_collection_item(self.id, item_id, api_key=api_key, profile=profile)
         return pystac.Item.from_dict(response)
 
     def download(
             self,
-            output_dir: Path,
+            output_dir: Union[str, Path],
             *,
             if_exists: str = 'resume',
-            **session_kwargs
+            api_key: Optional[str] = None,
+            profile: Optional[str] = None
     ) -> Path:
         """Downloads the archive for this collection to an output location (current working directory by default). If the parent directories
         for ``output_path`` do not exist, they will be created.
@@ -177,8 +194,11 @@ class Collection(pystac.Collection):
             the existing file will be overwritten and the entire file will be re-downloaded. If ``"resume"`` (the default), the
             existing file size will be compared to the size of the download (using the ``Content-Length`` header). If the existing
             file is smaller, then only the remaining portion will be downloaded. Otherwise, the download will be skipped.
-        **session_kwargs
-            Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+        api_key : str
+            An API key to use for this request. This will override an API key set in a profile on using
+            an environment variable
+        profile: str
+            A profile to use when making this request.
 
         Returns
         -------
@@ -192,9 +212,10 @@ class Collection(pystac.Collection):
         """
         session_kwargs = {
             **self.session_kwargs,
-            **session_kwargs
+            "api_key": api_key,
+            "profile": profile
         }
-        return client.download_archive(self.id, output_dir=output_dir, if_exists=if_exists, **session_kwargs)
+        return client.download_archive(self.id, output_dir=os.fspath(output_dir), if_exists=if_exists, **session_kwargs)
 
     @property
     def registry_url(self) -> Optional[str]:
@@ -233,7 +254,7 @@ class CollectionType(Enum):
 
 
 class _CollectionWithType:
-    def __init__(self, collection: Collection, types: List[str]):
+    def __init__(self, collection: Collection, types: List[CollectionType]):
         self.types = [CollectionType(type_) for type_ in types]
         self.collection = collection
 
@@ -241,6 +262,8 @@ class _CollectionWithType:
 class _CollectionList(Sequence):
     """Used internally by :class:`Dataset` to create a list of collections that can also be accessed by type using the
     ``source_imagery`` and ``labels`` attributes."""
+    _source_imagery: Optional[List[Collection]]
+    _labels: Optional[List[Collection]]
 
     def __init__(self, collections_with_type: List[_CollectionWithType]):
         self._collections = collections_with_type
@@ -248,21 +271,21 @@ class _CollectionList(Sequence):
         self._source_imagery = None
         self._labels = None
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Collection]:
         for item in self._collections:
             yield item.collection
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._collections)
 
-    def __getitem__(self, item):
+    def __getitem__(self, item) -> Collection:
         return self._collections[item].collection
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return list(self.__iter__()).__repr__()
 
     @property
-    def source_imagery(self):
+    def source_imagery(self) -> List[Collection]:
         if self._source_imagery is None:
             self._source_imagery = [
                 c.collection
@@ -272,7 +295,7 @@ class _CollectionList(Sequence):
         return self._source_imagery
 
     @property
-    def labels(self):
+    def labels(self) -> List[Collection]:
         if self._labels is None:
             self._labels = [
                 c.collection
@@ -305,7 +328,7 @@ class Dataset:
     def __init__(
         self,
         id: str,
-        collections: List[dict],
+        collections: List[Dict[str, Any]],
         title: Optional[str] = None,
         registry: Optional[str] = None,
         doi: Optional[str] = None,
@@ -315,7 +338,7 @@ class Dataset:
         profile: Optional[str] = None,
         # Absorbs additional keyword arguments to protect against changes to dataset object from API
         # https://github.com/radiantearth/radiant-mlhub/issues/41
-        **_
+        **_: Any
     ):
         self.id = id
         self.title = title
@@ -371,7 +394,7 @@ class Dataset:
         """
         if self._collections is None:
             # Internal method to return a Collection along with it's CollectionType
-            def _fetch_collection(_collection_description):
+            def _fetch_collection(_collection_description: Dict[str, Any]) -> _CollectionWithType:
                 return _CollectionWithType(
                     Collection.fetch(_collection_description['id'], **self.session_kwargs),
                     [CollectionType(type_) for type_ in _collection_description['types']]
@@ -392,7 +415,14 @@ class Dataset:
         return self._collections
 
     @classmethod
-    def list(cls, *,  tags: Optional[TagOrTagList] = None, text: Optional[TextOrTextList] = None, **session_kwargs) -> List['Dataset']:
+    def list(
+        cls,
+        *,
+        tags: Optional[TagOrTagList] = None,
+        text: Optional[TextOrTextList] = None,
+        api_key: Optional[str] = None,
+        profile: Optional[str] = None
+    ) -> List['Dataset']:
         """Returns a list of :class:`Dataset` instances for each datasets hosted by MLHub.
 
         See the :ref:`Authentication` documentation for details on how authentication is handled for this request.
@@ -403,60 +433,73 @@ class Dataset:
             provided tags will be returned.
         text : A list of text phrases to filter datasets by. If not ``None``, only datasets
             containing all phrases will be returned.
-        **session_kwargs
-            Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+        api_key : str
+            An API key to use for this request. This will override an API key set in a profile on using
+            an environment variable
+        profile: str
+            A profile to use when making this request.
 
         Yields
         ------
         dataset : Dataset
         """
         return [
-            cls(**d, **session_kwargs)
-            for d in client.list_datasets(tags=tags, text=text, **session_kwargs)
+            cls(**d, api_key=api_key, profile=profile)
+            for d in client.list_datasets(tags=tags, text=text, api_key=api_key, profile=profile)
         ]
 
     @classmethod
-    def fetch_by_doi(cls, dataset_doi: str, **session_kwargs) -> "Dataset":
+    def fetch_by_doi(cls, dataset_doi: str, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> "Dataset":
         """Creates a :class:`Dataset` instance by fetching the dataset with the given DOI from the Radiant MLHub API.
 
         Parameters
         ----------
         dataset_doi : str
             The DOI of the dataset to fetch (e.g. ``10.6084/m9.figshare.12047478.v2``).
-        **session_kwargs
-            Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`.
+        api_key : str
+            An API key to use for this request. This will override an API key set in a profile on using
+            an environment variable
+        profile: str
+            A profile to use when making this request.
 
         Returns
         -------
         dataset : Dataset
         """
         return cls(
-            **client.get_dataset_by_doi(dataset_doi, **session_kwargs),
-            **session_kwargs
+            **client.get_dataset_by_doi(dataset_doi, api_key=api_key, profile=profile),
+            api_key=api_key,
+            profile=profile,
         )
 
     @classmethod
-    def fetch_by_id(cls, dataset_id: str, **session_kwargs) -> 'Dataset':
+    def fetch_by_id(cls, dataset_id: str,  *, api_key: Optional[str] = None, profile: Optional[str] = None) -> 'Dataset':
         """Creates a :class:`Dataset` instance by fetching the dataset with the given ID from the Radiant MLHub API.
 
         Parameters
         ----------
         dataset_id : str
             The ID of the dataset to fetch (e.g. ``bigearthnet_v1``).
-        **session_kwargs
-            Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`.
+        api_key : str
+            An API key to use for this request. This will override an API key set in a profile on using
+            an environment variable
+        profile: str
+            A profile to use when making this request.
 
         Returns
         -------
         dataset : Dataset
         """
         return cls(
-            **client.get_dataset_by_id(dataset_id, **session_kwargs),
-            **session_kwargs
+            **client.get_dataset_by_id(
+                dataset_id,
+                api_key=api_key,
+                profile=profile
+            )
         )
 
     @classmethod
-    def fetch(cls, dataset_id_or_doi: str, **session_kwargs) -> 'Dataset':
+    def fetch(cls, dataset_id_or_doi: str,  *, api_key: Optional[str] = None, profile: Optional[str] = None) -> 'Dataset':
         """Creates a :class:`Dataset` instance by first trying to fetching the dataset based on ID,
         then falling back to fetching by DOI.
 
@@ -464,16 +507,20 @@ class Dataset:
         ----------
         dataset_id_or_doi : str
             The ID or DOI of the dataset to fetch (e.g. ``bigearthnet_v1``).
-        **session_kwargs
-            Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`.
+        api_key : str
+            An API key to use for this request. This will override an API key set in a profile on using
+            an environment variable
+        profile: str
+            A profile to use when making this request.
 
         Returns
         -------
         dataset : Dataset
         """
         return cls(
-            **client.get_dataset(dataset_id_or_doi, **session_kwargs),
-            **session_kwargs
+            **client.get_dataset(dataset_id_or_doi, api_key=api_key, profile=profile),
+            api_key=api_key,
+            profile=profile,
         )
 
     def download(
@@ -481,7 +528,8 @@ class Dataset:
             output_dir: Union[Path, str],
             *,
             if_exists: str = 'resume',
-            **session_kwargs
+            api_key: Optional[str] = None,
+            profile: Optional[str] = None
     ) -> List[Path]:
         """Downloads archives for all collections associated with this dataset to given directory. Each archive will be named using the
         collection ID (e.g. some_collection.tar.gz). If ``output_dir`` does not exist, it will be created.
@@ -499,8 +547,11 @@ class Dataset:
             the existing file will be overwritten and the entire file will be re-downloaded. If ``"resume"`` (the default), the
             existing file size will be compared to the size of the download (using the ``Content-Length`` header). If the existing
             file is smaller, then only the remaining portion will be downloaded. Otherwise, the download will be skipped.
-        session_kwargs
-            Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+        api_key : str
+            An API key to use for this request. This will override an API key set in a profile on using
+            an environment variable
+        profile: str
+            A profile to use when making this request.
 
         Returns
         -------
@@ -515,7 +566,7 @@ class Dataset:
             If one of the archive files already exists in the ``output_dir`` and both ``exist_okay`` and ``overwrite`` are ``False``.
         """
         return [
-            collection.download(output_dir, if_exists=if_exists, **session_kwargs)
+            collection.download(output_dir, if_exists=if_exists, api_key=api_key, profile=profile)
             for collection in self.collections
         ]
 

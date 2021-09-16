@@ -16,6 +16,7 @@
 import sphinx_rtd_theme
 from radiant_mlhub import __version__
 import re
+from typing import Any, List
 
 
 # -- Project information -----------------------------------------------------
@@ -25,7 +26,10 @@ copyright = '2020, Radiant Earth Foundation'
 author = 'Radiant Earth Foundation'
 
 # The short X.Y version
-version = re.fullmatch(r'^(\d+\.\d+\.\d).*$', __version__).group(1)
+version_match = re.fullmatch(r'^(\d+\.\d+\.\d).*$', __version__)
+if version_match is None:
+    raise ValueError(f"Could not parse version from {__version__}")
+version = version_match.group(1)
 
 # The full version, including alpha/beta/rc tags
 release = __version__
@@ -52,7 +56,7 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
+exclude_patterns: List[Any] = []
 
 
 # -- Options for HTML output -------------------------------------------------
