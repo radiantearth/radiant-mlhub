@@ -16,6 +16,10 @@ if TYPE_CHECKING:
 
 
 class TestOverwriteRootURL:
+    @pytest.fixture(scope="function", autouse=True)
+    def root_url(self, monkeypatch: pytest.MonkeyPatch) -> str:
+        return Session.DEFAULT_ROOT_URL
+
     def test_default_root_url(self) -> None:
         # Use anonymous session since we don't need to make actual requests
         session = Session(api_key=None)
@@ -329,13 +333,15 @@ class TestSessionRequests:
         assert history[0].headers.get('accept') == 'application/json'
         assert 'radiant_mlhub/0.2.2' in history[0].headers.get('user-agent')
 
-    def test_relative_path(self, requests_mock: "Mocker_Type") -> None:
+    def test_relative_path(self, requests_mock: "Mocker_Type", root_url: str) -> None:
         """The session uses the default root URL and joins relative paths to the root URL."""
 
         session = get_session()
 
         # Without leading slash
-        requests_mock.get('https://api.radiant.earth/mlhub/v1/relative/path', text='{}')
+        url = urllib.parse.urljoin(root_url, "relative/path")
+        relative_path = urllib.parse.urlsplit(url).path
+        requests_mock.get(url, text='{}')
 
         try:
             session.get('relative/path')
@@ -345,10 +351,10 @@ class TestSessionRequests:
 
         history = requests_mock.request_history
         assert len(history) == 2
-        assert urllib.parse.urlsplit(history[0].url).netloc == 'api.radiant.earth'
-        assert urllib.parse.urlsplit(history[0].url).path == '/mlhub/v1/relative/path'
-        assert urllib.parse.urlsplit(history[1].url).netloc == 'api.radiant.earth'
-        assert urllib.parse.urlsplit(history[1].url).path == '/mlhub/v1/relative/path'
+        assert urllib.parse.urlsplit(history[0].url).netloc == urllib.parse.urlsplit(root_url).netloc
+        assert urllib.parse.urlsplit(history[0].url).path == relative_path
+        assert urllib.parse.urlsplit(history[1].url).netloc == urllib.parse.urlsplit(root_url).netloc
+        assert urllib.parse.urlsplit(history[1].url).path == relative_path
 
     def test_auth_error(self, requests_mock: "Mocker_Type") -> None:
         """The session raises an AuthenticationError if it gets a 401 response."""

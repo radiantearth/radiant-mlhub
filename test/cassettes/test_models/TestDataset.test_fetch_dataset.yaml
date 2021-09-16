@@ -9,36 +9,49 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.1.3 (Darwin Kernel Version 19.6.0: Mon Apr 12 20:57:45 PDT
-        2021; root:xnu-6153.141.28.1~1/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.2.2 (Darwin Kernel Version 19.6.0: Tue Jun 22 19:49:55 PDT
+        2021; root:xnu-6153.141.35~1/RELEASE_X86_64)'
     method: GET
-    uri: https://api.radiant.earth/mlhub/v1/datasets/bigearthnet_v1
+    uri: https://staging.api.radiant.earth/mlhub/v1/datasets/bigearthnet_v1
   response:
     body:
-      string: "{\n    \"citation\": \"G. Sumbul, M. Charfuelan, B. Demir, V. Markl,
-        \\\"BigEarthNet: A Large-Scale Benchmark Archive for Remote Sensing Image
-        Understanding\\\", IEEE International Geoscience and Remote Sensing Symposium,
-        pp. 5901-5904, Yokohama, Japan, 2019.\",\n    \"collections\": [\n        {\n
-        \           \"id\": \"bigearthnet_v1_source\",\n            \"types\": [\n
-        \               \"source_imagery\"\n            ]\n        },\n        {\n
-        \           \"id\": \"bigearthnet_v1_labels\",\n            \"types\": [\n
-        \               \"labels\"\n            ]\n        }\n    ],\n    \"doi\":
-        \"10.14279/depositonce-10149\",\n    \"id\": \"bigearthnet_v1\",\n    \"registry\":
-        \"https://registry.mlhub.earth/10.14279/depositonce-10149\",\n    \"title\":
-        \"BigEarthNet\"\n}"
+      string: !!binary |
+        H4sIAECgQ2EC/7VV/W/bNhD9VwgBBRJMX5ZjN/ZPc1wvS+t0QdwNGNrCoKiLRIQiNX7Y9Yr+7ztS
+        +VCzbEOHzTAchTwe79579/Q54lU0j0peA9W2kWC3u1EUR2WpPkXzzxFTSldcUgsmmr/HTzJL8zwv
+        xuOTyUk8nqazyRS/L/PiY/z13vQ0zYvR9NRvjEfpZHZ6Mp7ls+KvN/4u21d7+Ikje+gAK790wvIr
+        JQ61ktGXOGLcUsvxeR6dp2Tj2tKJmFymZNlQfeNAUBmTs5S8gpbrmPySkkuqbzHkQ/T+jNcrj8Jb
+        sHOyIGuqa0g2jAogZyBZ02IkWWjW8B2QG6XJNbTKAtmANFzW5KKlNZCfZQXaWCoRt/rjUWNtN8+y
+        e4RThDgzvkaWVYq5FqQ12eDm7cX54nqz2Rb5aJZ21c3xhygmF6vVilxIC1qG7qgg56AM41gWELzq
+        aSmbQ9spw10bk65LyWSWjxL8OYnJr+pWNbSlMXlNOw9GuAgpZ0oIYD67p/rzc8LYGuU0g6hH34dF
+        /cqW+9b1IUJiBGdYhOfm/fLVepFcgW65MYhZMkrz5wGp1F4KRSszwGTd5wkYILPPFyRoCcIMC7pb
+        +d8KwcRMA7VKb5mSljLbz8nd4/3T98O00cMZX8yA7OeL8O1GFc7cllYV+K6LvMiTfJrks3d5Pg/f
+        78JvdBfYqorf8H+OBcM07+4GZFAI4YZQImFPRFC9CapHNVkuQSQFKR8GgPYDEBPs1HBjvdzUjZdY
+        PC6mwzNBFKSjljVgUvJOhSNWO2bJ4O6YjIrJ8JzlArAc9pvjGiq82u4BJHntJHi1vgyCv6QH/88p
+        UTvQxDZARjnmd9JqjqePFg5v4ijzMxB1GIQfuMTpr3CaNPQPb5RROxWTNbeNo9JHr90naEsUdR2T
+        K6WtqymawwZ06Xc3e25/B+1PH/umV06rDsgeNBAuueVUiAMx4AcJqpQshAil9R2FMGpbZboGNGch
+        mCmtQzQpDyF2AMQadiBIsSCdVpVHrQYJOjhAwAA9qKU2MGCVEuTIgCww4TGC3QDONuY79NdWfMdR
+        S1ilVQ9cSSUTD5+gXeeTPCFsRVkzXCN7irRIqdC+HuttvQN3qBaPSsICHUxQYzwLPIU07kOSfjKP
+        8RC1fVHYVl/VjVZtSLb86fri7QqtF7tbhlQob1pSAx5uH3HAOemJP1qul+Hp2NvX/bwGdLaCy1tU
+        +Lea7yWVjgo/6SEjxxSjPB2dFC9nWQXeUa1Cx01G+ehkhiGdK9Fl6KNpOi3+xbVPPd/7GbcCvp7R
+        /+qdhNmpsw0amKStv+Pcv0X03cvycfexF4PN7Pf71KMKmCJlqs24zOpwMDEvluMXZ8u27P+KpJxM
+        TstpMcmCXfrOHcIToQVWB98bre+sGlkOgsHFXmdBOOhkPaa4bB6mwVv6M6j4fKh9s0UND7iQTgjc
+        cei5OJRPyfEN1X7oy9CKphWn+Hb1KbNW4HLycDIrhSqzlmK7KHwolbo19weSPnbwTkp5d5DlgL8F
+        Y2ACE0O3tY1Wrm6CoK/7XORy/aMryeLq4lsYuC3rOvsToW9gxyU5U8o2yMCXPwCN1k8O5QkAAA==
     headers:
-      Access-Control-Allow-Origin:
-      - '*'
-      Connection:
-      - keep-alive
+      Content-Encoding:
+      - gzip
       Content-Length:
-      - '713'
+      - '1195'
       Content-Type:
       - application/json
       Date:
-      - Mon, 10 May 2021 19:36:50 GMT
-      Server:
-      - gunicorn
+      - Thu, 16 Sep 2021 19:51:28 GMT
+      Vary:
+      - Accept-Encoding
+      X-Azure-Ref:
+      - 0QKBDYQAAAACwmJetUKc4Trtv9rn+78ErQk9TMzFFREdFMDQyMAAwODQxMTZmMC0yZjAzLTQ5N2ItOWUyMS03M2U2NDU0YzA2NzA=
+      X-Cache:
+      - CONFIG_NOCACHE
     status:
       code: 200
       message: OK
