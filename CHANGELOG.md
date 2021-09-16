@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   DOI, respectively ([#58](https://github.com/radiantearth/radiant-mlhub/pull/58))
 - `Dataset.fetch_by_id` and `Dataset.fetch_by_doi` methods analagous to new client methods described
   above ([#58](https://github.com/radiantearth/radiant-mlhub/pull/58))
+- `py.typed` file included in package ([#62](https://github.com/radiantearth/radiant-mlhub/pull/58))
 
 ### Changed
 
@@ -29,6 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for Python 3.6 ([#61](https://github.com/radiantearth/radiant-mlhub/pull/58))
 
 ### Fixed
+
+- Numerous type annotation issues ([#62](https://github.com/radiantearth/radiant-mlhub/pull/58))
 
 ### Deprecated
 
