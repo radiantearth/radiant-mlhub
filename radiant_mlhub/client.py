@@ -180,10 +180,11 @@ def list_datasets(
         else:
             text = list(text)
         params["text"] = text
-    return session.get('datasets', params=params).json()
+    response = session.get('datasets', params=params)
+    return cast(List[Dict[str, Any]], response.json())
 
 
-def get_dataset_by_doi(dataset_doi: str, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> dict:
+def get_dataset_by_doi(dataset_doi: str, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> Dict[str, Any]:
     """Returns a JSON-like dictionary representing the response from the Radiant MLHub ``GET
     /datasets/doi/{dataset_id}`` endpoint.
 
@@ -205,7 +206,8 @@ def get_dataset_by_doi(dataset_doi: str, *, api_key: Optional[str] = None, profi
 
     session = get_session(api_key=api_key, profile=profile)
     try:
-        return session.get(f'datasets/doi/{dataset_doi}').json()
+        response = session.get(f'datasets/doi/{dataset_doi}')
+        return cast(Dict[str, Any], response.json())
     except HTTPError as e:
         if e.response.status_code == 404:
             raise EntityDoesNotExist(f'Dataset with DOI "{dataset_doi}" does not exist.') from None
@@ -240,7 +242,7 @@ def get_dataset_by_id(dataset_id: str, *, api_key: Optional[str] = None, profile
         raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})') from None
 
 
-def get_dataset(dataset_id_or_doi: str, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> dict:
+def get_dataset(dataset_id_or_doi: str, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> Dict[str, Any]:
     """Returns a JSON-like dictionary representing a dataset by first trying to look up the dataset
     by ID, then falling back to finding the dataset by DOI.
 

@@ -149,7 +149,7 @@ class TestDataset:
         datasets = Dataset.list()
         assert isinstance(datasets[0], Dataset)
 
-    def test_list_datasets_tags_filter(self, requests_mock):
+    def test_list_datasets_tags_filter(self, requests_mock: "Mocker_Type") -> None:
         route_match = re.compile(r"^https://api\.radiant\.earth/mlhub/v1/datasets")
         requests_mock.get(route_match, status_code=200, text="[]")
 
@@ -165,7 +165,7 @@ class TestDataset:
         assert "segmentation" in query_params["tags"], "'segmentation' was not in 'tags' query parameter"
         assert "sar" in query_params["tags"], "'sar' was not in 'tags' query parameter"
 
-    def test_list_datasets_text_filter(self, requests_mock):
+    def test_list_datasets_text_filter(self, requests_mock: "Mocker_Type") -> None:
         route_match = re.compile(r"^https://api\.radiant\.earth/mlhub/v1/datasets")
         requests_mock.get(route_match, status_code=200, text="[]")
 
@@ -191,7 +191,7 @@ class TestDataset:
             'Benchmark Archive for Remote Sensing Image Understanding\", IEEE International Geoscience and Remote '\
             'Sensing Symposium, pp. 5901-5904, Yokohama, Japan, 2019.'
 
-    def test_get_dataset_by_doi(self, requests_mock):
+    def test_get_dataset_by_doi(self, requests_mock: "Mocker_Type") -> None:
         dataset_doi = "10.6084/m9.figshare.12047478.v2"
         endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/doi/{dataset_doi}"
         response_content = util.get_api_response("datasets/ref_african_crops_kenya_02.json")
@@ -204,7 +204,7 @@ class TestDataset:
         assert len(history) == 1
         assert urlsplit(history[0].url).path == urlsplit(endpoint).path
 
-    def test_get_dataset_by_id(self, requests_mock):
+    def test_get_dataset_by_id(self, requests_mock: "Mocker_Type") -> None:
         dataset_id = "ref_african_crops_kenya_02"
         endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/{dataset_id}"
         response_content = util.get_api_response(f"datasets/{dataset_id}.json")
@@ -217,7 +217,7 @@ class TestDataset:
         assert len(history) == 1
         assert urlsplit(history[0].url).path == urlsplit(endpoint).path
 
-    def test_get_dataset_uses_id_when_appropriate(self, requests_mock):
+    def test_get_dataset_uses_id_when_appropriate(self, requests_mock: "Mocker_Type") -> None:
         dataset_id = "ref_african_crops_kenya_02"
 
         response_content = util.get_api_response(f"datasets/{dataset_id}.json")
@@ -232,7 +232,7 @@ class TestDataset:
         assert len(history) == 1
         assert urlsplit(history[0].url).path == urlsplit(id_endpoint).path
 
-    def test_get_dataset_uses_doi_when_appropriate(self, requests_mock):
+    def test_get_dataset_uses_doi_when_appropriate(self, requests_mock: "Mocker_Type") -> None:
         dataset_doi = "10.6084/m9.figshare.12047478.v2"
 
         response_content = util.get_api_response("datasets/ref_african_crops_kenya_02.json")
@@ -280,7 +280,7 @@ class TestDataset:
         dataset = Dataset.fetch('bigearthnet_v1')
         assert dataset.total_archive_size == 71311240007
 
-    def test_dataset_list_tags_filter(self, requests_mock):
+    def test_dataset_list_tags_filter(self, requests_mock: "Mocker_Type") -> None:
         route_match = re.compile(r"^https://api\.radiant\.earth/mlhub/v1/datasets")
         requests_mock.get(route_match, status_code=200, text="[]")
 

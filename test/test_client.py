@@ -79,7 +79,7 @@ class TestClient:
 
         assert f'Collection "{collection_id}" does not exist.' == str(excinfo.value)
 
-    def test_dataset_does_not_exist(self, requests_mock) -> None:
+    def test_dataset_does_not_exist(self, requests_mock: "Mocker_Type") -> None:
         dataset_id = 'no_dataset'
 
         id_endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/{dataset_id}"
@@ -109,7 +109,7 @@ class TestClient:
 
         assert 'Internal Server Error' in str(excinfo.value)
 
-    def test_get_dataset_by_doi(self, requests_mock):
+    def test_get_dataset_by_doi(self, requests_mock: "Mocker_Type") -> None:
         dataset_doi = "10.6084/m9.figshare.12047478.v2"
         endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/doi/{dataset_doi}"
         requests_mock.get(endpoint, status_code=200, json={})
@@ -121,7 +121,7 @@ class TestClient:
         assert len(history) == 1
         assert urlsplit(history[0].url).path == urlsplit(endpoint).path
 
-    def test_get_dataset_by_id(self, requests_mock):
+    def test_get_dataset_by_id(self, requests_mock: "Mocker_Type") -> None:
         dataset_id = "some_dataset"
         endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/{dataset_id}"
         requests_mock.get(endpoint, status_code=200, json={})
@@ -133,7 +133,7 @@ class TestClient:
         assert len(history) == 1
         assert urlsplit(history[0].url).path == urlsplit(endpoint).path
 
-    def test_get_dataset_uses_id_when_appropriate(self, requests_mock):
+    def test_get_dataset_uses_id_when_appropriate(self, requests_mock: "Mocker_Type") -> None:
         dataset_id = "some_dataset"
 
         id_endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/{dataset_id}"
@@ -147,7 +147,7 @@ class TestClient:
         assert len(history) == 1
         assert urlsplit(history[0].url).path == urlsplit(id_endpoint).path
 
-    def test_get_dataset_uses_doi_when_appropriate(self, requests_mock):
+    def test_get_dataset_uses_doi_when_appropriate(self, requests_mock: "Mocker_Type") -> None:
         dataset_doi = "10.6084/m9.figshare.12047478.v2"
 
         doi_endpoint = f"https://api.radiant.earth/mlhub/v1/datasets/doi/{dataset_doi}"
@@ -253,7 +253,7 @@ class TestClient:
         )
         assert output_path.stat().st_size > original_size
 
-    def test_list_dataset_tags_filter(self, requests_mock):
+    def test_list_dataset_tags_filter(self, requests_mock: "Mocker_Type") -> None:
         route_match = re.compile(r"^https://api\.radiant\.earth/mlhub/v1/datasets")
         requests_mock.get(route_match, status_code=200, text="[]")
 
@@ -272,7 +272,7 @@ class TestClient:
         assert "segmentation" in query_params["tags"], "'segmentation' was not in 'tags' query parameter"
         assert "sar" in query_params["tags"], "'sar' was not in 'tags' query parameter"
 
-    def test_list_dataset_text_filter(self, requests_mock):
+    def test_list_dataset_text_filter(self, requests_mock: "Mocker_Type") -> None:
         route_match = re.compile(r"^https://api\.radiant\.earth/mlhub/v1/datasets")
         requests_mock.get(route_match, status_code=200, text="[]")
 
