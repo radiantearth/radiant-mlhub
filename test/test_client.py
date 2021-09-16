@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 class TestCustomUrl:
 
-    def test_custom_url_list_datasets(self, monkeypatch, requests_mock):
+    def test_custom_url_list_datasets(self, monkeypatch: pytest.MonkeyPatch, requests_mock: "Mocker_Type") -> None:
         # Set up custom URL
         custom_root_url = "https://staging.api.radiant.earth"
         monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
@@ -33,7 +33,7 @@ class TestCustomUrl:
         assert len(history) == 1
         assert history[0].url == "https://staging.api.radiant.earth/datasets?key=test_key"
 
-    def test_custom_url_get_collection(self, monkeypatch, requests_mock):
+    def test_custom_url_get_collection(self, monkeypatch: pytest.MonkeyPatch, requests_mock: "Mocker_Type") -> None:
         # Set up custom URL
         custom_root_url = "https://staging.api.radiant.earth"
         monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
@@ -50,7 +50,7 @@ class TestCustomUrl:
         assert len(history) == 1
         assert history[0].url == "https://staging.api.radiant.earth/collections/collection_id?key=test_key"
 
-    def test_custom_url_list_collection_items(self, monkeypatch, requests_mock):
+    def test_custom_url_list_collection_items(self, monkeypatch: pytest.MonkeyPatch, requests_mock: "Mocker_Type") -> None:
         # Set up custom URL
         custom_root_url = "https://staging.api.radiant.earth"
         monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)

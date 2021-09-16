@@ -16,13 +16,13 @@ if TYPE_CHECKING:
 
 
 class TestOverwriteRootURL:
-    def test_default_root_url(self):
+    def test_default_root_url(self) -> None:
         # Use anonymous session since we don't need to make actual requests
         session = Session(api_key=None)
 
         assert session.root_url == Session.DEFAULT_ROOT_URL
 
-    def test_env_variable_root_url(self, monkeypatch):
+    def test_env_variable_root_url(self, monkeypatch: pytest.MonkeyPatch) -> None:
         custom_root_url = "https://some-other-url"
         monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
         # Use anonymous session since we don't need to make actual requests
@@ -31,7 +31,7 @@ class TestOverwriteRootURL:
         assert session.root_url == custom_root_url
 
     @pytest.mark.vcr
-    def test_request_to_custom_url(self, monkeypatch):
+    def test_request_to_custom_url(self, monkeypatch: pytest.MonkeyPatch) -> None:
         custom_root_url = "https://www.google.com"
         monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
         # Use anonymous session since we don't need to make actual requests
@@ -42,7 +42,7 @@ class TestOverwriteRootURL:
         assert r.request.url == custom_root_url + "/"
 
     @pytest.mark.vcr
-    def test_request_to_custom_url_using_get_session(self, monkeypatch):
+    def test_request_to_custom_url_using_get_session(self, monkeypatch: pytest.MonkeyPatch) -> None:
         custom_root_url = "https://www.google.com"
         monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
         # Use anonymous session since we don't need to make actual requests

@@ -71,7 +71,7 @@ class Session(requests.Session):
         requests.Session.request,
         assigned=[attr for attr in functools.WRAPPER_ASSIGNMENTS if attr != '__doc__']  # Keep this docstring
     )
-    def request(self, method, url, **kwargs):
+    def request(self, method: str, url: str, **kwargs: Any) -> requests.Response:  # type: ignore[override]
         """Overwrites the default :meth:`requests.Session.request` method to prepend the MLHub root URL if the given
         ``url`` does not include a scheme. This will raise an :exc:`~radiant_mlhub.exceptions.AuthenticationError` if a 401 response is
         returned by the server, and a :class:`~requests.exceptions.HTTPError` if any other status code of 400 or above is returned.
@@ -113,8 +113,10 @@ class Session(requests.Session):
         # Handle authentication errors
         if response.status_code == 401:
             msg = "Authentication failed. "
-            if "key" in self.params:
-                msg += f"API Key: {self.params['key']}"
+            request_qs = str(urllib.parse.urlsplit(response.request.url).query)
+            request_params = urllib.parse.parse_qs(request_qs)
+            if "key" in request_params:
+                msg += f"API Key: {request_params['key'][0]}"
             else:
                 msg += "No API key provided."
             raise AuthenticationError(msg)

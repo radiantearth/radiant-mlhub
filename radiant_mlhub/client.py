@@ -7,6 +7,7 @@ from functools import partial
 import os
 from pathlib import Path
 from typing import cast, Any, Dict, Iterable, Iterator, List, Optional, Union
+from typing_extensions import TypedDict
 
 from requests.exceptions import HTTPError
 
@@ -23,9 +24,16 @@ TagOrTagList = Union[str, Iterable[str]]
 TextOrTextList = Union[str, Iterable[str]]
 
 
+class ArchiveInfo(TypedDict):
+    collection: str
+    dataset: str
+    size: int
+    types: List[str]
+
+
 def _download(
         url: str,
-        output_dir: Path,
+        output_dir: Union[str, Path],
         *,
         if_exists: str = 'resume',
         chunk_size: int = 5000000,
@@ -60,6 +68,7 @@ def _download(
     ValueError
         If ``if_exists`` is not one of ``"skip"``, ``"overwrite"``, or ``"resume"``.
     """
+    output_dir = os.fspath(output_dir)
     if if_exists not in {'skip', 'overwrite', 'resume'}:
         raise ValueError('if_exists must be one of "skip", "overwrite", or "resume"')
 
@@ -365,7 +374,7 @@ def list_collection_items(
     session = get_session(api_key=api_key, profile=profile)
 
     def _list_items() -> Iterator[Dict[str, Any]]:
-        params = {}
+        params: Dict[str, Any] = {}
         if page_size is not None:
             params['limit'] = page_size
         if extensions is not None:

@@ -1,13 +1,13 @@
 """Extensions of the `PySTAC <https://pystac.readthedocs.io/en/latest/>`_ classes that provide convenience methods for interacting
 with the `Radiant MLHub API <https://docs.mlhub.earth/#radiant-mlhub-api>`_."""
 
+from __future__ import annotations
 import concurrent.futures
-from collections.abc import Sequence
 from copy import deepcopy
 from enum import Enum
 import os
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, List, Optional, Union
+from typing import Any, Dict, Iterable, Iterator, List, Optional, Union, cast
 
 import pystac
 
@@ -18,13 +18,31 @@ TagOrTagList = Union[str, Iterable[str]]
 TextOrTextList = Union[str, Iterable[str]]
 
 
-class Collection(pystac.Collection):
+class Collection(pystac.Collection):  # type: ignore[misc]
     """Class inheriting from :class:`pystac.Collection` that adds some convenience methods for listing and fetching
     from the Radiant MLHub API.
     """
+    _archive_size: Optional[int]
 
-    def __init__(self, id, description, extent, title, stac_extensions, href, extra_fields, catalog_type, license,
-                 keywords, providers, properties, summaries, *, api_key=None, profile=None):
+    def __init__(  # type: ignore[no-untyped-def]
+        self,
+        id,
+        description,
+        extent,
+        title,
+        stac_extensions,
+        href,
+        extra_fields,
+        catalog_type,
+        license,
+        keywords,
+        providers,
+        properties,
+        summaries,
+        *,
+        api_key=None,
+        profile=None
+    ):
         super().__init__(id, description, extent, title=title, stac_extensions=stac_extensions, href=href,
                          extra_fields=extra_fields, catalog_type=catalog_type, license=license, keywords=keywords,
                          providers=providers, properties=properties, summaries=summaries)
@@ -87,7 +105,7 @@ class Collection(pystac.Collection):
         providers = d.get('providers')
         if providers is not None:
             providers = list(map(
-                lambda x: pystac.Provider.from_dict(x),
+                lambda x: cast(object, pystac.Provider.from_dict(x)),
                 providers
             ))
         properties = d.get('properties')
@@ -259,11 +277,12 @@ class _CollectionWithType:
         self.collection = collection
 
 
-class _CollectionList(Sequence):
+class _CollectionList:
     """Used internally by :class:`Dataset` to create a list of collections that can also be accessed by type using the
     ``source_imagery`` and ``labels`` attributes."""
     _source_imagery: Optional[List[Collection]]
     _labels: Optional[List[Collection]]
+    _collections: List[_CollectionWithType]
 
     def __init__(self, collections_with_type: List[_CollectionWithType]):
         self._collections = collections_with_type
@@ -278,7 +297,7 @@ class _CollectionList(Sequence):
     def __len__(self) -> int:
         return len(self._collections)
 
-    def __getitem__(self, item) -> Collection:
+    def __getitem__(self, item: int) -> Collection:
         return self._collections[item].collection
 
     def __repr__(self) -> str:
