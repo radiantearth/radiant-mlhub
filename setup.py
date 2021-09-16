@@ -15,6 +15,9 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/radiantearth/radiant-mlhub",
     packages=setuptools.find_packages(),
+    package_data={
+        "": ["py.typed"]
+    },
     platforms='Platform Independent',
     entry_points={
         'console_scripts': [
@@ -22,10 +25,10 @@ setuptools.setup(
         ]
     },
     install_requires=[
-        'requests~=2.25.1',
+        'requests~=2.25',
         'pystac==0.5.4',
-        'click~=7.1.2',
-        'tqdm~=4.56.0',
+        'click~=8.0',
+        'tqdm~=4.56',
     ],
     classifiers=[
         "Programming Language :: Python",

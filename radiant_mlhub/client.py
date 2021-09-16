@@ -4,8 +4,10 @@ import itertools as it
 import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
+import os
 from pathlib import Path
-from typing import Iterator, List, Optional, Iterable, Union
+from typing import cast, Any, Dict, Iterable, Iterator, List, Optional, Union
+from typing_extensions import TypedDict
 
 from requests.exceptions import HTTPError
 
@@ -13,7 +15,7 @@ try:
     from tqdm.auto import tqdm
 except ImportError:  # pragma: no cover
     # Handles this issue: https://github.com/tqdm/tqdm/issues/1082
-    from tqdm import tqdm  # type: ignore [no-redef]
+    from tqdm import tqdm
 
 from .exceptions import EntityDoesNotExist, MLHubException
 from .session import get_session
@@ -22,13 +24,20 @@ TagOrTagList = Union[str, Iterable[str]]
 TextOrTextList = Union[str, Iterable[str]]
 
 
+class ArchiveInfo(TypedDict):
+    collection: str
+    dataset: str
+    size: int
+    types: List[str]
+
+
 def _download(
         url: str,
-        output_dir: Path,
+        output_dir: Union[str, Path],
         *,
         if_exists: str = 'resume',
-        chunk_size=5000000,
-        **session_kwargs
+        chunk_size: int = 5000000,
+        api_key: Optional[str] = None, profile: Optional[str] = None
 ) -> Path:
     """Internal function used to parallelize downloads from a given URL.
 
@@ -59,10 +68,11 @@ def _download(
     ValueError
         If ``if_exists`` is not one of ``"skip"``, ``"overwrite"``, or ``"resume"``.
     """
+    output_dir = os.fspath(output_dir)
     if if_exists not in {'skip', 'overwrite', 'resume'}:
         raise ValueError('if_exists must be one of "skip", "overwrite", or "resume"')
 
-    def _get_ranges(total_size, interval, start=0):
+    def _get_ranges(total_size: int, interval: int, start: int = 0) -> Iterator[str]:
         """Internal function for getting byte ranges from a total size and interval/chunk size."""
         while True:
             end = min(start + interval - 1, total_size)
@@ -71,7 +81,7 @@ def _download(
             if start >= total_size:
                 break
 
-    def _fetch_range(url_, range_):
+    def _fetch_range(url_: str, range_: str) -> bytes:
         """Internal function for fetching a byte range from the url."""
         return session.get(url_, headers={'Range': f'bytes={range_}'}).content
 
@@ -83,7 +93,7 @@ def _download(
         raise ValueError('output_dir must be a path to a directory')
 
     # Create a session
-    session = get_session(**session_kwargs)
+    session = get_session(api_key=api_key, profile=profile)
 
     # HEAD the endpoint and follow redirects to get the actual download URL and Content-Length
     r = session.head(url, allow_redirects=True)
@@ -128,7 +138,13 @@ def _download(
     return output_path
 
 
-def list_datasets(*, tags: Optional[TagOrTagList] = None, text: Optional[TextOrTextList] = None, **session_kwargs) -> List[dict]:
+def list_datasets(
+    *,
+    tags: Optional[TagOrTagList] = None,
+    text: Optional[TextOrTextList] = None,
+    api_key: Optional[str] = None,
+    profile: Optional[str] = None
+) -> List[Dict[str, Any]]:
     """Gets a list of JSON-like dictionaries representing dataset objects returned by the Radiant MLHub ``GET /datasets`` endpoint.
 
     See the `MLHub API docs <https://docs.mlhub.earth/#radiant-mlhub-api>`_ for details.
@@ -139,14 +155,17 @@ def list_datasets(*, tags: Optional[TagOrTagList] = None, text: Optional[TextOrT
         containing all provided tags will be returned.
     text : A text phrase or list of text phrases to filter datasets by. If not ``None``,
         only datasets containing all phrases will be returned.
-    **session_kwargs
-        Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+    api_key : str
+        An API key to use for this request. This will override an API key set in a profile on using
+        an environment variable
+    profile: str
+        A profile to use when making this request.
 
     Returns
     -------
     datasets : List[dict]
     """
-    session = get_session(**session_kwargs)
+    session = get_session(api_key=api_key, profile=profile)
 
     params = {}
     if tags is not None:
@@ -161,10 +180,11 @@ def list_datasets(*, tags: Optional[TagOrTagList] = None, text: Optional[TextOrT
         else:
             text = list(text)
         params["text"] = text
-    return session.get('datasets', params=params).json()
+    response = session.get('datasets', params=params)
+    return cast(List[Dict[str, Any]], response.json())
 
 
-def get_dataset_by_doi(dataset_doi: str, **session_kwargs) -> dict:
+def get_dataset_by_doi(dataset_doi: str, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> Dict[str, Any]:
     """Returns a JSON-like dictionary representing the response from the Radiant MLHub ``GET
     /datasets/doi/{dataset_id}`` endpoint.
 
@@ -174,23 +194,27 @@ def get_dataset_by_doi(dataset_doi: str, **session_kwargs) -> dict:
     ----------
     dataset_doi : str
         The DOI of the dataset to fetch
-    **session_kwargs
-        Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+    api_key : str
+        An API key to use for this request. This will override an API key set in a profile on using
+        an environment variable
+    profile: str
+        A profile to use when making this request.
 
     Returns
     -------
     dataset : dict"""
 
-    session = get_session(**session_kwargs)
+    session = get_session(api_key=api_key, profile=profile)
     try:
-        return session.get(f'datasets/doi/{dataset_doi}').json()
+        response = session.get(f'datasets/doi/{dataset_doi}')
+        return cast(Dict[str, Any], response.json())
     except HTTPError as e:
         if e.response.status_code == 404:
             raise EntityDoesNotExist(f'Dataset with DOI "{dataset_doi}" does not exist.') from None
         raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})') from None
 
 
-def get_dataset_by_id(dataset_id: str, **session_kwargs) -> dict:
+def get_dataset_by_id(dataset_id: str, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> Dict[str, Any]:
     """Returns a JSON-like dictionary representing the response from the Radiant MLHub ``GET /datasets/{dataset_id}`` endpoint.
 
     See the `MLHub API docs <https://docs.mlhub.earth/#radiant-mlhub-api>`_ for details.
@@ -199,23 +223,26 @@ def get_dataset_by_id(dataset_id: str, **session_kwargs) -> dict:
     ----------
     dataset_id : str
         The ID of the dataset to fetch
-    **session_kwargs
-        Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+    api_key : str
+        An API key to use for this request. This will override an API key set in a profile on using
+        an environment variable
+    profile: str
+        A profile to use when making this request.
 
     Returns
     -------
     dataset : dict
     """
-    session = get_session(**session_kwargs)
+    session = get_session(api_key=api_key, profile=profile)
     try:
-        return session.get(f'datasets/{dataset_id}').json()
+        return cast(Dict[str, Any], session.get(f'datasets/{dataset_id}').json())
     except HTTPError as e:
         if e.response.status_code == 404:
             raise EntityDoesNotExist(f'Dataset "{dataset_id}" does not exist.') from None
         raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})') from None
 
 
-def get_dataset(dataset_id_or_doi: str, **session_kwargs) -> dict:
+def get_dataset(dataset_id_or_doi: str, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> Dict[str, Any]:
     """Returns a JSON-like dictionary representing a dataset by first trying to look up the dataset
     by ID, then falling back to finding the dataset by DOI.
 
@@ -225,8 +252,11 @@ def get_dataset(dataset_id_or_doi: str, **session_kwargs) -> dict:
     ----------
     dataset_id_or_doi : str
         The ID of the dataset to fetch
-    **session_kwargs
-        Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+    api_key : str
+        An API key to use for this request. This will override an API key set in a profile on using
+        an environment variable
+    profile: str
+        A profile to use when making this request.
 
     Returns
     -------
@@ -236,12 +266,13 @@ def get_dataset(dataset_id_or_doi: str, **session_kwargs) -> dict:
     # (https://stackoverflow.com/questions/27910/finding-a-doi-in-a-document-or-page), so instead we
     # rely on the fact that we'll never have a "/" in a dataset ID.
     if "/" in dataset_id_or_doi:
-        return get_dataset_by_doi(dataset_id_or_doi, **session_kwargs)
+        return get_dataset_by_doi(dataset_id_or_doi, api_key=api_key, profile=profile)
     else:
-        return get_dataset_by_id(dataset_id_or_doi, **session_kwargs)
+        return get_dataset_by_id(dataset_id_or_doi, api_key=api_key, profile=profile)
 
 
-def list_collections(**session_kwargs) -> List[dict]:
+def list_collections(*, api_key: Optional[str] = None, profile: Optional[str] = None) -> List[Dict[str, Any]]:
+
     """Gets a list of JSON-like dictionaries representing STAC Collection objects returned by the Radiant MLHub ``GET /collections``
     endpoint.
 
@@ -249,21 +280,23 @@ def list_collections(**session_kwargs) -> List[dict]:
 
     Parameters
     ----------
-
-    **session_kwargs
-        Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+    api_key : str
+        An API key to use for this request. This will override an API key set in a profile on using
+        an environment variable
+    profile: str
+        A profile to use when making this request.
 
     Returns
     -------
     collections: List[dict]
         List of JSON-like dictionaries representing STAC Collection objects.
     """
-    session = get_session(**session_kwargs)
+    session = get_session(api_key=api_key, profile=profile)
     r = session.get('collections')
-    return r.json().get('collections', [])
+    return cast(List[Dict[str, Any]], r.json().get('collections', []))
 
 
-def get_collection(collection_id: str, **session_kwargs) -> dict:
+def get_collection(collection_id: str, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> Dict[str, Any]:
     """Returns a JSON-like dictionary representing the response from the Radiant MLHub ``GET /collections/{p1}`` endpoint.
 
     See the `MLHub API docs <https://docs.mlhub.earth/#radiant-mlhub-api>`_ for details.
@@ -272,8 +305,11 @@ def get_collection(collection_id: str, **session_kwargs) -> dict:
     ----------
     collection_id : str
         The ID of the collection to fetch
-    **session_kwargs
-        Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+    api_key : str
+        An API key to use for this request. This will override an API key set in a profile on using
+        an environment variable
+    profile: str
+        A profile to use when making this request.
 
     Returns
     -------
@@ -286,10 +322,10 @@ def get_collection(collection_id: str, **session_kwargs) -> dict:
     MLHubException
         If any other response code is returned
     """
-    session = get_session(**session_kwargs)
+    session = get_session(api_key=api_key, profile=profile)
 
     try:
-        return session.get(f'collections/{collection_id}').json()
+        return cast(Dict[str, Any], session.get(f'collections/{collection_id}').json())
     except HTTPError as e:
         if e.response.status_code == 404:
             raise EntityDoesNotExist(f'Collection "{collection_id}" does not exist.') from None
@@ -299,11 +335,12 @@ def get_collection(collection_id: str, **session_kwargs) -> dict:
 def list_collection_items(
         collection_id: str,
         *,
-        page_size: int = None,
-        extensions: List[str] = None,
+        page_size: Optional[int] = None,
+        extensions: Optional[List[str]] = None,
         limit: int = 10,
-        **session_kwargs
-) -> Iterator[dict]:
+        api_key: Optional[str] = None,
+        profile: Optional[str] = None
+) -> Iterator[Dict[str, Any]]:
     """Yields JSON-like dictionaries representing STAC Item objects returned by the Radiant MLHub ``GET /collections/{collection_id}/items``
     endpoint.
 
@@ -325,18 +362,21 @@ def list_collection_items(
         If provided, then only items that support all of the extensions listed will be returned.
     limit : int
         The maximum *total* number of items to yield. Defaults to ``10``.
-    **session_kwargs
-        Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+    api_key : str
+        An API key to use for this request. This will override an API key set in a profile on using
+        an environment variable
+    profile: str
+        A profile to use when making this request.
 
     Yields
     ------
     item : dict
         JSON-like dictionary representing a STAC Item associated with the given collection.
     """
-    session = get_session(**session_kwargs)
+    session = get_session(api_key=api_key, profile=profile)
 
-    def _list_items():
-        params = {}
+    def _list_items() -> Iterator[Dict[str, Any]]:
+        params: Dict[str, Any] = {}
         if page_size is not None:
             params['limit'] = page_size
         if extensions is not None:
@@ -347,7 +387,7 @@ def list_collection_items(
     yield from it.islice(_list_items(), limit)
 
 
-def get_collection_item(collection_id: str, item_id: str, **session_kwargs) -> dict:
+def get_collection_item(collection_id: str, item_id: str, api_key: Optional[str] = None, profile: Optional[str] = None) -> Dict[str, Any]:
     """Returns a JSON-like dictionary representing the response from the Radiant MLHub ``GET /collections/{p1}/items/{p2}`` endpoint.
 
     Parameters
@@ -356,24 +396,27 @@ def get_collection_item(collection_id: str, item_id: str, **session_kwargs) -> d
         The ID of the Collection to which the Item belongs.
     item_id : str
         The ID of the Item.
-    **session_kwargs
-        Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+    api_key : str
+        An API key to use for this request. This will override an API key set in a profile on using
+        an environment variable
+    profile: str
+        A profile to use when making this request.
 
     Returns
     -------
     item : dict
     """
-    session = get_session(**session_kwargs)
+    session = get_session(api_key=api_key, profile=profile)
 
     try:
-        return session.get(f'collections/{collection_id}/items/{item_id}').json()
+        return cast(Dict[str, Any], session.get(f'collections/{collection_id}/items/{item_id}').json())
     except HTTPError as e:
         if e.response.status_code == 404:
             raise EntityDoesNotExist(f'Collection "{collection_id}" and/or item {item_id} do not exist.')
         raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})')
 
 
-def get_archive_info(archive_id: str, **session_kwargs) -> dict:
+def get_archive_info(archive_id: str, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> Dict[str, Any]:
     """Gets info for the given archive from the ``/archive/{archive_id}/info`` endpoint as a
     JSON-like dictionary.
 
@@ -389,17 +432,20 @@ def get_archive_info(archive_id: str, **session_kwargs) -> dict:
     ----------
     archive_id : str
         The ID of the archive. This is the same as the Collection ID.
-    **session_kwargs
-        Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+    api_key : str
+        An API key to use for this request. This will override an API key set in a profile on using
+        an environment variable
+    profile: str
+        A profile to use when making this request.
 
     Returns
     -------
     archive_info : dict
         JSON-like dictionary representing the API response.
     """
-    session = get_session(**session_kwargs)
+    session = get_session(api_key=api_key, profile=profile)
     try:
-        return session.get(f'archive/{archive_id}/info').json()
+        return cast(Dict[str, Any], session.get(f'archive/{archive_id}/info').json())
 
     except HTTPError as e:
         if e.response.status_code == 404:
@@ -409,10 +455,11 @@ def get_archive_info(archive_id: str, **session_kwargs) -> dict:
 
 def download_archive(
         archive_id: str,
-        output_dir: Path = None,
+        output_dir: Optional[Union[str, Path]] = None,
         *,
         if_exists: str = 'resume',
-        **session_kwargs
+        api_key: Optional[str] = None,
+        profile: Optional[str] = None
 ) -> Path:
     """Downloads the archive with the given ID to an output location (current working directory by default).
 
@@ -434,8 +481,11 @@ def download_archive(
         the existing file will be overwritten and the entire file will be re-downloaded. If ``"resume"`` (the default), the
         existing file size will be compared to the size of the download (using the ``Content-Length`` header). If the existing
         file is smaller, then only the remaining portion will be downloaded. Otherwise, the download will be skipped.
-    **session_kwargs
-        Keyword arguments passed directly to :func:`~radiant_mlhub.session.get_session`
+    api_key : str
+        An API key to use for this request. This will override an API key set in a profile on using
+        an environment variable
+    profile: str
+        A profile to use when making this request.
 
     Returns
     -------
@@ -448,13 +498,15 @@ def download_archive(
         If ``if_exists`` is not one of ``"skip"``, ``"overwrite"``, or ``"resume"``.
     """
     output_dir = output_dir if output_dir is not None else Path.cwd()
+    output_dir = os.fspath(output_dir)
 
     try:
         return _download(
             f'archive/{archive_id}',
             output_dir=output_dir,
             if_exists=if_exists,
-            **session_kwargs
+            api_key=api_key,
+            profile=profile
         )
     except HTTPError as e:
         if e.response.status_code == 404:

@@ -7,12 +7,11 @@ of the API key from function arguments, environment variables, and profiles as d
 """
 
 import configparser
-import functools
 import os
 import platform
 import urllib.parse
 from pathlib import Path
-from typing import Iterator, Optional
+from typing import Any, Dict, Iterator, Optional
 
 import requests
 import requests.adapters
@@ -67,11 +66,7 @@ class Session(requests.Session):
         self.mount('https://', requests.adapters.HTTPAdapter(max_retries=retries))
         self.mount('http://', requests.adapters.HTTPAdapter(max_retries=retries))
 
-    @functools.wraps(
-        requests.Session.request,
-        assigned=[attr for attr in functools.WRAPPER_ASSIGNMENTS if attr != '__doc__']  # Keep this docstring
-    )
-    def request(self, method, url, **kwargs):
+    def request(self, method: str, url: str, **kwargs: Any) -> requests.Response:  # type: ignore[override]
         """Overwrites the default :meth:`requests.Session.request` method to prepend the MLHub root URL if the given
         ``url`` does not include a scheme. This will raise an :exc:`~radiant_mlhub.exceptions.AuthenticationError` if a 401 response is
         returned by the server, and a :class:`~requests.exceptions.HTTPError` if any other status code of 400 or above is returned.
@@ -113,8 +108,10 @@ class Session(requests.Session):
         # Handle authentication errors
         if response.status_code == 401:
             msg = "Authentication failed. "
-            if "key" in self.params:
-                msg += f"API Key: {self.params['key']}"
+            request_qs = str(urllib.parse.urlsplit(response.request.url).query)
+            request_params = urllib.parse.parse_qs(request_qs)
+            if "key" in request_params:
+                msg += f"API Key: {request_params['key'][0]}"
             else:
                 msg += "No API key provided."
             raise AuthenticationError(msg)
@@ -182,7 +179,7 @@ class Session(requests.Session):
 
         return cls(api_key=api_key)
 
-    def paginate(self, url: str, **kwargs) -> Iterator[dict]:
+    def paginate(self, url: str, **kwargs: Any) -> Iterator[Dict[str, Any]]:
         """Makes a GET request to the given ``url`` and paginates through all results by looking for a link in each response with a
         ``rel`` type of ``"next"``. Any additional keyword arguments are passed directly to :meth:`requests.Session.get`.
 
@@ -197,13 +194,17 @@ class Session(requests.Session):
         page : dict
             An individual response as a dictionary.
         """
+        current_url: Optional[str] = str(url)
         while True:
-            page = self.get(url, **kwargs).json()
+            if current_url is None:
+                break
+            page = self.get(current_url, **kwargs).json()
             yield page
 
-            url = dict(next((link for link in page.get('links', []) if link['rel'] == 'next'), {})).get('href')
-            if not url:
-                break
+            current_url = dict(next((
+                link for link in page.get('links', [])
+                if link['rel'] == 'next'), {}
+            )).get('href')
 
 
 def get_session(*, api_key: Optional[str] = None, profile: Optional[str] = None) -> Session:
