@@ -67,10 +67,6 @@ class Session(requests.Session):
         self.mount('https://', requests.adapters.HTTPAdapter(max_retries=retries))
         self.mount('http://', requests.adapters.HTTPAdapter(max_retries=retries))
 
-    @functools.wraps(
-        requests.Session.request,
-        assigned=[attr for attr in functools.WRAPPER_ASSIGNMENTS if attr != '__doc__']  # Keep this docstring
-    )
     def request(self, method: str, url: str, **kwargs: Any) -> requests.Response:  # type: ignore[override]
         """Overwrites the default :meth:`requests.Session.request` method to prepend the MLHub root URL if the given
         ``url`` does not include a scheme. This will raise an :exc:`~radiant_mlhub.exceptions.AuthenticationError` if a 401 response is
