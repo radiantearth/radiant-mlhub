@@ -1,8 +1,8 @@
 import json
-from pathlib import Path
-import pystac
 import pytest
 import re
+import pystac.item
+from pathlib import Path
 from urllib.parse import urljoin, urlsplit, parse_qs
 from typing import Any, cast, Dict, Iterator, TYPE_CHECKING
 
@@ -69,7 +69,7 @@ class TestCollectionAuthenticatedEndpoints:
         collection = Collection.fetch('ref_african_crops_kenya_02_source')
         item = collection.fetch_item('ref_african_crops_kenya_02_tile_02_20190721')
 
-        assert isinstance(item, pystac.Item)
+        assert isinstance(item, pystac.item.Item)
         assert len(item.assets) == 13
 
     @pytest.mark.vcr

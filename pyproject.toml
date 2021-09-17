@@ -15,7 +15,6 @@ module = [
   "urllib3.*",
   "requests_mock.*",
   "tqdm.*",
-  "pystac.*",
   "sphinx_rtd_theme.*"
 ]
 ignore_missing_imports = true

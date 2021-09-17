@@ -9,7 +9,11 @@ import os
 from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Union, cast
 
-import pystac
+import pystac.collection
+import pystac.catalog
+import pystac.item
+import pystac.link
+import pystac.provider
 
 from . import client
 from .exceptions import EntityDoesNotExist
@@ -18,7 +22,7 @@ TagOrTagList = Union[str, Iterable[str]]
 TextOrTextList = Union[str, Iterable[str]]
 
 
-class Collection(pystac.Collection):  # type: ignore[misc]
+class Collection(pystac.collection.Collection):
     """Class inheriting from :class:`pystac.Collection` that adds some convenience methods for listing and fetching
     from the Radiant MLHub API.
     """
@@ -37,7 +41,6 @@ class Collection(pystac.Collection):  # type: ignore[misc]
         license,
         keywords,
         providers,
-        properties,
         summaries,
         *,
         api_key=None,
@@ -45,7 +48,7 @@ class Collection(pystac.Collection):  # type: ignore[misc]
     ):
         super().__init__(id, description, extent, title=title, stac_extensions=stac_extensions, href=href,
                          extra_fields=extra_fields, catalog_type=catalog_type, license=license, keywords=keywords,
-                         providers=providers, properties=properties, summaries=summaries)
+                         providers=providers, summaries=summaries)
 
         self.session_kwargs = {}
         if api_key is not None:
@@ -85,30 +88,31 @@ class Collection(pystac.Collection):  # type: ignore[misc]
         cls,
         d: Dict[str, Any],
         href: Optional[str] = None,
-        root: Optional[pystac.Catalog] = None,
+        root: Optional[pystac.catalog.Catalog] = None,
+        migrate: bool = False,
+        preserve_dict: bool = True,
         *,
         api_key: Optional[str] = None,
         profile: Optional[str] = None
     ) -> "Collection":
         """Patches the :meth:`pystac.Collection.from_dict` method so that it returns the calling class instead of always returning
         a :class:`pystac.Collection` instance."""
-        catalog_type = pystac.CatalogType.determine_type(d)
+        catalog_type = pystac.catalog.CatalogType.determine_type(d)
 
         d = deepcopy(d)
         id_ = d.pop('id')
         description = d.pop('description')
         license_ = d.pop('license')
-        extent = pystac.Extent.from_dict(d.pop('extent'))
+        extent = pystac.collection.Extent.from_dict(d.pop('extent'))
         title = d.get('title')
         stac_extensions = d.get('stac_extensions')
         keywords = d.get('keywords')
         providers = d.get('providers')
         if providers is not None:
             providers = list(map(
-                lambda x: cast(object, pystac.Provider.from_dict(x)),
+                lambda x: cast(object, pystac.provider.Provider.from_dict(x)),
                 providers
             ))
-        properties = d.get('properties')
         summaries = d.get('summaries')
         links = d.pop('links')
 
@@ -124,7 +128,6 @@ class Collection(pystac.Collection):  # type: ignore[misc]
             license=license_,
             keywords=keywords,
             providers=providers,
-            properties=properties,
             summaries=summaries,
             href=href,
             catalog_type=catalog_type,
@@ -138,7 +141,7 @@ class Collection(pystac.Collection):  # type: ignore[misc]
                 collection.remove_links('root')
 
             if link['rel'] != 'self' or href is None:
-                collection.add_link(pystac.Link.from_dict(link))
+                collection.add_link(pystac.link.Link.from_dict(link))
 
         return collection
 
@@ -163,7 +166,7 @@ class Collection(pystac.Collection):  # type: ignore[misc]
         response = client.get_collection(collection_id, api_key=api_key, profile=profile)
         return cls.from_dict(response, api_key=api_key, profile=profile)
 
-    def get_items(self, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> Iterator[pystac.Item]:
+    def get_items(self, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> Iterator[pystac.item.Item]:
         """
         .. note::
 
@@ -177,11 +180,11 @@ class Collection(pystac.Collection):  # type: ignore[misc]
         raise NotImplementedError('For performance reasons, the get_items method has not been implemented for Collection instances. Please '
                                   'use the Collection.download method to download Collection assets.')
 
-    def fetch_item(self, item_id: str, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> pystac.Item:
+    def fetch_item(self, item_id: str, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> pystac.item.Item:
         api_key = api_key or self.session_kwargs.get("api_key")
         profile = profile or self.session_kwargs.get("profile")
         response = client.get_collection_item(self.id, item_id, api_key=api_key, profile=profile)
-        return pystac.Item.from_dict(response)
+        return pystac.item.Item.from_dict(response)
 
     def download(
             self,

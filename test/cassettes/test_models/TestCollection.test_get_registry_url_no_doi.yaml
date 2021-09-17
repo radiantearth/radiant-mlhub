@@ -16,7 +16,7 @@ interactions:
   response:
     body:
       string: !!binary |
-        H4sIAG2eQ2EC/7VTa2/TMBT9K1E+gWgTvxP322hBSMA+jGk8uqpyE7c1S+PIccumqf+d66TdyksI
+        H4sIAIjeQ2EC/7VTa2/TMBT9K1E+gWgTvxP322hBSMA+jGk8uqpyE7c1S+PIccumqf+d66TdyksI
         BFKkpvcen3tyfM99bMp4FDu9nKulM4Wq54WzTTu/0fWdmiMyr9RCV208iP1dowE6tlWlC29sDbXK
         1DdtPJreA0MFTeP15gSrmqYCzgBOV9o++9x2p9YwDrpr75tRmrZerUy9SlRjEqdKo2qfaOX8Ot1U
         6+0i3eG0eJjZpr+VmvYi9oOjqEY5Xfufq/pbRSf0ztr/R97qavlvyf/Iy3g/G8T61gf/Rvdx28Bs
@@ -36,11 +36,98 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 16 Sep 2021 19:43:40 GMT
+      - Fri, 17 Sep 2021 00:17:12 GMT
       Vary:
       - Accept-Encoding
       X-Azure-Ref:
-      - 0bZ5DYQAAAAAmSFpwh+zrQLzImEvA5qkbQk9TMzFFREdFMDQwNwAwODQxMTZmMC0yZjAzLTQ5N2ItOWUyMS03M2U2NDU0YzA2NzA=
+      - 0iN5DYQAAAACh+238msGDRbuOeXfofcdDQk9TMzFFREdFMDQxNwAwODQxMTZmMC0yZjAzLTQ5N2ItOWUyMS03M2U2NDU0YzA2NzA=
+      X-Cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - close
+      Host:
+      - staging.api.radiant.earth
+      User-Agent:
+      - Python-urllib/3.8
+    method: GET
+    uri: http://staging.api.radiant.earth/mlhub/v1/
+  response:
+    body:
+      string: ''
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '0'
+      Date:
+      - Fri, 17 Sep 2021 00:17:12 GMT
+      Location:
+      - https://staging.api.radiant.earth/mlhub/v1/
+      X-Azure-Ref:
+      - 0iN5DYQAAAADFvDqoq5+wSqeS3/1QixSAQk9TMzFFREdFMDQxMQAwODQxMTZmMC0yZjAzLTQ5N2ItOWUyMS03M2U2NDU0YzA2NzA=
+    status:
+      code: 307
+      message: Temporary Redirect
+- request:
+    body: null
+    headers:
+      Connection:
+      - close
+      Host:
+      - staging.api.radiant.earth
+      User-Agent:
+      - Python-urllib/3.8
+    method: GET
+    uri: https://staging.api.radiant.earth/mlhub/v1/
+  response:
+    body:
+      string: '{"type":"Catalog","id":"stac-fastapi","title":"Radiant MLHub API","description":"stac-fastapi","stac_version":"1.0.0","conformsTo":["https://api.stacspec.org/v1.0.0-beta.3/ogcapi-features","https://api.stacspec.org/v1.0.0-beta.3/item-search/#fields","https://api.stacspec.org/v1.0.0-beta.3/item-search","http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson","https://api.stacspec.org/v1.0.0-beta.3/item-search/#query","http://www.opengis.net/spec/ogcapi-features-4/1.0/conf/simpletx","http://www.opengis.net/spec/ogcapi-features-1/1.0/req/oas30","http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core","https://api.stacspec.org/v1.0.0-beta.3/item-search/#sort","https://api.stacspec.org/v1.0.0-beta.3/core","https://api.stacspec.org/v1.0.0-beta.3/ogcapi-features/extensions/transaction/"],"links":[{"rel":"self","type":"application/json","href":"http://staging.api.radiant.earth/mlhub/v1/"},{"rel":"root","type":"application/json","href":"http://staging.api.radiant.earth/mlhub/v1/"},{"rel":"data","type":"application/json","href":"http://staging.api.radiant.earth/mlhub/v1/collections"},{"rel":"docs","type":"application/json","title":"OpenAPI
+        docs","href":"http://staging.api.radiant.earth/mlhub/v1/docs"},{"rel":"conformance","type":"application/json","title":"STAC/WFS3
+        conformance classes implemented by this server","href":"http://staging.api.radiant.earth/mlhub/v1/conformance"},{"rel":"search","type":"application/geo+json","title":"STAC
+        search","href":"http://staging.api.radiant.earth/mlhub/v1/search","method":"GET"},{"rel":"search","type":"application/json","title":"STAC
+        search","href":"http://staging.api.radiant.earth/mlhub/v1/search","method":"POST"},{"rel":"child","type":"application/json","title":"ref_african_crops_uganda_01_source","href":"http://staging.api.radiant.earth/mlhub/v1/collections/ref_african_crops_uganda_01_source"},{"rel":"child","type":"application/json","title":"microsoft_chesapeake_landsat_leaf_on","href":"http://staging.api.radiant.earth/mlhub/v1/collections/microsoft_chesapeake_landsat_leaf_on"},{"rel":"child","type":"application/json","title":"sen12floods_s2_source","href":"http://staging.api.radiant.earth/mlhub/v1/collections/sen12floods_s2_source"},{"rel":"child","type":"application/json","title":"sn2_AOI_2_Vegas","href":"http://staging.api.radiant.earth/mlhub/v1/collections/sn2_AOI_2_Vegas"},{"rel":"child","type":"application/json","title":"sn4_AOI_6_Atlanta","href":"http://staging.api.radiant.earth/mlhub/v1/collections/sn4_AOI_6_Atlanta"},{"rel":"child","type":"application/json","title":"su_sar_moisture_content","href":"http://staging.api.radiant.earth/mlhub/v1/collections/su_sar_moisture_content"},{"rel":"child","type":"application/json","title":"ref_african_crops_tanzania_01_source","href":"http://staging.api.radiant.earth/mlhub/v1/collections/ref_african_crops_tanzania_01_source"},{"rel":"child","type":"application/json","title":"ref_south_africa_crops_competition_v1_train_source_s2","href":"http://staging.api.radiant.earth/mlhub/v1/collections/ref_south_africa_crops_competition_v1_train_source_s2"},{"rel":"child","type":"application/json","title":"sn2_AOI_4_Shanghai","href":"http://staging.api.radiant.earth/mlhub/v1/collections/sn2_AOI_4_Shanghai"},{"rel":"child","type":"application/json","title":"sn3_AOI_3_Paris","href":"http://staging.api.radiant.earth/mlhub/v1/collections/sn3_AOI_3_Paris"},{"rel":"child","type":"application/json","title":"sn3_AOI_4_Shanghai","href":"http://staging.api.radiant.earth/mlhub/v1/collections/sn3_AOI_4_Shanghai"},{"rel":"child","type":"application/json","title":"sn5_AOI_8_Mumbai","href":"http://staging.api.radiant.earth/mlhub/v1/collections/sn5_AOI_8_Mumbai"},{"rel":"child","type":"application/json","title":"ref_african_crops_uganda_01_labels","href":"http://staging.api.radiant.earth/mlhub/v1/collections/ref_african_crops_uganda_01_labels"},{"rel":"child","type":"application/json","title":"NASA
+        Tropical Storm Wind Speed Competition Training Labels","href":"http://staging.api.radiant.earth/mlhub/v1/collections/nasa_tropical_storm_competition_train_labels"},{"rel":"child","type":"application/json","title":"sen12floods_s1_labels","href":"http://staging.api.radiant.earth/mlhub/v1/collections/sen12floods_s1_labels"},{"rel":"child","type":"application/json","title":"microsoft_chesapeake_landsat_leaf_off","href":"http://staging.api.radiant.earth/mlhub/v1/collections/microsoft_chesapeake_landsat_leaf_off"},{"rel":"child","type":"application/json","title":"sn3_AOI_2_Vegas","href":"http://staging.api.radiant.earth/mlhub/v1/collections/sn3_AOI_2_Vegas"},{"rel":"child","type":"application/json","title":"sn7_test_source","href":"http://staging.api.radiant.earth/mlhub/v1/collections/sn7_test_source"},{"rel":"child","type":"application/json","title":"Stanford
+        University African Crop Dataset Source Imagery","href":"http://staging.api.radiant.earth/mlhub/v1/collections/su_african_crops_ghana_source_s1"},{"rel":"child","type":"application/json","title":"Stanford
+        University African Crop Dataset Source Imagery","href":"http://staging.api.radiant.earth/mlhub/v1/collections/su_african_crops_south_sudan_source_planet"},{"rel":"child","type":"application/json","title":"Source
+        Collection Title","href":"http://staging.api.radiant.earth/mlhub/v1/collections/umd_mali_crop_type_source"},{"rel":"child","type":"application/json","title":"NASA
+        Tropical Storm Wind Speed Competition Test Labels","href":"http://staging.api.radiant.earth/mlhub/v1/collections/nasa_tropical_storm_competition_test_labels"},{"rel":"child","type":"application/json","title":"NASA
+        Tropical Storm Wind Speed Competition Test Source Images","href":"http://staging.api.radiant.earth/mlhub/v1/collections/nasa_tropical_storm_competition_test_source"},{"rel":"child","type":"application/json","title":"sn1_AOI_1_RIO","href":"http://staging.api.radiant.earth/mlhub/v1/collections/sn1_AOI_1_RIO"},{"rel":"child","type":"application/json","title":"Label
+        Collection TItle","href":"http://staging.api.radiant.earth/mlhub/v1/collections/umd_mali_crop_type_labels"},{"rel":"child","type":"application/json","title":"Open
+        Cities AI Challenge Train Tier 1 Labels","href":"http://staging.api.radiant.earth/mlhub/v1/collections/open_cities_ai_challenge_train_tier_1_labels"},{"rel":"child","type":"application/json","title":"ref_south_africa_crops_competition_v1_test_labels","href":"http://staging.api.radiant.earth/mlhub/v1/collections/ref_south_africa_crops_competition_v1_test_labels"},{"rel":"child","type":"application/json","title":"sen12floods_s1_source","href":"http://staging.api.radiant.earth/mlhub/v1/collections/sen12floods_s1_source"},{"rel":"child","type":"application/json","title":"sn7_train_labels","href":"http://staging.api.radiant.earth/mlhub/v1/collections/sn7_train_labels"},{"rel":"child","type":"application/json","title":"Open
+        Cities AI Challenge Train Tier 1 Source Imagery","href":"http://staging.api.radiant.earth/mlhub/v1/collections/open_cities_ai_challenge_train_tier_1_source"},{"rel":"child","type":"application/json","title":"ref_south_africa_crops_competition_v1_train_labels","href":"http://staging.api.radiant.earth/mlhub/v1/collections/ref_south_africa_crops_competition_v1_train_labels"},{"rel":"child","type":"application/json","title":"Stanford
+        University African Crop Dataset Source Imagery","href":"http://staging.api.radiant.earth/mlhub/v1/collections/su_african_crops_ghana_source_s2"},{"rel":"child","type":"application/json","title":"Stanford
+        University African Crop Dataset Source Imagery","href":"http://staging.api.radiant.earth/mlhub/v1/collections/su_african_crops_south_sudan_source_s1"},{"rel":"child","type":"application/json","title":"Drone
+        Imagery Classification Training Dataset for Crop Types in Rwanda - Labels","href":"http://staging.api.radiant.earth/mlhub/v1/collections/rti_rwanda_crop_type_labels"},{"rel":"child","type":"application/json","title":"sn2_AOI_5_Khartoum","href":"http://staging.api.radiant.earth/mlhub/v1/collections/sn2_AOI_5_Khartoum"},{"rel":"child","type":"application/json","title":"sn3_AOI_5_Khartoum","href":"http://staging.api.radiant.earth/mlhub/v1/collections/sn3_AOI_5_Khartoum"},{"rel":"child","type":"application/json","title":"sn7_train_source","href":"http://staging.api.radiant.earth/mlhub/v1/collections/sn7_train_source"},{"rel":"child","type":"application/json","title":"Stanford
+        University African Crop Dataset Labels","href":"http://staging.api.radiant.earth/mlhub/v1/collections/su_african_crops_south_sudan_labels"},{"rel":"child","type":"application/json","title":"bigearthnet_v1_labels","href":"http://staging.api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_labels"},{"rel":"child","type":"application/json","title":"ref_landcovernet_v1_labels","href":"http://staging.api.radiant.earth/mlhub/v1/collections/ref_landcovernet_v1_labels"},{"rel":"child","type":"application/json","title":"ref_landcovernet_v1_source","href":"http://staging.api.radiant.earth/mlhub/v1/collections/ref_landcovernet_v1_source"},{"rel":"child","type":"application/json","title":"ref_south_africa_crops_competition_v1_train_source_s1","href":"http://staging.api.radiant.earth/mlhub/v1/collections/ref_south_africa_crops_competition_v1_train_source_s1"},{"rel":"child","type":"application/json","title":"sn5_AOI_7_Moscow","href":"http://staging.api.radiant.earth/mlhub/v1/collections/sn5_AOI_7_Moscow"},{"rel":"child","type":"application/json","title":"sn6_AOI_11_Rotterdam","href":"http://staging.api.radiant.earth/mlhub/v1/collections/sn6_AOI_11_Rotterdam"},{"rel":"child","type":"application/json","title":"ts_cashew_benin_labels","href":"http://staging.api.radiant.earth/mlhub/v1/collections/ts_cashew_benin_labels"},{"rel":"child","type":"application/json","title":"A
+        crop type dataset for consistent land cover classification in Central Asia","href":"http://staging.api.radiant.earth/mlhub/v1/collections/idiv_asia_crop_type_labels"},{"rel":"child","type":"application/json","title":"microsoft_chesapeake_nlcd","href":"http://staging.api.radiant.earth/mlhub/v1/collections/microsoft_chesapeake_nlcd"},{"rel":"child","type":"application/json","title":"ref_south_africa_crops_competition_v1_test_source_s1","href":"http://staging.api.radiant.earth/mlhub/v1/collections/ref_south_africa_crops_competition_v1_test_source_s1"},{"rel":"child","type":"application/json","title":"Drone
+        Imagery Classification Training Dataset for Crop Types in Rwanda - Source
+        Imagery","href":"http://staging.api.radiant.earth/mlhub/v1/collections/rti_rwanda_crop_type_source"},{"rel":"child","type":"application/json","title":"Stanford
+        University African Crop Dataset Source Imagery","href":"http://staging.api.radiant.earth/mlhub/v1/collections/su_african_crops_ghana_source_planet"},{"rel":"child","type":"application/json","title":"ts_cashew_benin_source","href":"http://staging.api.radiant.earth/mlhub/v1/collections/ts_cashew_benin_source"},{"rel":"child","type":"application/json","title":"ref_african_crops_kenya_01_labels","href":"http://staging.api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_01_labels"},{"rel":"child","type":"application/json","title":"ref_african_crops_kenya_01_source","href":"http://staging.api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_01_source"},{"rel":"child","type":"application/json","title":"ref_african_crops_tanzania_01_labels","href":"http://staging.api.radiant.earth/mlhub/v1/collections/ref_african_crops_tanzania_01_labels"},{"rel":"child","type":"application/json","title":"ref_african_crops_kenya_02_labels","href":"http://staging.api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_labels"},{"rel":"child","type":"application/json","title":"ref_african_crops_kenya_02_source","href":"http://staging.api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_source"},{"rel":"child","type":"application/json","title":"microsoft_chesapeake_buildings","href":"http://staging.api.radiant.earth/mlhub/v1/collections/microsoft_chesapeake_buildings"},{"rel":"child","type":"application/json","title":"microsoft_chesapeake_lc","href":"http://staging.api.radiant.earth/mlhub/v1/collections/microsoft_chesapeake_lc"},{"rel":"child","type":"application/json","title":"microsoft_chesapeake_naip","href":"http://staging.api.radiant.earth/mlhub/v1/collections/microsoft_chesapeake_naip"},{"rel":"child","type":"application/json","title":"NASA
+        Tropical Storm Wind Speed Competition Training Source Images","href":"http://staging.api.radiant.earth/mlhub/v1/collections/nasa_tropical_storm_competition_train_source"},{"rel":"child","type":"application/json","title":"Open
+        Cities AI Challenge Test Dataset","href":"http://staging.api.radiant.earth/mlhub/v1/collections/open_cities_ai_challenge_test"},{"rel":"child","type":"application/json","title":"Open
+        Cities AI Challenge Train Tier 2 Labels","href":"http://staging.api.radiant.earth/mlhub/v1/collections/open_cities_ai_challenge_train_tier_2_labels"},{"rel":"child","type":"application/json","title":"Open
+        Cities AI Challenge Train Tier 2 Source Imagery","href":"http://staging.api.radiant.earth/mlhub/v1/collections/open_cities_ai_challenge_train_tier_2_source"},{"rel":"child","type":"application/json","title":"ref_south_africa_crops_competition_v1_test_source_s2","href":"http://staging.api.radiant.earth/mlhub/v1/collections/ref_south_africa_crops_competition_v1_test_source_s2"},{"rel":"child","type":"application/json","title":"Drone
+        Imagery Classification Training Dataset for Crop Types in Rwanda - Raw Images","href":"http://staging.api.radiant.earth/mlhub/v1/collections/rti_rwanda_crop_type_raw"},{"rel":"child","type":"application/json","title":"sen12floods_s2_labels","href":"http://staging.api.radiant.earth/mlhub/v1/collections/sen12floods_s2_labels"},{"rel":"child","type":"application/json","title":"sn2_AOI_3_Paris","href":"http://staging.api.radiant.earth/mlhub/v1/collections/sn2_AOI_3_Paris"},{"rel":"child","type":"application/json","title":"Stanford
+        University African Crop Dataset Labels","href":"http://staging.api.radiant.earth/mlhub/v1/collections/su_african_crops_ghana_labels"},{"rel":"child","type":"application/json","title":"Stanford
+        University African Crop Dataset Source Imagery","href":"http://staging.api.radiant.earth/mlhub/v1/collections/su_african_crops_south_sudan_source_s2"},{"rel":"child","type":"application/json","title":"bigearthnet_v1_source","href":"http://staging.api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_source"},{"rel":"service-desc","type":"application/vnd.oai.openapi+json;version=3.0","title":"OpenAPI
+        service description","href":"http://staging.api.radiant.earth/mlhub/v1/openapi.json"}],"stac_extensions":[]}'
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '14676'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 17 Sep 2021 00:17:12 GMT
+      X-Azure-Ref:
+      - 0iN5DYQAAAAAN5BapKdyOSKBi32ZpQ6lxQk9TMzFFREdFMDQxOQAwODQxMTZmMC0yZjAzLTQ5N2ItOWUyMS03M2U2NDU0YzA2NzA=
       X-Cache:
       - CONFIG_NOCACHE
     status:

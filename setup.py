@@ -26,7 +26,7 @@ setuptools.setup(
     },
     install_requires=[
         'requests~=2.25',
-        'pystac==0.5.4',
+        'pystac~=1.1',
         'click>=7.1.2,<9.0.0',
         'tqdm~=4.56',
     ],
