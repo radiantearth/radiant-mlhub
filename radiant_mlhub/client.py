@@ -96,7 +96,7 @@ def _download(
     session = get_session(api_key=api_key, profile=profile)
 
     # HEAD the endpoint and follow redirects to get the actual download URL and Content-Length
-    r = session.head(url, allow_redirects=True)
+    r = session.get(url, allow_redirects=True)
     r.raise_for_status()
     content_length = int(r.headers['Content-Length'])
     download_url = r.url

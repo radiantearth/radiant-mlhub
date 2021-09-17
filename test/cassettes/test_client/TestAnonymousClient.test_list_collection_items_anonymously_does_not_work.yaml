@@ -9,37 +9,25 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.2.1 (Darwin Kernel Version 19.6.0: Thu May  6 00:48:39 PDT
-        2021; root:xnu-6153.141.33~1/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.2.2 (Darwin Kernel Version 19.6.0: Tue Jun 22 19:49:55 PDT
+        2021; root:xnu-6153.141.35~1/RELEASE_X86_64)'
     method: GET
-    uri: https://api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_source/items
+    uri: https://staging.api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_source/items
   response:
     body:
-      string: '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-
-        <title>401 Unauthorized</title>
-
-        <h1>Unauthorized</h1>
-
-        <p>The server could not verify that you are authorized to access the URL requested.
-        You either supplied the wrong credentials (e.g. a bad password), or your browser
-        doesn&#x27;t understand how to supply the credentials required.</p>
-
-        '
+      string: '{"detail":"Must provide API key or Bearer token to access this route."}'
     headers:
-      Access-Control-Allow-Origin:
-      - '*'
-      Connection:
-      - keep-alive
       Content-Length:
-      - '343'
+      - '71'
       Content-Type:
-      - text/html; charset=utf-8
+      - application/json
       Date:
-      - Mon, 07 Jun 2021 20:27:10 GMT
-      Server:
-      - gunicorn
+      - Thu, 16 Sep 2021 19:26:11 GMT
+      X-Azure-Ref:
+      - 0VJpDYQAAAACOixAvT0yCS5woKGoRzcBIQk9TMzFFREdFMDQxOQAwODQxMTZmMC0yZjAzLTQ5N2ItOWUyMS03M2U2NDU0YzA2NzA=
+      X-Cache:
+      - CONFIG_NOCACHE
     status:
       code: 401
-      message: UNAUTHORIZED
+      message: Unauthorized
 version: 1
