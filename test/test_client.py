@@ -206,9 +206,6 @@ class TestClient:
 
 
 class TestClientAuthenticatedEndpoints:
-    @pytest.fixture(scope="function", autouse=True)
-    def mock_profile(self) -> None:
-        pass
 
     @pytest.mark.vcr
     def test_list_collection_items(self) -> None:

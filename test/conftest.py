@@ -25,7 +25,7 @@ def vcr_config() -> Dict[str, Any]:
 
 @pytest.fixture(scope='function', autouse=True)
 def mock_profile(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv('MLHUB_API_KEY', 'test_key')
+    monkeypatch.setenv('MLHUB_API_KEY', os.getenv("MLHUB_API_KEY") or 'test_key')
 
 
 @pytest.fixture(scope="function", autouse=True)

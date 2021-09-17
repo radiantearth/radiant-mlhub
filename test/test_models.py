@@ -60,9 +60,6 @@ class TestCollection:
 
 
 class TestCollectionAuthenticatedEndpoints:
-    @pytest.fixture(scope='function', autouse=True)
-    def mock_profile(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        pass
 
     @pytest.mark.vcr
     def test_fetch_item(self) -> None:
