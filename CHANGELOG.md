@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   DOI, respectively ([#58](https://github.com/radiantearth/radiant-mlhub/pull/58))
 - `Dataset.fetch_by_id` and `Dataset.fetch_by_doi` methods analagous to new client methods described
   above ([#58](https://github.com/radiantearth/radiant-mlhub/pull/58))
-- `py.typed` file included in package ([#62](https://github.com/radiantearth/radiant-mlhub/pull/58))
+- `py.typed` file included in package ([#62](https://github.com/radiantearth/radiant-mlhub/pull/62))
 
 ### Changed
 
@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Dataset.fetch` uses `client.get_dataset` to first attempt getting dataset by ID, then falling
   back to fetching by DOI if unsuccessful
   ([#58](https://github.com/radiantearth/radiant-mlhub/pull/58))
+- Upgraded PySTAC dependency to `~=1.1..0` ([#63](https://github.com/radiantearth/radiant-mlhub/pull/63))
 
 ### Removed
 
