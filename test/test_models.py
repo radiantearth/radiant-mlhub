@@ -192,7 +192,8 @@ class TestDataset:
         assert dataset.registry_url == 'https://mlhub.earth/bigearthnet_v1'
         assert dataset.doi == '10.14279/depositonce-10149'
         assert dataset.citation == "G. Sumbul, M. Charfuelan, B. Demir, V. Markl, " \
-            "\"[BigEarthNet: A Large-Scale Benchmark Archive for Remote Sensing Image Understanding](http://bigearth.net/static/documents/BigEarthNet_IGARSS_2019.pdf)\", " \
+            "\"[BigEarthNet: A Large-Scale Benchmark Archive for Remote Sensing Image " \
+            "Understanding](http://bigearth.net/static/documents/BigEarthNet_IGARSS_2019.pdf)\", " \
             "IEEE International Geoscience and Remote Sensing Symposium, pp. 5901-5904, Yokohama, Japan, 2019."
 
     def test_get_dataset_by_doi(self, requests_mock: "Mocker_Type", root_url: str) -> None:
