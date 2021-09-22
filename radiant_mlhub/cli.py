@@ -9,14 +9,14 @@ from .session import Session
 
 
 @click.group()
-@click.version_option(version=__version__)
+@click.version_option(version=__version__)  # type: ignore[misc]
 def mlhub() -> None:
     """CLI tool for the radiant_mlhub Python client."""
 
 
 @mlhub.command()
-@click.option('--profile', default='default', help='The name of the profile to configure.')
-@click.option('--api-key', prompt='API Key', help='The API key to use for this profile.')
+@click.option('--profile', default='default', help='The name of the profile to configure.')  # type: ignore[misc]
+@click.option('--api-key', prompt='API Key', help='The API key to use for this profile.')  # type: ignore[misc]
 def configure(profile: str, api_key: str) -> None:
     """Interactively set up radiant_mlhub configuration file.
 
