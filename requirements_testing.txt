@@ -8,3 +8,4 @@ types-requests==0.1.10
 mypy==0.910
 python-dotenv~=0.17.1
 isort~=5.8.0
+types-click==7.1.5

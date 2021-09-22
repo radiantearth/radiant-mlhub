@@ -184,17 +184,17 @@ class TestDataset:
         assert "text" in query_params, "Call to API was missing 'text' query parameter"
         assert "buildings" in query_params["text"], "'buildings' was not in 'text' query parameter"
 
-    @pytest.mark.xfail(reason="New API does not have registry field in API response.")
     @pytest.mark.vcr
     def test_fetch_dataset(self) -> None:
         dataset = Dataset.fetch('bigearthnet_v1')
         assert isinstance(dataset, Dataset)
         assert dataset.id == 'bigearthnet_v1'
-        assert dataset.registry_url == 'https://registry.mlhub.earth/10.14279/depositonce-10149'
+        assert dataset.registry_url == 'https://mlhub.earth/bigearthnet_v1'
         assert dataset.doi == '10.14279/depositonce-10149'
-        assert dataset.citation == 'G. Sumbul, M. Charfuelan, B. Demir, V. Markl, \"BigEarthNet: A Large-Scale '\
-            'Benchmark Archive for Remote Sensing Image Understanding\", IEEE International Geoscience and Remote '\
-            'Sensing Symposium, pp. 5901-5904, Yokohama, Japan, 2019.'
+        assert dataset.citation == "G. Sumbul, M. Charfuelan, B. Demir, V. Markl, " \
+            "\"[BigEarthNet: A Large-Scale Benchmark Archive for Remote Sensing Image " \
+            "Understanding](http://bigearth.net/static/documents/BigEarthNet_IGARSS_2019.pdf)\", " \
+            "IEEE International Geoscience and Remote Sensing Symposium, pp. 5901-5904, Yokohama, Japan, 2019."
 
     def test_get_dataset_by_doi(self, requests_mock: "Mocker_Type", root_url: str) -> None:
         dataset_doi = "10.6084/m9.figshare.12047478.v2"
