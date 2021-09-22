@@ -1,16 +1,20 @@
 import configparser
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from radiant_mlhub.cli import mlhub
+
+if TYPE_CHECKING:
+    from click.testing import CliRunner as CliRunner_Type
 
 
 class TestCLI:
 
-    def test_version(self, cli_runner):
+    def test_version(self, cli_runner: "CliRunner_Type") -> None:
         result = cli_runner.invoke(mlhub, ['--version'])
         assert result.output.rstrip('\n') == 'mlhub, version 0.2.2'
 
-    def test_configure(self, isolated_cli_runner):
+    def test_configure(self, isolated_cli_runner: "CliRunner_Type") -> None:
         new_home = Path.cwd()
 
         # Monkeypatch the user's home directory to be the temp directory (CWD)
@@ -35,7 +39,7 @@ class TestCLI:
         result = isolated_cli_runner.invoke(mlhub, ['configure'], input='testapikey\nn\n', env=env)
         assert result.exit_code == 1, result.output
 
-    def test_configure_user_defined_home(self, isolated_cli_runner):
+    def test_configure_user_defined_home(self, isolated_cli_runner: "CliRunner_Type") -> None:
         new_home = Path.cwd()
 
         mlhub_home = new_home / 'some-directory' / '.mlhub'

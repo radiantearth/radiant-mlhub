@@ -51,6 +51,17 @@ listing datasets. This method returns a list of :class:`Dataset <radiant_mlhub.m
     >>> first_dataset.title
     'BigEarthNet V1'
 
+Each of these functions/methods also accepts ``tags`` and ``text`` arguments that can be used to filter
+datasets by their tags or a free text search, respectively. The ``tags`` argument may be either a
+single string or a list of strings. Only datasets that contain all of provided tags will be returned
+and these tags must be an `exact` match. The `text` argument may, similarly, be either a string or a
+list of strings. These will be used to search all of the text-based metadata fields for a dataset
+(e.g. description, title, citation, etc.). Each argument is treated as a phrase by the text search
+engine and only datasets with matches for all of the provided phrases will be returned. So, for
+instance, ``text=["land", "cover"]`` will return all datasets with either ``"land"`` or ``"cover"``
+somewhere in their text metadata, while ``text="land cover"`` will return all datasets with the
+`phrase` ``"land cover"`` in their text metadata.
+
 Fetching a Dataset
 ++++++++++++++++++
 
@@ -59,8 +70,8 @@ The Radiant MLHub ``/datasets/{dataset_id}`` endpoint returns an object represen
 
 .. code-block:: python
 
-    >>> from radiant_mlhub.client import get_dataset
-    >>> dataset = get_dataset('bigearthnet_v1')
+    >>> from radiant_mlhub.client import get_dataset_by_id
+    >>> dataset = get_dataset_by_id('bigearthnet_v1')
     >>> pprint(dataset)
     {'collections': [{'id': 'bigearthnet_v1_source', 'types': ['source_imagery']},
                  {'id': 'bigearthnet_v1_labels', 'types': ['labels']}],
@@ -72,9 +83,32 @@ method. This is the recommended way of fetching a dataset. This method returns a
 
 .. code-block:: python
 
-    >>> dataset = Dataset.fetch('bigearthnet_v1')
+    >>> dataset = Dataset.fetch_by_id('bigearthnet_v1')
     >>> dataset.id
     'bigearthnet_v1'
+
+If you would rather fetch the dataset using its `DOI <https://www.doi.org/>`__ you can do so as
+well:
+
+.. code-block:: python
+
+    >>> from radiant_mlhub.client import get_dataset_by_doi
+    >>> # Using the client...
+    >>> dataset = get_dataset_by_doi("10.6084/m9.figshare.12047478.v2")
+    >>> # Using the model classes...
+    >>> dataset = Dataset.fetch_by_doi
+
+You can also use the more general :func:`~radiant_mlhub.client.get_dataset` and :meth:`Dataset.fetch
+<radiant_mlhub.models.Dataset.fetch>` methods to get a dataset using either method:
+
+.. code-block:: python
+
+    >>> from radiant_mlhub.client import get_dataset
+    >>> # These will all return the same dataset
+    >>> dataset = get_dataset("ref_african_crops_kenya_02")
+    >>> dataset = get_dataset("10.6084/m9.figshare.12047478.v2")
+    >>> dataset = Dataset.fetch("ref_african_crops_kenya_02")
+    >>> dataset = Dataset.fetch("10.6084/m9.figshare.12047478.v2")
 
 Dataset Collections
 +++++++++++++++++++

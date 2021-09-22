@@ -9,54 +9,40 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.1.3 (Darwin Kernel Version 19.6.0: Mon Apr 12 20:57:45 PDT
-        2021; root:xnu-6153.141.28.1~1/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.2.2 (Darwin Kernel Version 19.6.0: Tue Jun 22 19:49:55 PDT
+        2021; root:xnu-6153.141.35~1/RELEASE_X86_64)'
     method: GET
-    uri: https://api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_source
+    uri: https://staging.api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_source
   response:
     body:
-      string: "{\n    \"description\": \"No Description\",\n    \"extent\": {\n        \"spatial\":
-        {\n            \"bbox\": [\n                [\n                    34.02206853162399,\n
-        \                   0.16703387465341,\n                    34.20323495307315,\n
-        \                   0.441545515895902\n                ],\n                [\n
-        \                   34.022094366964915,\n                    0.441518222808124,\n
-        \                   34.203292802033246,\n                    0.716046625152611\n
-        \               ],\n                [\n                    34.2032045415558,\n
-        \                   0.167021869556755,\n                    34.384363429998224,\n
-        \                   0.441518222808124\n                ],\n                [\n
-        \                   34.20323495307315,\n                    0.44148648939337,\n
-        \                   34.38442998089197,\n                    0.716002363059778\n
-        \               ]\n            ]\n        },\n        \"temporal\": {\n            \"interval\":
-        [\n                [\n                    \"2019-01-01T00:00:00Z\",\n                    \"2019-12-31T00:00:00Z\"\n
-        \               ]\n            ]\n        }\n    },\n    \"id\": \"ref_african_crops_kenya_02_source\",\n
-        \   \"keywords\": [],\n    \"license\": \"CC-BY-SA-4.0\",\n    \"links\":
-        [\n        {\n            \"href\": \"https://api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_source\",\n
-        \           \"rel\": \"self\",\n            \"title\": null,\n            \"type\":
-        \"application/json\"\n        },\n        {\n            \"href\": \"https://api.radiant.earth/mlhub/v1\",\n
-        \           \"rel\": \"root\",\n            \"title\": null,\n            \"type\":
-        \"application/json\"\n        }\n    ],\n    \"properties\": {},\n    \"providers\":
-        [\n        {\n            \"description\": null,\n            \"name\": \"Radiant
-        Earth Foundation\",\n            \"roles\": [\n                \"licensor\",\n
-        \               \"host\",\n                \"processor\"\n            ],\n
-        \           \"url\": \"https://radiant.earth\"\n        }\n    ],\n    \"sci:citation\":
-        \"Radiant Earth Foundation (2020) \\\"CV4A Competition Kenya Crop Type Dataset\\\",
-        Version 1.0, Radiant MLHub. [Date Accessed] https://doi.org/10.34911/RDNT.DW605X\",\n
-        \   \"sci:doi\": \"10.34911/rdnt.dw605x\",\n    \"stac_extensions\": [\n        \"scientific\"\n
-        \   ],\n    \"stac_version\": \"1.0.0-beta.2\",\n    \"summaries\": {},\n
-        \   \"title\": null\n}"
+      string: !!binary |
+        H4sIAGueQ2EC/7VTa2/TMBT9K1E+gUgTvxP32+hASMA+jGk8uqpyE7c1S+PIccumqf+d66TdxksI
+        BFKkpvcen3tyfM9dbKp4HDu9nKulM6Vq5qWzbTe/1s2tmiMy7+zWlTpOYn/baoBObF3r0hvbQK02
+        zXUXj6d3wFBD03i96R6wqm1r4AzgbKXts89df2oN46C79r4dZ1nn1co0q1S1JnWqMqrxqVbOr7NN
+        vd4ush3OyvuZXfZbqdkgYp8cRbXK6cb/XNXfKnpE76z9f+Sdrpf/lvyPvIz3syTWNz74N76LuxZm
+        qzq8Lhb2Bi5+SlmKCEGi4BQLQqVMUIpFjigtciY4ZTgBCEGUUCY5RTnFHCCMYc44x7yQXCIyS45E
+        klEhpGDyHoYLQkiBCkzYkUrCf/ilhAkA5VggJgQBNiIwHrgCDDEO5zkvDpoILoTkXOScByZawCzK
+        iJQSRrAfxz0wfa+dFYIVkkpK8wNToIFTEsv8IAkRYEdc5nkxm+3hDvWmtW5wzzReu114n05jgrAc
+        IQzPBULj/vkEN9uXMRnRx2Vg2ofYlbrp+jRORs8/jt6djMA9ONOVZlxZAw2MUhCNceYq2IHqi0D8
+        BgCtsztTaTeEduvqw+50sDzfLAxgG7UJI86HcvQilKOXdttU6hB/Z2sdmA6CrAsLaTs/DCp1F0qz
+        sEOV7kpn2v7cOD6z0emjwqC7NF4d+r8aGT0hcO9Po6t4cslOoondtNqbvvM6LG40gSWOLiAs0any
+        qtP+Kk6iS/jcAMEpSqIj9ds3r7aLNJoCTkcnZdCqq1l09AJMTK1bZfc2np+eXaSn78HGD0GvV+V8
+        N/AGs1M02B/KfVxCo3fmSBhao4dWujIeApkam8G3Q7zM0pQQz0AElbXeqLRP+Gz/FeKoQa6jBQAA
     headers:
-      Access-Control-Allow-Origin:
-      - '*'
-      Connection:
-      - keep-alive
+      Content-Encoding:
+      - gzip
       Content-Length:
-      - '2261'
+      - '684'
       Content-Type:
       - application/json
       Date:
-      - Mon, 10 May 2021 19:36:46 GMT
-      Server:
-      - gunicorn
+      - Thu, 16 Sep 2021 19:43:39 GMT
+      Vary:
+      - Accept-Encoding
+      X-Azure-Ref:
+      - 0a55DYQAAAACzadhsFkiLT7B16tlYeukfQk9TMzFFREdFMDQwNwAwODQxMTZmMC0yZjAzLTQ5N2ItOWUyMS03M2U2NDU0YzA2NzA=
+      X-Cache:
+      - CONFIG_NOCACHE
     status:
       code: 200
       message: OK
@@ -70,137 +56,25 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.1.3 (Darwin Kernel Version 19.6.0: Mon Apr 12 20:57:45 PDT
-        2021; root:xnu-6153.141.28.1~1/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.2.2 (Darwin Kernel Version 19.6.0: Tue Jun 22 19:49:55 PDT
+        2021; root:xnu-6153.141.35~1/RELEASE_X86_64)'
     method: GET
-    uri: https://api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_source/items/ref_african_crops_kenya_02_tile_02_20190721
+    uri: https://staging.api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_source/items/ref_african_crops_kenya_02_tile_02_20190721
   response:
     body:
-      string: "{\n    \"assets\": {\n        \"B01\": {\n            \"description\":
-        null,\n            \"eo:bands\": [\n                {\n                    \"common_name\":
-        \"Coastal aerosol\",\n                    \"gsd\": 60,\n                    \"name\":
-        \"B01\"\n                }\n            ],\n            \"href\": \"https://api.radiant.earth/mlhub/v1/download/dummy_hash\",\n
-        \           \"roles\": [],\n            \"title\": null,\n            \"type\":
-        \"image/tiff\"\n        },\n        \"B02\": {\n            \"description\":
-        null,\n            \"eo:bands\": [\n                {\n                    \"common_name\":
-        \"Blue\",\n                    \"gsd\": 10,\n                    \"name\":
-        \"B02\"\n                }\n            ],\n            \"href\": \"https://api.radiant.earth/mlhub/v1/download/dummy_hash\",\n
-        \           \"roles\": [],\n            \"title\": null,\n            \"type\":
-        \"image/tiff\"\n        },\n        \"B03\": {\n            \"description\":
-        null,\n            \"eo:bands\": [\n                {\n                    \"common_name\":
-        \"Green\",\n                    \"gsd\": 10,\n                    \"name\":
-        \"B03\"\n                }\n            ],\n            \"href\": \"https://api.radiant.earth/mlhub/v1/download/dummy_hash\",\n
-        \           \"roles\": [],\n            \"title\": null,\n            \"type\":
-        \"image/tiff\"\n        },\n        \"B04\": {\n            \"description\":
-        null,\n            \"eo:bands\": [\n                {\n                    \"common_name\":
-        \"Red\",\n                    \"gsd\": 10,\n                    \"name\":
-        \"B04\"\n                }\n            ],\n            \"href\": \"https://api.radiant.earth/mlhub/v1/download/dummy_hash\",\n
-        \           \"roles\": [],\n            \"title\": null,\n            \"type\":
-        \"image/tiff\"\n        },\n        \"B05\": {\n            \"description\":
-        null,\n            \"eo:bands\": [\n                {\n                    \"common_name\":
-        \"Vegetation red edge\",\n                    \"gsd\": 20,\n                    \"name\":
-        \"B05\"\n                }\n            ],\n            \"href\": \"https://api.radiant.earth/mlhub/v1/download/dummy_hash\",\n
-        \           \"roles\": [],\n            \"title\": null,\n            \"type\":
-        \"image/tiff\"\n        },\n        \"B06\": {\n            \"description\":
-        null,\n            \"eo:bands\": [\n                {\n                    \"common_name\":
-        \"Vegetation red edge\",\n                    \"gsd\": 20,\n                    \"name\":
-        \"B06\"\n                }\n            ],\n            \"href\": \"https://api.radiant.earth/mlhub/v1/download/dummy_hash\",\n
-        \           \"roles\": [],\n            \"title\": null,\n            \"type\":
-        \"image/tiff\"\n        },\n        \"B07\": {\n            \"description\":
-        null,\n            \"eo:bands\": [\n                {\n                    \"common_name\":
-        \"Vegetation red edge\",\n                    \"gsd\": 20,\n                    \"name\":
-        \"B07\"\n                }\n            ],\n            \"href\": \"https://api.radiant.earth/mlhub/v1/download/dummy_hash\",\n
-        \           \"roles\": [],\n            \"title\": null,\n            \"type\":
-        \"image/tiff\"\n        },\n        \"B08\": {\n            \"description\":
-        null,\n            \"eo:bands\": [\n                {\n                    \"common_name\":
-        \"NIR\",\n                    \"gsd\": 10,\n                    \"name\":
-        \"B08\"\n                }\n            ],\n            \"href\": \"https://api.radiant.earth/mlhub/v1/download/dummy_hash\",\n
-        \           \"roles\": [],\n            \"title\": null,\n            \"type\":
-        \"image/tiff\"\n        },\n        \"B09\": {\n            \"description\":
-        null,\n            \"eo:bands\": [\n                {\n                    \"common_name\":
-        \"Water Vapour\",\n                    \"gsd\": 60,\n                    \"name\":
-        \"B09\"\n                }\n            ],\n            \"href\": \"https://api.radiant.earth/mlhub/v1/download/dummy_hash\",\n
-        \           \"roles\": [],\n            \"title\": null,\n            \"type\":
-        \"image/tiff\"\n        },\n        \"B11\": {\n            \"description\":
-        null,\n            \"eo:bands\": [\n                {\n                    \"common_name\":
-        \"SWIR\",\n                    \"gsd\": 20,\n                    \"name\":
-        \"B11\"\n                }\n            ],\n            \"href\": \"https://api.radiant.earth/mlhub/v1/download/dummy_hash\",\n
-        \           \"roles\": [],\n            \"title\": null,\n            \"type\":
-        \"image/tiff\"\n        },\n        \"B12\": {\n            \"description\":
-        null,\n            \"eo:bands\": [\n                {\n                    \"common_name\":
-        \"SWIR\",\n                    \"gsd\": 20,\n                    \"name\":
-        \"B12\"\n                }\n            ],\n            \"href\": \"https://api.radiant.earth/mlhub/v1/download/dummy_hash\",\n
-        \           \"roles\": [],\n            \"title\": null,\n            \"type\":
-        \"image/tiff\"\n        },\n        \"B8A\": {\n            \"description\":
-        null,\n            \"eo:bands\": [\n                {\n                    \"common_name\":
-        \"Narrow NIR\",\n                    \"gsd\": 20,\n                    \"name\":
-        \"B8A\"\n                }\n            ],\n            \"href\": \"https://api.radiant.earth/mlhub/v1/download/dummy_hash\",\n
-        \           \"roles\": [],\n            \"title\": null,\n            \"type\":
-        \"image/tiff\"\n        },\n        \"CLD\": {\n            \"description\":
-        null,\n            \"eo:bands\": [\n                {\n                    \"common_name\":
-        \"Cloud Probability\",\n                    \"name\": \"CLD\"\n                }\n
-        \           ],\n            \"href\": \"https://api.radiant.earth/mlhub/v1/download/dummy_hash\",\n
-        \           \"roles\": [],\n            \"title\": null,\n            \"type\":
-        \"image/tiff\"\n        }\n    },\n    \"bbox\": [\n        34.2032045415558,\n
-        \       0.167021869556755,\n        34.384363429998224,\n        0.441518222808124\n
-        \   ],\n    \"collection\": \"ref_african_crops_kenya_02_source\",\n    \"geometry\":
-        {\n        \"coordinates\": [\n            [\n                [\n                    34.2032045415558,\n
-        \                   0.16703387465341\n                ],\n                [\n
-        \                   34.20323495307315,\n                    0.441518222808124\n
-        \               ],\n                [\n                    34.384363429998224,\n
-        \                   0.44148648939337\n                ],\n                [\n
-        \                   34.38432844382599,\n                    0.167021869556755\n
-        \               ],\n                [\n                    34.2032045415558,\n
-        \                   0.16703387465341\n                ]\n            ]\n        ],\n
-        \       \"type\": \"Polygon\"\n    },\n    \"id\": \"ref_african_crops_kenya_02_tile_02_20190721\",\n
-        \   \"links\": [\n        {\n            \"href\": \"https://api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_source\",\n
-        \           \"rel\": \"parent\",\n            \"title\": \"Parent collection\",\n
-        \           \"type\": \"application/json\"\n        }\n    ],\n    \"properties\":
-        {\n        \"datetime\": \"2019-07-21T00:00:00Z\",\n        \"eo:bands\":
-        [\n            {\n                \"common_name\": \"Coastal aerosol\",\n
-        \               \"gsd\": 60,\n                \"name\": \"B01\"\n            },\n
-        \           {\n                \"common_name\": \"Blue\",\n                \"gsd\":
-        10,\n                \"name\": \"B02\"\n            },\n            {\n                \"common_name\":
-        \"Green\",\n                \"gsd\": 10,\n                \"name\": \"B03\"\n
-        \           },\n            {\n                \"common_name\": \"Red\",\n
-        \               \"gsd\": 10,\n                \"name\": \"B04\"\n            },\n
-        \           {\n                \"common_name\": \"Vegetation red edge\",\n
-        \               \"gsd\": 20,\n                \"name\": \"B05\"\n            },\n
-        \           {\n                \"common_name\": \"Vegetation red edge\",\n
-        \               \"gsd\": 20,\n                \"name\": \"B06\"\n            },\n
-        \           {\n                \"common_name\": \"Vegetation red edge\",\n
-        \               \"gsd\": 20,\n                \"name\": \"B07\"\n            },\n
-        \           {\n                \"common_name\": \"NIR\",\n                \"gsd\":
-        10,\n                \"name\": \"B08\"\n            },\n            {\n                \"common_name\":
-        \"Narrow NIR\",\n                \"gsd\": 20,\n                \"name\": \"B8A\"\n
-        \           },\n            {\n                \"common_name\": \"Water Vapour\",\n
-        \               \"gsd\": 60,\n                \"name\": \"B09\"\n            },\n
-        \           {\n                \"common_name\": \"SWIR - Cirrus\",\n                \"gsd\":
-        60,\n                \"name\": \"B10\"\n            },\n            {\n                \"common_name\":
-        \"SWIR\",\n                \"gsd\": 20,\n                \"name\": \"B11\"\n
-        \           },\n            {\n                \"common_name\": \"SWIR\",\n
-        \               \"gsd\": 20,\n                \"name\": \"B12\"\n            },\n
-        \           {\n                \"common_name\": \"Cloud Probability\",\n                \"name\":
-        \"CLD\"\n            }\n        ],\n        \"gsd\": 10,\n        \"instruments\":
-        [\n            \"MultiSpectral Instrument\"\n        ],\n        \"platform\":
-        \"Sentinel-2\",\n        \"validation:attemptedExtensions\": [\n            \"eo\"\n
-        \       ],\n        \"validation:errors\": []\n    },\n    \"stac_extensions\":
-        [\n        \"eo\"\n    ],\n    \"stac_version\": \"1.0.0-beta.2\",\n    \"type\":
-        \"Feature\"\n}"
+      string: '{"detail":"Could not identify user from API key or Authentication header."}'
     headers:
-      Access-Control-Allow-Origin:
-      - '*'
-      Connection:
-      - keep-alive
       Content-Length:
-      - '13579'
+      - '75'
       Content-Type:
       - application/json
       Date:
-      - Mon, 10 May 2021 19:36:46 GMT
-      Server:
-      - gunicorn
+      - Thu, 16 Sep 2021 19:43:39 GMT
+      X-Azure-Ref:
+      - 0bJ5DYQAAAABC2id/Mp+JS4suPZ+Qx27EQk9TMzFFREdFMDQxMgAwODQxMTZmMC0yZjAzLTQ5N2ItOWUyMS03M2U2NDU0YzA2NzA=
+      X-Cache:
+      - CONFIG_NOCACHE
     status:
-      code: 200
-      message: OK
+      code: 401
+      message: Unauthorized
 version: 1

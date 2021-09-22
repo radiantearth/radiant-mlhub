@@ -1,0 +1,67 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - 'radiant_mlhub/0.2.2 (Darwin Kernel Version 19.6.0: Tue Jun 22 19:49:55 PDT
+        2021; root:xnu-6153.141.35~1/RELEASE_X86_64)'
+    method: GET
+    uri: https://staging.api.radiant.earth/mlhub/v1/archive/no_archive
+  response:
+    body:
+      string: ''
+    headers:
+      Content-Length:
+      - '0'
+      Date:
+      - Thu, 16 Sep 2021 19:41:00 GMT
+      Location:
+      - https://radiantearth.blob.core.windows.net/mlhub/archives/no_archive.tar.gz
+      X-Azure-Ref:
+      - 0zJ1DYQAAAAAuI1DiEj8dRr2tVvTXkOJMQk9TMzFFREdFMDQxMQAwODQxMTZmMC0yZjAzLTQ5N2ItOWUyMS03M2U2NDU0YzA2NzA=
+      X-Cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 301
+      message: Moved Permanently
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - 'radiant_mlhub/0.2.2 (Darwin Kernel Version 19.6.0: Tue Jun 22 19:49:55 PDT
+        2021; root:xnu-6153.141.35~1/RELEASE_X86_64)'
+    method: GET
+    uri: https://radiantearth.blob.core.windows.net/mlhub/archives/no_archive.tar.gz
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>BlobNotFound</Code><Message>The
+        specified blob does not exist.\nRequestId:7aa9f492-c01e-0097-4932-abd10f000000\nTime:2021-09-16T19:41:01.5600813Z</Message></Error>"
+    headers:
+      Content-Length:
+      - '215'
+      Content-Type:
+      - application/xml
+      Date:
+      - Thu, 16 Sep 2021 19:41:01 GMT
+      Server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-request-id:
+      - 7aa9f492-c01e-0097-4932-abd10f000000
+      x-ms-version:
+      - '2009-09-19'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+version: 1

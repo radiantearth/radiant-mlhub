@@ -15,6 +15,9 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/radiantearth/radiant-mlhub",
     packages=setuptools.find_packages(),
+    package_data={
+        "": ["py.typed"]
+    },
     platforms='Platform Independent',
     entry_points={
         'console_scripts': [
@@ -22,15 +25,14 @@ setuptools.setup(
         ]
     },
     install_requires=[
-        'requests~=2.25.1',
-        'pystac==0.5.4',
-        'click~=7.1.2',
-        'tqdm~=4.56.0',
+        'requests~=2.25',
+        'pystac~=1.1',
+        'click>=7.1.2,<9.0.0',
+        'tqdm~=4.56',
     ],
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
@@ -49,5 +51,5 @@ setuptools.setup(
         'Slack': 'https://mlhubearth.slack.com',
         'Documentation': 'https://radiant-mlhub.readthedocs.io/en/latest/'
     },
-    python_requires='>=3.6',
+    python_requires='>=3.7',
 )

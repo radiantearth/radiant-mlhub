@@ -2,6 +2,23 @@
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.pytest.ini_options]
+testpaths = ["test"]
+addopts = "--block-network --record-mode once"
+[tool.mypy]
+strict = true
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = [
+  "setuptools",
+  "urllib3.*",
+  "requests_mock.*",
+  "tqdm.*",
+  "sphinx_rtd_theme.*"
+]
+ignore_missing_imports = true
+
 [tool.tox]
 
 legacy_tox_ini = """
