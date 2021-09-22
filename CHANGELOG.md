@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Removed
+
+### Changed
+
+### Fixed
+
+### Deprecated
+
+### Developer
+
+## [v0.3.0]
+
+### Added
+
 - `tags` and `text` arguments to `Dataset.list` and `client.list_datasets` methods to allow
   filtering by datasets tags or free text search, respectively ([#60](https://github.com/radiantearth/radiant-mlhub/pull/60))
 - `client.get_dataset_by_id` and `client.get_dataset_by_doi` methods to look up datasets by ID or
@@ -126,7 +140,8 @@ Includes support for:
 * Fetching datasets and collections by ID
 * Downloading collection archives
 
-[Unreleased]: <https://github.com/stac-utils/pystac/compare/v0.2.2...main>
+[Unreleased]: <https://github.com/stac-utils/pystac/compare/v0.3.0...main>
+[v0.3.0]: <https://github.com/stac-utils/pystac/compare/v0.2.1...0.3.0>
 [v0.2.1]: <https://github.com/stac-utils/pystac/compare/v0.2.0...0.2.1>
 [v0.2.0]: <https://github.com/stac-utils/pystac/compare/v0.1.3...0.2.0>
 [v0.1.3]: <https://github.com/stac-utils/pystac/compare/v0.1.2...0.1.3>
