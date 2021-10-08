@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Use `HEAD` request instead of `GET` when initiating download ([#67](https://github.com/radiantearth/radiant-mlhub/pull/67))
+- Use `HEAD` request instead of `GET` when initiating download ([#68](https://github.com/radiantearth/radiant-mlhub/pull/68))
 
 ## [v0.3.0]
 
