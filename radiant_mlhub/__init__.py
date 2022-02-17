@@ -5,5 +5,5 @@ __all__ = [
     "get_session"
 ]
 from .__version__ import __version__
-from .models import Collection, Dataset
+from .models import Collection, Dataset, MLModel
 from .session import get_session
