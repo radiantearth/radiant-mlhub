@@ -66,6 +66,23 @@ class TestCustomUrl:
         assert len(history) == 1
         assert history[0].url == "https://staging.api.radiant.earth/collections/collection_id/items?key=test_key"
 
+    def test_custom_url_list_ml_models(self, monkeypatch: pytest.MonkeyPatch, requests_mock: "Mocker_Type") -> None:
+        # Set up custom URL
+        custom_root_url = "https://staging.api.radiant.earth"
+        monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
+
+        # Mock this using requests-mock
+        expect_url = 'https://staging.api.radiant.earth/models?key=test_key'
+        requests_mock.get(expect_url, status_code=200, json=[])
+
+        # Making request to API
+        radiant_mlhub.client.list_models()
+
+        # Get request history and check that request was made to custom URL
+        history = requests_mock.request_history
+        assert len(history) == 1
+        assert history[0].url == expect_url
+
 
 class TestClient:
 
@@ -89,6 +106,17 @@ class TestClient:
             radiant_mlhub.client.get_dataset(dataset_id)
         assert f'Dataset "{dataset_id}" does not exist.' == str(excinfo.value)
 
+    def test_ml_model_does_not_exist(self, requests_mock: "Mocker_Type", root_url: str) -> None:
+        ml_model_id = 'no_ml_model'
+
+        id_endpoint = urljoin(root_url, f"models/{ml_model_id}")
+
+        requests_mock.get(id_endpoint, status_code=404)
+
+        with pytest.raises(EntityDoesNotExist) as excinfo:
+            radiant_mlhub.client.get_model_by_id(ml_model_id)
+        assert f'ML Model "{ml_model_id}" does not exist.' == str(excinfo.value)
+
     def test_internal_server_dataset_error(self, requests_mock: "Mocker_Type", root_url: str) -> None:
         # Mock this using requests-mock instead of VCRPY so we can simulate a 500 response
         dataset_id = 'internal_server_error'
@@ -107,6 +135,15 @@ class TestClient:
             radiant_mlhub.client.get_collection(collection_id)
 
         assert 'Internal Server Error' in str(excinfo.value)
+
+    def test_internal_server_ml_model_error(self, requests_mock: "Mocker_Type", root_url: str) -> None:
+        # Mock this using requests-mock instead of VCRPY so we can simulate a 500 response
+        ml_model_id = 'internal_server_error'
+        url = urljoin(root_url, f'models/{ml_model_id}')
+        requests_mock.get(url, status_code=500, reason='Internal Server Error')
+
+        with pytest.raises(MLHubException):
+            radiant_mlhub.client.get_dataset(ml_model_id)
 
     def test_get_dataset_by_doi(self, requests_mock: "Mocker_Type", root_url: str) -> None:
         dataset_doi = "10.6084/m9.figshare.12047478.v2"
@@ -203,6 +240,28 @@ class TestClient:
 
         assert "text" in query_params, "Call to API was missing 'text' query parameter"
         assert "buildings" in query_params["text"], "'buildings' was not in 'text' query parameter"
+
+    def test_get_ml_model_by_id(self, requests_mock: "Mocker_Type", root_url: str) -> None:
+        ml_model_id = "some_ml_model"
+        endpoint = urljoin(root_url, f"models/{ml_model_id}")
+        requests_mock.get(endpoint, status_code=200, json={})
+
+        radiant_mlhub.client.get_model_by_id(ml_model_id)
+
+        history = requests_mock.request_history
+
+        assert len(history) == 1
+        assert urlsplit(history[0].url).path == urlsplit(endpoint).path
+
+    def test_list_ml_models(self, requests_mock: "Mocker_Type", root_url: str) -> None:
+        endpoint = urljoin(root_url, "models")
+        requests_mock.get(endpoint, status_code=200, json={})
+        radiant_mlhub.client.list_models()
+
+        history = requests_mock.request_history
+
+        assert len(history) == 1
+        assert urlsplit(history[0].url).path == urlsplit(endpoint).path
 
 
 class TestClientAuthenticatedEndpoints:
@@ -383,3 +442,8 @@ class TestAnonymousClient:
             _ = list(radiant_mlhub.client.list_collection_items(collection_id, profile="__anonymous__"))
 
         assert "No API key provided" in str(excinfo.value)
+
+    @pytest.mark.vcr
+    def test_list_ml_models_anonymously_works(self) -> None:
+        ml_models = radiant_mlhub.client.list_models(profile="__anonymous__")
+        assert len(ml_models) > 0

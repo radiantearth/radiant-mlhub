@@ -6,7 +6,7 @@ from pathlib import Path
 from urllib.parse import urljoin, urlsplit, parse_qs
 from typing import Any, cast, Dict, Iterator, TYPE_CHECKING
 
-from radiant_mlhub.models import Collection, Dataset
+from radiant_mlhub.models import Collection, Dataset, MLModel
 
 from . import util
 if TYPE_CHECKING:
@@ -405,3 +405,40 @@ class TestDatasetNoProfile:
         history = requests_mock.request_history
         assert len(history) == 2
         assert f"key={api_key}" in history[1].url
+
+
+class TestMLModel:
+
+    @pytest.mark.vcr
+    def test_list_ml_models(self) -> None:
+        """MLModel.list returns a list of MLModel instances."""
+        ml_models = MLModel.list()
+        assert isinstance(ml_models[0], MLModel)
+
+    @pytest.mark.vcr
+    def test_fetch_ml_model(self) -> None:
+        expect_id = 'model-cyclone-wind-estimation-torchgeo-v1'
+        ml_model = MLModel.fetch(expect_id)
+        assert isinstance(ml_model, MLModel)
+        assert ml_model.id == expect_id
+        assert ml_model.registry_url == f'https://mlhub.earth/{expect_id}'
+        assert ml_model.doi == '10.5281/zenodo.5773331'
+        assert ml_model.citation == "Caleb Robinson. (2021). Tropical Cyclone Wind Estimation model (2.0). Zenodo. " \
+            "https://doi.org/10.5281/zenodo.5773331."
+
+    @pytest.mark.skip(reason="ML Model get by doi is not implemented")
+    def test_get_ml_model_by_doi(self, requests_mock: "Mocker_Type", root_url: str) -> None:
+        pass
+
+    def test_get_ml_model_by_id(self, requests_mock: "Mocker_Type", root_url: str) -> None:
+        expect_id = 'model-cyclone-wind-estimation-torchgeo-v1'
+        endpoint = urljoin(root_url, f"models/{expect_id}")
+        response_content = util.get_api_response(f"models/{expect_id}.json")
+        requests_mock.get(endpoint, status_code=200, text=response_content)
+
+        MLModel.fetch_by_id(expect_id)
+
+        history = requests_mock.request_history
+
+        assert len(history) == 1
+        assert urlsplit(history[0].url).path == urlsplit(endpoint).path
