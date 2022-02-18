@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- ML Model discovery
+
 ### Removed
 
 ### Changed
@@ -17,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 
 ### Developer
+
+- Refactor of client and model python modules.
 
 ## [v0.3.1]
 
