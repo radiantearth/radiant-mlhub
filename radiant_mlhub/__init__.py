@@ -2,6 +2,7 @@ __all__ = [
     "__version__",
     "Collection",
     "Dataset",
+    "MLModel",
     "get_session"
 ]
 from .__version__ import __version__

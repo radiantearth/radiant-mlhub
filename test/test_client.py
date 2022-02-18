@@ -115,7 +115,7 @@ class TestClient:
 
         with pytest.raises(EntityDoesNotExist) as excinfo:
             radiant_mlhub.client.get_model_by_id(ml_model_id)
-        assert f'ML Model "{ml_model_id}" does not exist.' == str(excinfo.value)
+        assert f'MLModel "{ml_model_id}" does not exist.' == str(excinfo.value)
 
     def test_internal_server_dataset_error(self, requests_mock: "Mocker_Type", root_url: str) -> None:
         # Mock this using requests-mock instead of VCRPY so we can simulate a 500 response
@@ -143,7 +143,7 @@ class TestClient:
         requests_mock.get(url, status_code=500, reason='Internal Server Error')
 
         with pytest.raises(MLHubException):
-            radiant_mlhub.client.get_dataset(ml_model_id)
+            radiant_mlhub.client.get_model_by_id(ml_model_id)
 
     def test_get_dataset_by_doi(self, requests_mock: "Mocker_Type", root_url: str) -> None:
         dataset_doi = "10.6084/m9.figshare.12047478.v2"

@@ -1,4 +1,7 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
+from ..session import get_session
+from requests.exceptions import HTTPError
+from ..exceptions import EntityDoesNotExist, MLHubException
 
 
 def get_model_by_id(model_id: str, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> Dict[str, Any]:
@@ -20,8 +23,13 @@ def get_model_by_id(model_id: str, *, api_key: Optional[str] = None, profile: Op
     -------
     model : dict
     """
-    # TODO get_model_by_id impl.
-    pass
+    session = get_session(api_key=api_key, profile=profile)
+    try:
+        return cast(Dict[str, Any], session.get(f'models/{model_id}').json())
+    except HTTPError as e:
+        if e.response.status_code == 404:
+            raise EntityDoesNotExist(f'MLModel "{model_id}" does not exist.') from None
+        raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})') from None
 
 
 def list_models(
@@ -45,5 +53,6 @@ def list_models(
     -------
     models : List[dict]
     """
-    # TODO: list_models impl.
-    pass
+    session = get_session(api_key=api_key, profile=profile)
+    response = session.get('models')
+    return cast(List[Dict[str, Any]], response.json())

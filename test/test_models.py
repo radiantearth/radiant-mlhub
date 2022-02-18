@@ -416,29 +416,22 @@ class TestMLModel:
         assert isinstance(ml_models[0], MLModel)
 
     @pytest.mark.vcr
-    def test_fetch_ml_model(self) -> None:
+    def test_fetch_ml_model_by_id(self) -> None:
         expect_id = 'model-cyclone-wind-estimation-torchgeo-v1'
-        ml_model = MLModel.fetch(expect_id)
+        ml_model = MLModel.fetch_model_by_id(expect_id)
         assert isinstance(ml_model, MLModel)
         assert ml_model.id == expect_id
-        assert ml_model.registry_url == f'https://mlhub.earth/{expect_id}'
-        assert ml_model.doi == '10.5281/zenodo.5773331'
-        assert ml_model.citation == "Caleb Robinson. (2021). Tropical Cyclone Wind Estimation model (2.0). Zenodo. " \
-            "https://doi.org/10.5281/zenodo.5773331."
+        assert len(ml_model.links) > 0
+        assert len(ml_model.bbox) > 0
+        assert ml_model.collection_id == 'model-cyclone-wind-estimation-torchgeo'
+        assert ml_model.properties.get('title') == 'Tropical Cyclone Wind Estimation Model'
+        assert ml_model.properties.get('sci:doi') == '10.5281/zenodo.5773331'
+        assert ml_model.properties.get('ml-model:type') == 'ml-model'
+        assert len(ml_model.properties.get('providers'))
+        assert len(ml_model.properties.get('sci:publications'))
+        assert ml_model.assets.get('inferencing-compose')
+        assert ml_model.assets.get('inferencing-checkpoint')
 
-    @pytest.mark.skip(reason="ML Model get by doi is not implemented")
+    @pytest.mark.skip(reason="MLModel get by doi is not implemented")
     def test_get_ml_model_by_doi(self, requests_mock: "Mocker_Type", root_url: str) -> None:
         pass
-
-    def test_get_ml_model_by_id(self, requests_mock: "Mocker_Type", root_url: str) -> None:
-        expect_id = 'model-cyclone-wind-estimation-torchgeo-v1'
-        endpoint = urljoin(root_url, f"models/{expect_id}")
-        response_content = util.get_api_response(f"models/{expect_id}.json")
-        requests_mock.get(endpoint, status_code=200, text=response_content)
-
-        MLModel.fetch_by_id(expect_id)
-
-        history = requests_mock.request_history
-
-        assert len(history) == 1
-        assert urlsplit(history[0].url).path == urlsplit(endpoint).path
