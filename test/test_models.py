@@ -418,7 +418,7 @@ class TestMLModel:
     @pytest.mark.vcr
     def test_fetch_ml_model_by_id(self) -> None:
         expect_id = 'model-cyclone-wind-estimation-torchgeo-v1'
-        ml_model = MLModel.fetch_model_by_id(expect_id)
+        ml_model = MLModel.fetch(expect_id)
         assert isinstance(ml_model, MLModel)
         assert ml_model.id == expect_id
         assert len(ml_model.links) > 0
