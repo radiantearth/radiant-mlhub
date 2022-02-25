@@ -19,7 +19,7 @@ class MLModel(Item):
     """
     Class inheriting from :class:`pystac.Item` that adds some convenience methods for listing and fetching from the Radiant MLHub API.
     """
-    def __init__(
+    def __init__(  # type: ignore[no-untyped-def]
         self,
         id: str,
         geometry: Optional[Dict[str, Any]],
@@ -45,6 +45,7 @@ class MLModel(Item):
             collection=collection,
             extra_fields=extra_fields,
         )
+        self.session_kwargs = {}
         if api_key is not None:
             self.session_kwargs['api_key'] = api_key
         if profile is not None:
@@ -108,7 +109,7 @@ class MLModel(Item):
     ) -> MLModel:
         """Patches the :meth:`pystac.Item.from_dict` method so that it returns the calling
         class instead of always returning a :class:`pystac.Item` instance."""
-        ml_model = super().from_dict(d)
+        ml_model = cls.from_dict(d)
         if api_key is not None:
             ml_model.session_kwargs['api_key'] = api_key
         if profile is not None:
