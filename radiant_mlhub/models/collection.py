@@ -12,6 +12,8 @@ import pystac.catalog
 import pystac.item
 import pystac.link
 import pystac.provider
+import pystac.summaries
+import pystac.provider
 
 from .. import client
 from ..exceptions import EntityDoesNotExist
@@ -26,23 +28,23 @@ class Collection(pystac.collection.Collection):
     """
     _archive_size: Optional[int]
 
-    def __init__(  # type: ignore[no-untyped-def]
+    def __init__(
         self,
-        id,
-        description,
-        extent,
-        title,
-        stac_extensions,
-        href,
-        extra_fields,
-        catalog_type,
-        license,
-        keywords,
-        providers,
-        summaries,
+        id: str,
+        description: str,
+        extent: pystac.collection.Extent,
+        title: Optional[str] = None,
+        stac_extensions: Optional[List[str]] = None,
+        href: Optional[str] = None,
+        extra_fields: Optional[Dict[str, Any]] = None,
+        catalog_type: Optional[pystac.catalog.CatalogType] = None,
+        license: str = "proprietary",
+        keywords: Optional[List[str]] = None,
+        providers: Optional[List[pystac.provider.Provider]] = None,
+        summaries: Optional[pystac.summaries.Summaries] = None,
         *,
-        api_key=None,
-        profile=None
+        api_key: Optional[str] = None,
+        profile: Optional[str] = None,
     ):
         super().__init__(id, description, extent, title=title, stac_extensions=stac_extensions, href=href,
                          extra_fields=extra_fields, catalog_type=catalog_type, license=license, keywords=keywords,
