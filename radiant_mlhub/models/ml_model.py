@@ -20,7 +20,7 @@ class MLModel(Item):
     """
     Class inheriting from :class:`pystac.Item` that adds some convenience methods for listing and fetching from the Radiant MLHub API.
     """
-    def __init__(  # type: ignore[no-untyped-def]
+    def __init__(
         self,
         id: str,
         geometry: Optional[Dict[str, Any]],
@@ -32,8 +32,8 @@ class MLModel(Item):
         collection: Optional[Union[str, Collection]] = None,
         extra_fields: Optional[Dict[str, Any]] = None,
         *,
-        api_key=None,
-        profile=None
+        api_key: Optional[str] = None,
+        profile: Optional[str] = None
     ):
         super().__init__(
             id=id,
