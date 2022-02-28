@@ -2,12 +2,13 @@
 with the `Radiant MLHub API <https://docs.mlhub.earth/#radiant-mlhub-api>`_."""
 
 from __future__ import annotations
-from typing import Any, Dict, List, Optional, Union
+
 from datetime import datetime as Datetime
+from typing import Any, Dict, List, Optional, Union, cast
 
 from pystac.catalog import Catalog
-from pystac.item import Item
 from pystac.collection import Collection
+from pystac.item import Item
 
 from .. import client
 
@@ -109,7 +110,9 @@ class MLModel(Item):
     ) -> MLModel:
         """Patches the :meth:`pystac.Item.from_dict` method so that it returns the calling
         class instead of always returning a :class:`pystac.Item` instance."""
-        ml_model = cls.from_dict(d)
+        item = super().from_dict(d)
+        ml_model = cast(MLModel, item)
+        ml_model.session_kwargs = {}
         if api_key is not None:
             ml_model.session_kwargs['api_key'] = api_key
         if profile is not None:
