@@ -2,18 +2,18 @@
 with the `Radiant MLHub API <https://docs.mlhub.earth/#radiant-mlhub-api>`_."""
 
 from __future__ import annotations
-from copy import deepcopy
+
 import os
+from copy import deepcopy
 from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Union, cast
 
-import pystac.collection
 import pystac.catalog
+import pystac.collection
 import pystac.item
 import pystac.link
 import pystac.provider
 import pystac.summaries
-import pystac.provider
 
 from .. import client
 from ..exceptions import EntityDoesNotExist
