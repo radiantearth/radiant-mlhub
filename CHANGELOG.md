@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `client.list_models` and `client.get_model_by_id` to discover ML Models by ID or by listing. ([#71](https://github.com/radiantearth/radiant-mlhub/pull/71))
+- `MLModel.list` and `MLModel.fetch` methods analagous to new client methods described
+  above. ([#71](https://github.com/radiantearth/radiant-mlhub/pull/71))
+
 ### Removed
 
 ### Changed
@@ -17,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 
 ### Developer
+
+- Refactor of client and model python modules. ([#71](https://github.com/radiantearth/radiant-mlhub/pull/71))
 
 ## [v0.3.1]
 

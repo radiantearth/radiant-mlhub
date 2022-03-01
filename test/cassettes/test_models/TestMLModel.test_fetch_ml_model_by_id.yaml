@@ -1,0 +1,61 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - 'radiant_mlhub/0.3.1 (Darwin Kernel Version 21.3.0: Wed Jan  5 21:37:58 PST
+        2022; root:xnu-8019.80.24~20/RELEASE_X86_64)'
+    method: GET
+    uri: https://staging.api.radiant.earth/mlhub/v1/models/model-cyclone-wind-estimation-torchgeo-v1
+  response:
+    body:
+      string: !!binary |
+        H4sIAMdTGWIC/81W/W/bNhD9Vwj9lGCWZNkLEnvrtiD9WIB2KFoDG2oYBk2dbS6UKJC0Ha/I/75H
+        SrKVxV0zYBgGKIj5cbx37x7v+DmSeTSOCp2TisVeKF1SvJNlHpN1suBO6jJ22oj1inS8zaJetFjo
+        +2g8jbPLUTIajXrxVf2/HdfDWS9y+4pw9mvibmMIlkqWdxamnyNDCitCK0XCu4gOu3lVKSmC3/R3
+        G1bWhpZYWTtXjdPUOr6S5SrhlUwMzyUvXULcuHVaqPVmkW6z9HiuTZ8XWfTQa0FV3FDp/keAjNb/
+        MpzO4ZbU8vThAPHNfxdvKh0Vz93sdXgMoVBxMBvLcknInQC4GCYrOkLPtbgjA/D1j0TqtIFeI289
+        1v5bP+PsSE1teDjXSaf89E1tyH4FVPbqAJW98wedAukMl2Wcc8cfE2sB7pmMltzyuTO6QqrU3AJt
+        MRe6qAigsGEeXMyt3hhBfyucNoiJNwBr7KWH1QUN7zViz6kHbck9xd0qIuxvkPvNX0N6BOfo3qVr
+        V6hHqGo79iWOb44nBeQe2wPqDrf4hTrzOeoqwvvVlvz0X+AbvktW0gH7xpIRGqJAArA//VAn493b
+        n5GF0xpJC7CTdhwl+zqKTmD38Z4X6jvWScGLFk4P91uRr4pPhUyx2ZQIl6LZkZagLNZxyNpND73H
+        Aa9J3FVaopg9jfkPKnWuE21WqSGhTZ5eXF4Oh8MsXUrASRW3oOCucj/melcqzfMX2WktaeHIxdYZ
+        4sXJaDo4OmG8liVSG3awzo4HBAFWC3Jm72E3Dt9rtV8FwQgNsLB1wcv0SRua9aZfnjlMxF+eaa1m
+        s4det0M9t0kCYwXlknGSggifree6Zvg2Kai0Ide3E4ytkONcS4yzfnIxuMra7DUpwxbcNgoaGJcb
+        pQKCrczJ1N12Y1Qn9bvdLimkMNrqZS1zKuONTbnEFy+1iVda5zi05EUA0e5l17cMy+wNltkHsrjo
+        Ys3e8gU7u+GKFuyDXsgSpeUcxoR7EXq8X0lMs/LTI8dduQBxvhFkopm/wjlZYWTVED9ZS8vwcfZ+
+        P/E0N7oJlYlyBu7cmtj0n1SM2dnh+tNKQr77R+ULTA+/HWVZanLUgnt7MdxU6TlrSiDboVywbT/J
+        mF42vj2uN6SP59YlJRB8iDptVXLOKi7u0EsSNoF5HU8I0ZAtyWVXzVxlqBPm9Nb3n1/IHd34dIau
+        FMMsXGgETfdJta7OPbTyQFMAzdm7j6+Y0tbWnn1EbIeiwQwvc12oPbO43I5d9dNBny0w9GWb3b5k
+        WMcfA0EqzFZsxy1DzczZgtsaIHQPiRQcxSvxKijz+VGbEe7VKM4G8TCbDIbjixG+T43AhXS8Sfdj
+        MSXsbNAfZOeA+7X01oydDZI+dn+q7whrecINCuycvkMe7LFH10WnHXuEDqroRjLo9/txP8M36ffH
+        4WsjqTaLtjjW168T2kdHO5zUY9dJ7xBhj90kgdwbbRTte+wWiz5mhNyoasxyooopcB8adUglZGQr
+        nAxGfBZxhvlNbr1iKoNaWg/HgyzLkv7V1eWgx6a6xBucZuws84Reb3FH+UIR427Mvj88Q8y93Aau
+        +MKmR/sf2BRtlti1EIQWm8+S0G4PtPlygGecCK99vFsbIXeZBbZcivqVUpOM24eNtn4NHPa1gc7R
+        aYzmYu2fqhuIayvh2Hc6ZETMt6hwNbGAmPSjZho9FwW04b/7ShHxcalp+f4p2LrFQ8sfk1o0pIIn
+        7ev3q/bIOl4McinFqRNmD38C5WODcGUNAAA=
+    headers:
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1337'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 25 Feb 2022 22:10:15 GMT
+      Vary:
+      - Accept-Encoding
+      X-Azure-Ref:
+      - 0xlMZYgAAAAAi3qZ4IZLZRbp+TwU8aXHTU0pDRURHRTA1MTEAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
+      X-Cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+version: 1

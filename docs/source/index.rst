@@ -21,6 +21,7 @@ The Python client for the `Radiant MLHub API <https://mlhub.earth>`_.
    authentication
    collections
    datasets
+   ml_models
    API Documentation <api/radiant_mlhub>
    cli
 
