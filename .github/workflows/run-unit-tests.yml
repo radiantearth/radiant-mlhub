@@ -55,28 +55,9 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: ${{matrix.python-version }}
-
-      - name: Cache test dependencies (Linux)
-        uses: actions/cache@v2
-        if: startsWith(runner.os, 'Linux')
-        with:
-          path: ~/.cache/pip
-          key: unit-tests-${{ matrix.os }}-python${{ matrix.python-version }}-${{ hashFiles('requirements_testing.txt') }}
-          
-      - name: Cache test dependencies (Mac)
-        uses: actions/cache@v2
-        if: startsWith(runner.os, 'macOS')
-        with:
-          path: ~/Library/Caches/pip
-          key: unit-tests-${{ matrix.os }}-python${{ matrix.python-version }}-${{ hashFiles('requirements_testing.txt') }}
-
-      - name: Cache test dependencies (Windows)
-        uses: actions/cache@v2
-        if: startsWith(runner.os, 'Windows')
-        with:
-          path: ~\AppData\Local\pip\Cache
-          key: unit-tests-${{ matrix.os }}-python${{ matrix.python-version }}-${{ hashFiles('requirements_testing.txt') }}
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: requirements_testing.txt
 
       - name: Install test dependencies
         run: |
