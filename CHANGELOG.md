@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Developer
 
 - Refactor of client and model python modules. ([#71](https://github.com/radiantearth/radiant-mlhub/pull/71))
+- Configure Dependabot for automatic version upgrades of dev dependencies ([#74](https://github.com/radiantearth/radiant-mlhub/pull/74))
 
 ## [v0.3.1]
 
