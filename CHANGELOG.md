@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Developer
 
 - Refactor of client and model python modules. ([#71](https://github.com/radiantearth/radiant-mlhub/pull/71))
+- Lock dev dependencies. ([#75](https://github.com/radiantearth/radiant-mlhub/pull/75))
 - Remove Python 3.6 from `tox` config and add Python 3.10 ([#73](https://github.com/radiantearth/radiant-mlhub/pull/73))
 
 ## [v0.3.1]
