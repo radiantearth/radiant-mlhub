@@ -23,13 +23,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix installation error by missing dependency: typing_extensions. ([#79])(https://github.com/radiantearth/radiant-mlhub/pull/79)
+- Fix installation error by missing dependency: typing_extensions. ([#79](https://github.com/radiantearth/radiant-mlhub/pull/79))
 
 ### Developer
 
-- Check for missing dependencies in CI job. ([#79])(https://github.com/radiantearth/radiant-mlhub/pull/79)
-- Allow ReadTheDocs builds to succeed if warnings are emitted ([#80])(https://github.com/radiantearth/radiant-mlhub/pull/80)
-- Update trove classifiers to include Python 3.10 and bump dev status to "Beta" ([#81])(https://github.com/radiantearth/radiant-mlhub/pull/81)
+- Check for missing dependencies in CI job. ([#79](https://github.com/radiantearth/radiant-mlhub/pull/79))
+- Allow ReadTheDocs builds to succeed if warnings are emitted ([#80](https://github.com/radiantearth/radiant-mlhub/pull/80))
+- Update trove classifiers to include Python 3.10 and bump dev status to "Beta" ([#81](https://github.com/radiantearth/radiant-mlhub/pull/81))
 
 ## [v0.4.0]
 
