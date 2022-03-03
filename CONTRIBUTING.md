@@ -102,17 +102,20 @@ When the code on the `main` branch has stabilized, we will cut a new release usi
    tbump --no-push --no-tag <NEW_VERSION>
    ```
 
-3) Test and make any final changes on the `release/*` branch
+3) Commit changes to the CHANGELOG.md including the new version, and the compare
+   links at the bottom.
 
-4) Put in a PR against `main`
+4) Test and make any final changes on the `release/*` branch
+
+5) Put in a PR against `main`
 
    This will trigger the CI to run unit tests and to publish a test package to TestPyPi.
 
-5) Approve and merge into `main`
+6) Approve and merge into `main`
 
    Once the PR has been approved, merge into `main`
 
-6) Tag and publish release
+7) Tag and publish release. Use an annotated git tag.
 
    This will trigger the CI to publish the package to PyPi
   
