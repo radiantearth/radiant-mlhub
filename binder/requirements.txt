@@ -1,1 +1,1 @@
-radiant-mlhub==0.4.0
+radiant-mlhub==0.4.1
