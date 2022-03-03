@@ -29,6 +29,7 @@ setuptools.setup(
         'pystac~=1.1',
         'click>=7.1.2,<9.0.0',
         'tqdm~=4.56',
+        'typing_extensions >= 3.7; python_version < "3.8"',
     ],
     classifiers=[
         "Programming Language :: Python",

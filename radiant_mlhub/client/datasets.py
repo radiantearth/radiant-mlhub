@@ -1,12 +1,17 @@
 import os
+import sys
 import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Union, cast
 
+if sys.version_info >= (3, 8):
+    from typing import TypedDict
+else:
+    from typing_extensions import TypedDict
+
 from requests.exceptions import HTTPError
-from typing_extensions import TypedDict
 
 from ..exceptions import EntityDoesNotExist, MLHubException
 from ..session import get_session
