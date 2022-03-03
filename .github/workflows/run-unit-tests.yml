@@ -107,6 +107,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install .
-          python -m "from radiant_mlhub import *"
-          python -m "from radiant_mlhub.client import *"
-          python -m "from radiant_mlhub.models import *"
+          python -c "from radiant_mlhub import *"
+          python -c "from radiant_mlhub.client import *"
+          python -c "from radiant_mlhub.models import *"
