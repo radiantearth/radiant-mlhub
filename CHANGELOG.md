@@ -19,7 +19,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Developer
 
-- Fix missing dependency: typing_extensions. Improve CI jobs. ([#79])(https://github.com/radiantearth/radiant-mlhub/pull/79)
+## [v0.4.1]
+
+### Fixed
+
+- Fix installation error by missing dependency: typing_extensions. ([#79])(https://github.com/radiantearth/radiant-mlhub/pull/79)
+
+### Developer
+
+- Check for missing dependencies in CI job. ([#79])(https://github.com/radiantearth/radiant-mlhub/pull/79)
 - Allow ReadTheDocs builds to succeed if warnings are emitted ([#80])(https://github.com/radiantearth/radiant-mlhub/pull/80)
 - Update trove classifiers to include Python 3.10 and bump dev status to "Beta" ([#81])(https://github.com/radiantearth/radiant-mlhub/pull/81)
 
@@ -30,14 +38,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `client.list_models` and `client.get_model_by_id` to discover ML Models by ID or by listing. ([#71](https://github.com/radiantearth/radiant-mlhub/pull/71))
 - `MLModel.list` and `MLModel.fetch` methods analagous to new client methods described
   above. ([#71](https://github.com/radiantearth/radiant-mlhub/pull/71))
-
-### Removed
-
-### Changed
-
-### Fixed
-
-### Deprecated
 
 ### Developer
 
@@ -174,7 +174,8 @@ Includes support for:
 * Fetching datasets and collections by ID
 * Downloading collection archives
 
-[Unreleased]: <https://github.com/stac-utils/pystac/compare/v0.4.0...main>
+[Unreleased]: <https://github.com/stac-utils/pystac/compare/v0.4.1...main>
+[v0.4.1]: <https://github.com/stac-utils/pystac/compare/v0.4.0...0.4.1>
 [v0.4.0]: <https://github.com/stac-utils/pystac/compare/v0.3.1...0.4.0>
 [v0.3.1]: <https://github.com/stac-utils/pystac/compare/v0.3.0...0.3.1>
 [v0.3.0]: <https://github.com/stac-utils/pystac/compare/v0.2.1...0.3.0>
