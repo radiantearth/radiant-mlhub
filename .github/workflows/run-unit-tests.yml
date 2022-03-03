@@ -72,10 +72,10 @@ jobs:
           flake8_nb examples/
           mypy radiant_mlhub
 
-  # test importing all top-level modules, without polluting the package namespace
+  # verify importing all top-level modules, without polluting the package namespace
   # with requirements_testing.txt dependencies. (this simulates an end-user
   # install of the radiant-mlhub package).
-  test_import_package:
+  verify_import_package:
     strategy:
       matrix:
         python-version:
