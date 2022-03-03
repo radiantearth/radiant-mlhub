@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Developer
 
 - Fix missing dependency: typing_extensions. Improve CI jobs. ([#79])(https://github.com/radiantearth/radiant-mlhub/pull/79)
+- Allow ReadTheDocs builds to succeed if warnings are emitted ([#80])(https://github.com/radiantearth/radiant-mlhub/pull/80)
 
 ## [v0.4.0]
 
