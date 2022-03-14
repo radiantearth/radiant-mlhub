@@ -5,7 +5,7 @@ pytest-click==1.1.0
 flake8==4.0.1
 flake8-nb==0.4.0
 types-requests==2.27.11
-mypy==0.931
+mypy==0.941
 python-dotenv==0.19.2
 isort==5.10.1
 types-click==7.1.8
