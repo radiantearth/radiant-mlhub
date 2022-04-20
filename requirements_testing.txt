@@ -4,7 +4,7 @@ requests-mock==1.9.3
 pytest-click==1.1.0
 flake8==4.0.1
 flake8-nb==0.4.0
-types-requests==2.27.12
+types-requests==2.27.20
 mypy==0.941
 python-dotenv==0.19.2
 isort==5.10.1
