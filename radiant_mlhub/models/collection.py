@@ -17,6 +17,7 @@ import pystac.summaries
 
 from .. import client
 from ..exceptions import EntityDoesNotExist
+from ..if_exists import DownloadIfExistsOpts
 
 TagOrTagList = Union[str, Iterable[str]]
 TextOrTextList = Union[str, Iterable[str]]
@@ -190,7 +191,7 @@ class Collection(pystac.collection.Collection):
             self,
             output_dir: Union[str, Path],
             *,
-            if_exists: str = 'resume',
+            if_exists: DownloadIfExistsOpts = DownloadIfExistsOpts.resume,
             api_key: Optional[str] = None,
             profile: Optional[str] = None
     ) -> Path:
@@ -236,7 +237,7 @@ class Collection(pystac.collection.Collection):
             "api_key": api_key,
             "profile": profile
         }
-        return client.download_archive(self.id, output_dir=os.fspath(output_dir), if_exists=if_exists, **session_kwargs)
+        return client.download_collection_archive(self.id, output_dir=os.fspath(output_dir), if_exists=if_exists, **session_kwargs)
 
     @property
     def registry_url(self) -> Optional[str]:

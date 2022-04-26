@@ -197,13 +197,13 @@ class TestClient:
         assert len(history) == 1
         assert urlsplit(history[0].url).path == urlsplit(doi_endpoint).path
 
-    def test_download_archive_only_accepts_dir(self, tmp_path: pathlib.Path) -> None:
+    def test_download_collection_archive_only_accepts_dir(self, tmp_path: pathlib.Path) -> None:
         # Test error if file path is provided
         tmp_file = tmp_path / 'test.txt'
         tmp_file.touch()
 
         with pytest.raises(ValueError):
-            radiant_mlhub.client.download_archive('_', output_dir=tmp_file)
+            radiant_mlhub.client.download_collection_archive('_', output_dir=tmp_file)
 
     def test_list_dataset_tags_filter(self, requests_mock: "Mocker_Type", root_url: str) -> None:
         escaped_root_url = root_url.replace(".", r"\.")
@@ -305,7 +305,7 @@ class TestClientAuthenticatedEndpoints:
         os.chdir(tmp_path)
 
         # Let output_dir default to CWD
-        output_path = radiant_mlhub.client.download_archive('ref_african_crops_kenya_02_labels')
+        output_path = radiant_mlhub.client.download_collection_archive('ref_african_crops_kenya_02_labels')
 
         assert output_path == tmp_path / 'ref_african_crops_kenya_02_labels.tar.gz'
         assert output_path.exists()
@@ -315,7 +315,7 @@ class TestClientAuthenticatedEndpoints:
         archive_id = 'no_archive'
 
         with pytest.raises(EntityDoesNotExist) as excinfo:
-            radiant_mlhub.client.download_archive(archive_id, output_dir=tmp_path)
+            radiant_mlhub.client.download_collection_archive(archive_id, output_dir=tmp_path)
 
         assert f'Archive "{archive_id}" does not exist and may still be generating. ' \
                'Please try again later.' == str(excinfo.value)
@@ -328,7 +328,7 @@ class TestClientAuthenticatedEndpoints:
         original_size = expected_output_path.stat().st_size
 
         # Test if_exists = 'skip' (default)
-        output_path = radiant_mlhub.client.download_archive(
+        output_path = radiant_mlhub.client.download_collection_archive(
             collection_id,
             output_dir=tmp_path,
             if_exists='skip'
@@ -343,7 +343,7 @@ class TestClientAuthenticatedEndpoints:
         original_size = expected_output_path.stat().st_size
 
         # Test overwrite
-        output_path = radiant_mlhub.client.download_archive(
+        output_path = radiant_mlhub.client.download_collection_archive(
             collection_id,
             output_dir=tmp_path,
             if_exists='overwrite'

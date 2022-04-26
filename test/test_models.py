@@ -283,12 +283,6 @@ class TestDataset:
         dataset = Dataset.fetch('bigearthnet_v1')
         assert dataset.collections.__repr__() == '[<Collection id=bigearthnet_v1_source>, <Collection id=bigearthnet_v1_labels>]'
 
-    @pytest.mark.vcr
-    @pytest.mark.skip(reason="vcrpy does not handle multithreaded requests.")
-    def test_total_archive_size(self) -> None:
-        dataset = Dataset.fetch('bigearthnet_v1')
-        assert dataset.total_archive_size == 71311240007
-
     def test_dataset_list_tags_filter(self, requests_mock: "Mocker_Type", root_url: str) -> None:
         escaped_root_url = root_url.replace(".", r"\.")
         route_match = re.compile(f"^{escaped_root_url}datasets")

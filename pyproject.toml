@@ -11,11 +11,14 @@ show_error_codes = true
 
 [[tool.mypy.overrides]]
 module = [
-  "setuptools",
-  "urllib3.*",
+  "dateutil.*",
+  "geojson.*",
   "requests_mock.*",
+  "setuptools",
+  "shapely.*",
+  "sphinx_rtd_theme.*",
   "tqdm.*",
-  "sphinx_rtd_theme.*"
+  "urllib3.*",
 ]
 ignore_missing_imports = true
 

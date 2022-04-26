@@ -3,16 +3,24 @@ with the `Radiant MLHub API <https://docs.mlhub.earth/#radiant-mlhub-api>`_."""
 
 from __future__ import annotations
 
-import concurrent.futures
-from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, List, Optional, Union
+import concurrent.futures
+from datetime import datetime
+
+from enum import Enum
+from typing import Any, Dict, Iterable, Iterator, List, Optional, Union, Tuple
+
+from ..session import get_session
 
 from .. import client
 from . import Collection
-
+from ..client import CatalogDownloader, CatalogDownloaderConfig
+from ..if_exists import DownloadIfExistsOpts
 TagOrTagList = Union[str, Iterable[str]]
 TextOrTextList = Union[str, Iterable[str]]
+
+JsonDict = Dict[str, Any]
+GeoJSON = JsonDict
 
 
 class Dataset:
@@ -235,64 +243,102 @@ class Dataset:
 
     def download(
             self,
-            output_dir: Union[Path, str],
+            output_dir: Union[Path, str] = Path.cwd(),
             *,
-            if_exists: str = 'resume',
+            catalog_only: bool = False,
+            if_exists: DownloadIfExistsOpts = DownloadIfExistsOpts.resume,
             api_key: Optional[str] = None,
-            profile: Optional[str] = None
-    ) -> List[Path]:
-        """Downloads archives for all collections associated with this dataset to given directory. Each archive will be named using the
-        collection ID (e.g. some_collection.tar.gz). If ``output_dir`` does not exist, it will be created.
-
-        .. note::
-
-            Some collections may be very large and take a significant amount of time to download, depending on your connection speed.
+            profile: Optional[str] = None,
+            bbox: Optional[List[float]] = None,
+            intersects: Optional[GeoJSON] = None,
+            datetime: Optional[Union[datetime, Tuple[datetime, datetime]]] = None,
+            collection_filter: Optional[Dict[str, List[str]]] = None,
+    ) -> None:
+        """
+        Downloads dataset's STAC catalog and all linked assets. The download
+        may be customized and controlled by providing bbox, intersects,
+        datetime, and filter options.
 
         Parameters
         ----------
-        output_dir : str or pathlib.Path
-            The directory into which the archives will be written.
-        if_exists : str, optional
-            How to handle an existing archive at the same location. If ``"skip"``, the download will be skipped. If ``"overwrite"``,
-            the existing file will be overwritten and the entire file will be re-downloaded. If ``"resume"`` (the default), the
-            existing file size will be compared to the size of the download (using the ``Content-Length`` header). If the existing
-            file is smaller, then only the remaining portion will be downloaded. Otherwise, the download will be skipped.
-        api_key : str
-            An API key to use for this request. This will override an API key set in a profile on using
-            an environment variable
-        profile: str
-            A profile to use when making this request.
+        output_dir: str or pathlib.Path
+            The directory into which the archives will be written. Defaults to
+            current working directory.
 
-        Returns
-        -------
-        output_paths : List[pathlib.Path]
-            List of paths to the downloaded archives
+        catalog_only: bool
+            If True, the STAC catalog will be downloaded and unarchived, but no
+            assets wll be downloaded. Defaults to False.
+
+        if_exists : str, optional
+            Allowed values: `skip`, `overwrite`, or `resume` (default).
+
+        bbox: Optional[List[float]]
+            List representing a bounding box of coordinates, for
+            spatial intersection filter. Must be in CRS EPSG:4326.
+
+        intersects: Optional[GeoJSON]
+            GeoJSON object for spatial intersects filter. Must be a
+            parsed GeoJSON dict with a `geometry` property.
+
+        datetime: Optional[datetime, Tuple[datetime, datetime]]
+            Single datetime or datetime range for temporal filter.
+
+        collection_filter: Optional[Dict[str, list]]
+            Mapping of collection_id and asset keys to include (exclusively).
+
+            examples:
+
+            * download will only include this collection:
+                `dict(ref_landcovernet_sa_v1_source_sentinel_2=[])`
+
+            * download will only include this collection and only these asset keys:
+                `dict(ref_landcovernet_sa_v1_source_sentinel_2=["B02", "B03", "B04"])`
+
+        api_key: Optional[str]
+            An API key to use for this request. This will override an API key
+            set in a profile on using an environment variable.
+
+        profile: Optional[str]
+            Authentication Profile to use when making this request.
 
         Raises
         -------
         IOError
             If ``output_dir`` exists and is not a directory.
-        FileExistsError
-            If one of the archive files already exists in the ``output_dir`` and both ``exist_okay`` and ``overwrite`` are ``False``.
+            If unrecoverable download errors occurred.
+
+        ValueError
+            If provided filters are incompatible, for example bbox and intersects.
+
+        RuntimeError
+            If filters result in zero assets to download.
+
+
+        Error Reporting
+        ---------------
+        Any unrecoverable download errors will be logged to `{output_dir}/err_report.csv`.
         """
-        return [
-            collection.download(output_dir, if_exists=if_exists, api_key=api_key, profile=profile)
-            for collection in self.collections
-        ]
 
-    @property
-    def total_archive_size(self) -> Optional[int]:
-        """Gets the total size (in bytes) of the archives for all collections associated with this
-        dataset. If no archives exist, returns ``None``."""
-        # Since self.collections is cached on the Dataset instance, and collection.archive_size is
-        # cached on each Collection, we don't bother to cache this property.
-        archive_sizes = [
-            collection.archive_size
-            for collection in self.collections
-            if collection.archive_size is not None
-        ]
-
-        return None if not archive_sizes else sum(archive_sizes)
+        assert output_dir
+        output_path = Path(output_dir)
+        if output_path.exists() and not output_path.is_dir():
+            raise IOError('output_dir is not directory.')
+        output_path.mkdir(exist_ok=True, parents=True)
+        config = CatalogDownloaderConfig(
+            catalog_only=catalog_only,
+            api_key=api_key,
+            bbox=bbox,
+            dataset_id=self.id,
+            collection_filter=collection_filter,
+            if_exists=if_exists,
+            intersects=intersects,
+            output_dir=output_path,
+            profile=profile,
+            session=get_session(api_key=api_key, profile=profile),
+            temporal_query=datetime,
+        )
+        dl = CatalogDownloader(config=config)
+        dl()
 
 
 class CollectionType(Enum):

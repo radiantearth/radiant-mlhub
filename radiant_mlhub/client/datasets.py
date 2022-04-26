@@ -1,19 +1,14 @@
 import os
-import sys
 import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, List, Optional, Union, cast
-
-if sys.version_info >= (3, 8):
-    from typing import TypedDict
-else:
-    from typing_extensions import TypedDict
+from typing import (Any, Dict, Iterable, Iterator, List, Optional, Union, cast)
 
 from requests.exceptions import HTTPError
 
 from ..exceptions import EntityDoesNotExist, MLHubException
+from ..if_exists import DownloadIfExistsOpts
 from ..session import get_session
 
 TagOrTagList = Union[str, Iterable[str]]
@@ -26,11 +21,11 @@ except ImportError:  # pragma: no cover
     from tqdm import tqdm
 
 
-def _download(
+def _download_collection_archive_chunked(
         url: str,
         output_dir: Union[str, Path],
         *,
-        if_exists: str = 'resume',
+        if_exists: DownloadIfExistsOpts = DownloadIfExistsOpts.resume,
         chunk_size: int = 5000000,
         api_key: Optional[str] = None, profile: Optional[str] = None
 ) -> Path:
@@ -60,12 +55,10 @@ def _download(
 
     Raises
     ------
-    ValueError
+    ValidationError
         If ``if_exists`` is not one of ``"skip"``, ``"overwrite"``, or ``"resume"``.
     """
     output_dir = os.fspath(output_dir)
-    if if_exists not in {'skip', 'overwrite', 'resume'}:
-        raise ValueError('if_exists must be one of "skip", "overwrite", or "resume"')
 
     def _get_ranges(total_size: int, interval: int, start: int = 0) -> Iterator[str]:
         """Internal function for getting byte ranges from a total size and interval/chunk size."""
@@ -106,9 +99,9 @@ def _download(
     if output_path.exists():
         # Since we check the allowed values of if_exists above, we can be sure that it is either
         #  skip, resume, or overwrite. If it is overwrite, we treat it as if the file did not exist.
-        if if_exists == 'skip':
+        if if_exists == DownloadIfExistsOpts.skip:
             return output_path
-        if if_exists == 'resume':
+        if if_exists == DownloadIfExistsOpts.resume:
             start = output_path.stat().st_size
             open_mode = 'ab'
             # Don't attempt the download if the existing file is the same size as the download
@@ -131,13 +124,6 @@ def _download(
                     pbar.update(round(chunk_size / 1000000., 1))
 
     return output_path
-
-
-class ArchiveInfo(TypedDict):
-    collection: str
-    dataset: str
-    size: int
-    types: List[str]
 
 
 def list_datasets(
@@ -310,11 +296,11 @@ def get_archive_info(archive_id: str, *, api_key: Optional[str] = None, profile:
         raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})') from None
 
 
-def download_archive(
+def download_collection_archive(
         archive_id: str,
         output_dir: Optional[Union[str, Path]] = None,
         *,
-        if_exists: str = 'resume',
+        if_exists: DownloadIfExistsOpts = DownloadIfExistsOpts.resume,
         api_key: Optional[str] = None,
         profile: Optional[str] = None
 ) -> Path:
@@ -358,7 +344,7 @@ def download_archive(
     output_dir = os.fspath(output_dir)
 
     try:
-        return _download(
+        return _download_collection_archive_chunked(
             f'archive/{archive_id}',
             output_dir=output_dir,
             if_exists=if_exists,
