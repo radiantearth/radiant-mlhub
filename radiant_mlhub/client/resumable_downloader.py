@@ -1,6 +1,3 @@
-import base64
-import binascii
-import hashlib
 import http
 from logging import getLogger
 from pathlib import Path
@@ -16,7 +13,6 @@ from ..session import Session as MLHubSession
 
 http.client.HTTPConnection.debuglevel = 0  # change to > 0 for verbose logging
 
-# TODO: make md5 checksum validation gracefully fallback if there is no content-md5 header (e.g. S3 assets, like the spacenet* datasets)
 
 log = getLogger(__name__)
 
@@ -47,7 +43,6 @@ class ResumableDownloader():
     out_file: Path
     if_exists: DownloadIfExistsOpts
     disable_progress_bar: bool
-    md5_check: bool
     chunk_size: int
     chunk_unit: str
     desc: Optional[str]
@@ -60,7 +55,6 @@ class ResumableDownloader():
             session: Optional[requests.Session] = None,
             if_exists: DownloadIfExistsOpts = DownloadIfExistsOpts.overwrite,
             disable_progress_bar: bool = True,
-            md5_check: bool = True,
             chunk_size: int = CHUNK_SIZE,
             chunk_unit: str = CHUNK_UNIT
             ):
@@ -68,7 +62,6 @@ class ResumableDownloader():
         self.out_file = out_file
         self.if_exists = if_exists
         self.disable_progress_bar = disable_progress_bar
-        self.md5_check = md5_check
         self.chunk_size = chunk_size
         self.chunk_unit = chunk_unit
         self.desc = desc
@@ -88,45 +81,17 @@ class ResumableDownloader():
             s.mount("http://", adapter)
             self.session = s
 
-    def validate(self) -> bool:
-        if not self.md5_check:
-            return False
-        if not self.out_file.exists():
-            return False
-        checksum_file = Path(f'{self.out_file}.md5')
-        if not checksum_file.exists():
-            return False
-
-        # read expected checksum (md5, hex encoded)
-        with open(checksum_file) as fh:
-            expect_checksum = fh.read()
-
-        # calculate actual checksum
-        actual_bytes = self.out_file.read_bytes()
-        h = hashlib.md5(actual_bytes)
-        got_checksum = h.digest().hex()
-
-        if got_checksum == expect_checksum:
-            return True
-        return False
-
     def run(self) -> None:
         self.out_file.parent.mkdir(exist_ok=True, parents=True)
         if self.out_file.exists():
             if self.if_exists == DownloadIfExistsOpts.overwrite:
                 self.out_file.unlink()
-                log.info(f'{self.out_file.resolve()} -> overwrite')
-            else:
-                # not overwriting
-                if self.validate():
-                    log.debug(f'{self.out_file.resolve()} -> exists, is valid')
-                    return  # early out
-                else:
-                    # exists, not overwriting, invalid file
-                    if self.if_exists == DownloadIfExistsOpts.resume:
-                        log.debug(f'{self.out_file.resolve()} -> resume')
-                    elif self.if_exists == DownloadIfExistsOpts.skip:
-                        raise RuntimeError(f'{self.out_file.name} exists but is invalid -> cannot skip')
+                log.debug(f'{self.out_file.resolve()} -> overwrite')
+            elif self.if_exists == DownloadIfExistsOpts.skip:
+                log.debug(f'{self.out_file.resolve()} -> skip')
+                return
+            elif self.if_exists == DownloadIfExistsOpts.resume:
+                log.debug(f'{self.out_file.resolve()} -> resume')
 
         with open(self.out_file, mode='ab') as f:
             if isinstance(self.session, MLHubSession) or 'blob.core.windows.net' in self.url:
@@ -150,26 +115,6 @@ class ResumableDownloader():
             else:
                 content_len = int(resp.headers['content-length'])
 
-            checksum = resp.headers.get('content-md5', None)
-            if checksum:
-                try:
-                    # convert checksum from base64 to hex (for convenience)
-                    checksum_hex = base64.b64decode(checksum, validate=True).hex()
-                    with open(f'{self.out_file}.md5', mode='w') as fh:
-                        fh.write(checksum_hex)
-                except binascii.Error as e:
-                    # this would only happen if the md5sum was not base64 encoded
-                    log.error(e)
-                    raise e
-
-            if pos >= content_len:
-                if self.md5_check:
-                    if self.validate():
-                        return
-                    else:
-                        raise IOError(f'Failed to validate md5 checksum for {self.out_file}')
-                return
-
             for data in tqdm(
                 iterable=resp.iter_content(chunk_size=self.chunk_size),
                 total=(content_len - pos) // self.chunk_size,
@@ -179,7 +124,3 @@ class ResumableDownloader():
                 disable=self.disable_progress_bar,
             ):
                 f.write(data)
-            f.flush()
-
-        if self.md5_check and not self.validate():
-            raise IOError(f'File {self.url} failed validation after download.')
