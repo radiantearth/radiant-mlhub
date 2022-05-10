@@ -3,7 +3,7 @@ import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from pathlib import Path
-from typing import (Any, Dict, Iterable, Iterator, List, Optional, Union, cast)
+from typing import Any, Dict, Iterable, Iterator, List, Optional, Union, cast
 
 from requests.exceptions import HTTPError
 
