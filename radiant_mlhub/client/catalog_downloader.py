@@ -232,7 +232,7 @@ class CatalogDownloader():
             geometry = stac_item.get('geometry', None)
             if geometry and not bbox:
                 raise RuntimeError(f'item {item_id} has no bbox, but has geometry')
-            item_json_path = json_src.removeprefix(str(self.work_dir))
+            item_json_path = json_src.replace(str(self.work_dir), '')
             for k, v in assets.items():
                 rec = AssetRecord(
                     collection_id=stac_item['collection'],
