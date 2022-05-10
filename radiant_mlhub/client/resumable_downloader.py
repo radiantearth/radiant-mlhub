@@ -84,21 +84,29 @@ class ResumableDownloader():
     def run(self) -> None:
         self.out_file.parent.mkdir(exist_ok=True, parents=True)
         if self.out_file.exists():
-            if self.if_exists == DownloadIfExistsOpts.overwrite:
-                self.out_file.unlink()
-                log.debug(f'{self.out_file.resolve()} -> overwrite')
-            elif self.if_exists == DownloadIfExistsOpts.skip:
+            if self.if_exists == DownloadIfExistsOpts.skip:
                 log.debug(f'{self.out_file.resolve()} -> skip')
                 return
+            elif self.if_exists == DownloadIfExistsOpts.overwrite:
+                self.out_file.unlink()
+                log.debug(f'{self.out_file.resolve()} -> overwrite')
             elif self.if_exists == DownloadIfExistsOpts.resume:
+                # make HEAD request to get content-length (detect whether to resume)
+                resp = self.session.head(self.url, allow_redirects=True)
+                resp.raise_for_status()
+                content_len = int(resp.headers['content-length'])
+                size = self.out_file.stat().st_size
+                assert size <= content_len, 'unexpected asset size on filesystem'
+                if size == content_len:
+                    return  # nothing to resume
                 log.debug(f'{self.out_file.resolve()} -> resume')
 
-        with open(self.out_file, mode='ab') as f:
+        with open(self.out_file, mode='ab') as fh:
             if isinstance(self.session, MLHubSession) or 'blob.core.windows.net' in self.url:
                 req_headers = {'x-ms-version': AZ_STORAGE_VERSION}
             else:
                 req_headers = dict()
-            pos = f.tell()
+            pos = fh.tell()
             if pos > 0:
                 req_headers['range'] = f'bytes={pos}-'
             resp = self.session.get(self.url, headers=req_headers, stream=True)
@@ -115,6 +123,9 @@ class ResumableDownloader():
             else:
                 content_len = int(resp.headers['content-length'])
 
+            if pos >= content_len:
+                return  # no content left to resume
+
             for data in tqdm(
                 iterable=resp.iter_content(chunk_size=self.chunk_size),
                 total=(content_len - pos) // self.chunk_size,
@@ -123,4 +134,4 @@ class ResumableDownloader():
                 desc=self.desc if self.desc else f'fetch {self.url}',
                 disable=self.disable_progress_bar,
             ):
-                f.write(data)
+                fh.write(data)

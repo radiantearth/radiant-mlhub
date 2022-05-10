@@ -28,7 +28,13 @@ log = getLogger(__name__)
 JsonDict = Dict[str, Any]
 GeoJSON = JsonDict
 
-COMMON_ASSET_NAMES = ['documentation', 'test_split', 'train_split', 'validation_split']
+COMMON_ASSET_NAMES = [
+    'documentation',
+    'readme',
+    'test_split',
+    'train_split',
+    'validation_split',
+]
 """Common assets will be put into `_common` and only downloaded once."""
 
 
@@ -142,7 +148,7 @@ class CatalogDownloader():
         In `skip` or `resume` mode, will not overwrite existing files.
         """
         c = self.config
-        msg = f'unarchive {self.catalog_file.name}...'
+        msg = f'unarchive {self.catalog_file.name}'
         log.info(msg)
         with tarfile.open(self.catalog_file, 'r:gz') as archive:
             if self.config.if_exists == DownloadIfExistsOpts.overwrite:
@@ -161,7 +167,7 @@ class CatalogDownloader():
         Scan the stac catalog and extract asset list into tabular format.
         Creates table in sqlite db.
         """
-        msg = 'create stac asset list...'
+        msg = 'create stac asset list'
         log.info(msg)
 
         def _asset_save_path(rec: AssetRecord) -> Path:
@@ -173,11 +179,13 @@ class CatalogDownloader():
             ext = Path(str(urlparse(rec.asset_url).path)).suffix
             base_path = c.output_dir / c.dataset_id / rec.collection_id  # type: ignore
             asset_filename = f'{rec.asset_key}{ext}'
+            if rec.item_id is None:
+                # this is a collection level asset
+                return base_path / asset_filename
             if rec.common_asset:
                 # common assets: save to _common dir (at the collection level) instead of in every item subdir.
                 return base_path / '_common' / asset_filename
-            else:
-                return base_path / rec.item_id / asset_filename  # type: ignore
+            return base_path / rec.item_id / asset_filename
 
         def _insert_asset_rec(rec: AssetRecord) -> None:
             self.db_cur.execute(
@@ -215,39 +223,61 @@ class CatalogDownloader():
                 rec.dict()
             )
 
+        def _handle_item(stac_item: JsonDict) -> None:
+            item_id = stac_item['id']
+            assets = stac_item['assets']
+            props = stac_item['properties']
+            common_meta = props.get('common_metadata', dict())
+            bbox = stac_item.get('bbox', None)
+            geometry = stac_item.get('geometry', None)
+            if geometry and not bbox:
+                raise RuntimeError(f'item {item_id} has no bbox, but has geometry')
+            item_json_path = json_src.removeprefix(str(self.work_dir))
+            for k, v in assets.items():
+                rec = AssetRecord(
+                    collection_id=stac_item['collection'],
+                    item_id=item_id,
+                    item_json_path=item_json_path,
+                    asset_key=k,
+                    common_asset=k in COMMON_ASSET_NAMES,
+                    asset_url=v['href'],
+                    bbox_json=json.dumps(bbox) if bbox else None,
+                    geometry_json=json.dumps(geometry) if geometry else None,
+                    single_datetime=props.get('datetime', None),
+                    start_datetime=common_meta.get('start_datetime', None),
+                    end_datetime=common_meta.get('end_datetime', None),
+                )
+                asset_save_path = _asset_save_path(rec).relative_to(self.work_dir)
+                rec.asset_save_path = str(asset_save_path)
+                _insert_asset_rec(rec)
+
+        def _handle_collection(stac_collection: JsonDict) -> None:
+            collection_id = stac_collection['id']
+            assets = stac_collection.get('assets', None)
+            if assets is None:
+                return
+            for k, v in assets.items():
+                rec = AssetRecord(
+                    collection_id=collection_id,
+                    asset_key=k,
+                    asset_url=v['href'],
+                )
+                asset_save_path = _asset_save_path(rec).relative_to(self.work_dir)
+                rec.asset_save_path = str(asset_save_path)
+                _insert_asset_rec(rec)
+
         json_srcs = iglob(str(self.work_dir / '**/*.json'), recursive=True)
         for json_src in json_srcs:
             p = Path(json_src)
-            if p.name in ('collection.json', 'catalog.json'):
+            if p.name == 'catalog.json':
                 continue
             with open(json_src) as json_fh:
                 stac_item = json.load(json_fh)
-                item_id = stac_item['id']
-                assets = stac_item['assets']
-                props = stac_item['properties']
-                common_meta = props.get('common_metadata', dict())
-                bbox = stac_item.get('bbox', None)
-                geometry = stac_item.get('geometry', None)
-                if geometry and not bbox:
-                    raise RuntimeError(f'item {item_id} has no bbox, but has geometry')
-                item_json_path = json_src.removeprefix(str(self.work_dir))
-                for k, v in assets.items():
-                    rec = AssetRecord(
-                        collection_id=stac_item['collection'],
-                        item_id=item_id,
-                        item_json_path=item_json_path,
-                        asset_key=k,
-                        common_asset=k in COMMON_ASSET_NAMES,
-                        asset_url=v['href'],
-                        bbox_json=json.dumps(bbox) if bbox else None,
-                        geometry_json=json.dumps(geometry) if geometry else None,
-                        single_datetime=props.get('datetime', None),
-                        start_datetime=common_meta.get('start_datetime', None),
-                        end_datetime=common_meta.get('end_datetime', None),
-                    )
-                    asset_save_path = _asset_save_path(rec).relative_to(self.work_dir)
-                    rec.asset_save_path = str(asset_save_path)
-                    _insert_asset_rec(rec)
+                stac_type = stac_item.get('type', None)
+                if p.name == 'collection.json' or stac_type == 'Collection':
+                    _handle_collection(stac_item)
+                else:
+                    _handle_item(stac_item)
         log.info(f'{self._fetch_unfiltered_count()} unique assets in stac catalog.')
 
     def _filter_collections_step(self) -> None:
@@ -260,7 +290,7 @@ class CatalogDownloader():
         if f is None:
             return
 
-        desc = 'filter collection ids and asset keys...'
+        desc = 'filter by collection ids and asset keys'
         log.info(desc)
 
         total_asset_ct = self._fetch_unfiltered_count()
@@ -268,7 +298,7 @@ class CatalogDownloader():
             """
                 SELECT rowid, collection_id, asset_key
                     FROM assets
-                    WHERE filtered = 0
+                    WHERE filtered = 0 AND item_id IS NOT NULL
             """
         )
         progress = tqdm(total=total_asset_ct, desc=desc)
@@ -316,7 +346,7 @@ class CatalogDownloader():
         table as `filtered` if they do not intersect.
 
         """
-        desc = 'filter by bounding box...'
+        desc = 'filter by bounding box'
         if self.config.bbox is None:
             return
         bbox_polygon_query = box(*self.config.bbox)
@@ -327,7 +357,7 @@ class CatalogDownloader():
             """
                 SELECT rowid, item_id, bbox_json
                     FROM assets
-                    WHERE filtered = 0
+                    WHERE filtered = 0 AND item_id IS NOT NULL
                     ORDER BY item_id
             """
         )
@@ -382,7 +412,7 @@ class CatalogDownloader():
         if f is None:
             return
 
-        desc = 'filter by intersects...'
+        desc = 'filter by intersects'
         log.info(desc)
 
         intersects_shape_query = shape(f['geometry'])
@@ -392,7 +422,7 @@ class CatalogDownloader():
             """
                 SELECT rowid, item_id, bbox_json
                     FROM assets
-                    WHERE filtered = 0
+                    WHERE filtered = 0 AND item_id IS NOT NULL
                     ORDER BY item_id
             """
         )
@@ -472,14 +502,14 @@ class CatalogDownloader():
         q = self.config.temporal_query
         if q is None:
             return
-        desc = 'filter by temporal query...'
+        desc = 'filter by temporal query'
         log.info(desc)
         total_asset_ct = self._fetch_unfiltered_count()
         self.db_cur.execute(
             """
                 SELECT rowid, item_id, single_datetime, start_datetime, end_datetime
                     FROM assets
-                    WHERE filtered = 0
+                    WHERE filtered = 0 and item_id IS NOT NULL
             """
         )
         progress = tqdm(total=total_asset_ct, desc=desc)
@@ -597,8 +627,8 @@ class CatalogDownloader():
                     asset_rec = AssetRecord(
                         asset_save_path=asset_save_path,
                         asset_url=asset_url,
-                        collection_id=collection_id,
-                        item_id=item_id,
+                        collection_id=collection_id,  # TODO yank?
+                        item_id=item_id,  # TODO: yank?
                         asset_key=asset_key,
                     )
                     asset_list.append(asset_rec)
@@ -629,8 +659,9 @@ class CatalogDownloader():
                     self.err_writer.writerow([
                         str(e), self.config.dataset_id, r.collection_id, r.item_id, r.asset_key, r.asset_url
                     ])
-                    log.error(e)
+                    log.exception(e)
 
+    # TODO: remove unused assets columns, ex: item_json_path
     def _init_db(self) -> None:
         db_path = self.work_dir / 'mlhub_stac_assets.db'
         if db_path.exists():
