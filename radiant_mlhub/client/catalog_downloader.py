@@ -159,7 +159,7 @@ class CatalogDownloader():
     def _create_asset_list_step(self) -> None:
         """
         Scan the stac catalog and extract asset list into tabular format.
-        Creates sqlite db with asset records
+        Creates table in sqlite db.
         """
         msg = 'create stac asset list...'
         log.info(msg)
@@ -252,11 +252,9 @@ class CatalogDownloader():
 
     def _filter_collections_step(self) -> None:
         """
-        Iterate through the filters and mark entries in the asset list as `filtered`.
+        Iterate through the filters and mark entries in the assets table as `filtered`.
         Filter is an allow-list. Only matching collection_ids and optionally, asset keys,
         will be included.
-
-        Modifies in-place the `asset_list`!
         """
         f = self.config.collection_filter
         if f is None:
@@ -314,9 +312,9 @@ class CatalogDownloader():
 
     def _filter_bbox_step(self) -> None:
         """
-        Filter items by bounding box intersection. Marks items in the asset list as `filtered` if they do not intersect.
+        Filter items by bounding box intersection. Marks items in the assets
+        table as `filtered` if they do not intersect.
 
-        Modifies in-place the `asset_list`!
         """
         desc = 'filter by bounding box...'
         if self.config.bbox is None:
@@ -378,9 +376,7 @@ class CatalogDownloader():
     def _filter_intersects_step(self) -> None:
         """
         Filter items by geojson vs. bounding box intersection.
-        Marks items in the asset list as `filtered` if they do not intersect.
-
-        Modifies in-place the `asset_list`!
+        Marks items in the assets table as `filtered` if they do not intersect.
         """
         f = self.config.intersects
         if f is None:
@@ -444,7 +440,7 @@ class CatalogDownloader():
 
     def _filter_temporal_step(self) -> None:
         """
-        Filter items by temporal query. Marks items in the asset list as
+        Filter items by temporal query. Marks items in the assets table as
         `filtered` if they do not fall in the temporal range or single day.
         """
 
@@ -541,7 +537,7 @@ class CatalogDownloader():
 
     def _asset_download_step(self) -> None:
         """
-        Download all assets in asset_list which are not marked as filtered.
+        Download all assets assets table, which are not marked as filtered.
         Manage thread pool, build error_log.
         """
 
