@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Remove Python 3.7 support. ([106])(https://github.com/radiantearth/radiant-mlhub/pull/106)
+
 ### Changed
 
 ### Fixed

@@ -29,12 +29,10 @@ setuptools.setup(
         'pystac~=1.1',
         'click>=7.1.2,<9.0.0',
         'tqdm~=4.56',
-        'typing_extensions >= 3.7; python_version < "3.8"',
     ],
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
@@ -53,5 +51,5 @@ setuptools.setup(
         'Slack': 'https://mlhubearth.slack.com',
         'Documentation': 'https://radiant-mlhub.readthedocs.io/en/latest/'
     },
-    python_requires='>=3.7',
+    python_requires='>=3.8',
 )

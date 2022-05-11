@@ -17,12 +17,12 @@ API reference and Getting Started guides are available on [Read the Docs](https:
 
 ## Python Version Support
 
-The `radiant_mlhub` Python client requires Python >= 3.7. 
+The `radiant_mlhub` Python client requires Python >= 3.8.
 
 This library aligns with PySTAC in following the recommendations of
 [NEP-29](https://numpy.org/neps/nep-0029-deprecation_policy.html) in deprecating support for Python
-versions. This means that users can expect support for Python 3.7 to be removed from the `main` branch
-after Dec 26, 2021 and therefore from the next release after that date. 
+versions. This means that users can expect support for Python 3.8 to be removed from the `main` branch
+after April 14, 2023 and therefore from the next release after that date.
 
 ## Design Decisions
 
