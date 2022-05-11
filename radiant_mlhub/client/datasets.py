@@ -259,7 +259,7 @@ def get_dataset(dataset_id_or_doi: str, *, api_key: Optional[str] = None, profil
         return get_dataset_by_id(dataset_id_or_doi, api_key=api_key, profile=profile)
 
 
-def get_archive_info(archive_id: str, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> Dict[str, Any]:
+def get_collection_archive_info(archive_id: str, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> Dict[str, Any]:
     """Gets info for the given archive from the ``/archive/{archive_id}/info`` endpoint as a
     JSON-like dictionary.
 
@@ -293,6 +293,41 @@ def get_archive_info(archive_id: str, *, api_key: Optional[str] = None, profile:
     except HTTPError as e:
         if e.response.status_code == 404:
             raise EntityDoesNotExist(f'Archive "{archive_id}" does not exist.') from None
+        raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})') from None
+
+
+def get_catalog_info(dataset_id: str, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> Dict[str, Any]:
+    """Gets info for the given archive from the ``/catalog/{dataset_id}/info`` endpoint as a
+    JSON-like dictionary.
+
+    The JSON object returned by the API has the following properties:
+
+    - ``dataset``: ID of the dataset that this archive's Collection belongs to.
+    - ``stac_catalog_size``: size of the dataset_id.tar.gz STAC archive (in bytes)
+    - ``estimated_dataset_size``: size in bytes of entire dataset (estimated)
+
+    Parameters
+    ----------
+    dataset_id : str
+        The ID of the dataset
+    api_key : str
+        An API key to use for this request. This will override an API key set in a profile on using
+        an environment variable
+    profile: str
+        A profile to use when making this request.
+
+    Returns
+    -------
+    archive_info : dict
+        JSON-like dictionary representing the API response.
+    """
+    session = get_session(api_key=api_key, profile=profile)
+    try:
+        return cast(Dict[str, Any], session.get(f'catalog/{dataset_id}/info').json())
+
+    except HTTPError as e:
+        if e.response.status_code == 404:
+            raise EntityDoesNotExist(f'Catalog "{dataset_id}" does not exist.') from None
         raise MLHubException(f'An unknown error occurred: {e.response.status_code} ({e.response.reason})') from None
 
 

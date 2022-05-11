@@ -1,7 +1,8 @@
 """Low-level functions for making requests to MLHub API and Blob Storage endpoints."""
 __all__ = [
     "download_collection_archive",
-    "get_archive_info",
+    "get_collection_archive_info",
+    "get_catalog_info",
     "get_dataset_by_doi",
     "get_dataset_by_id",
     "get_dataset",
@@ -17,7 +18,8 @@ __all__ = [
 ]
 from .datasets import (
     download_collection_archive,
-    get_archive_info,
+    get_collection_archive_info,
+    get_catalog_info,
     get_dataset_by_doi,
     get_dataset_by_id,
     get_dataset,
