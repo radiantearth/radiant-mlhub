@@ -5,6 +5,11 @@ build-backend = "setuptools.build_meta"
 [tool.pytest.ini_options]
 testpaths = ["test"]
 addopts = "--block-network --record-mode once"
+markers = [
+  "collection_id",
+  "dataset_id",
+]
+
 [tool.mypy]
 strict = true
 show_error_codes = true

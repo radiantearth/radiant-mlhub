@@ -1,101 +1,128 @@
 {
     "id": "ref_african_crops_kenya_02",
     "bbox": {
-        "type": "Polygon",
-        "coordinates": [
+      "coordinates": [
+        [
+          [
             [
-                [
-                    34.022068532,
-                    0.16702187
-                ],
-                [
-                    34.022068532,
-                    0.716046625
-                ],
-                [
-                    34.384429981,
-                    0.716046625
-                ],
-                [
-                    34.384429981,
-                    0.16702187
-                ],
-                [
-                    34.022068532,
-                    0.16702187
-                ]
+              34.203204542,
+              0.16702187
+            ],
+            [
+              34.203204542,
+              0.167033875
+            ],
+            [
+              34.022068532,
+              0.167033875
+            ],
+            [
+              34.022068532,
+              0.441545516
+            ],
+            [
+              34.022094367,
+              0.441545516
+            ],
+            [
+              34.022094367,
+              0.716046625
+            ],
+            [
+              34.203292802,
+              0.716046625
+            ],
+            [
+              34.203292802,
+              0.716002363
+            ],
+            [
+              34.384429981,
+              0.716002363
+            ],
+            [
+              34.384429981,
+              0.441486489
+            ],
+            [
+              34.38436343,
+              0.441486489
+            ],
+            [
+              34.38436343,
+              0.16702187
+            ],
+            [
+              34.203204542,
+              0.16702187
             ]
+          ]
         ]
+      ],
+      "type": "MultiPolygon"
     },
     "citation": "Radiant Earth Foundation (2020) \"CV4A Competition Kenya Crop Type Dataset\", Version 1.0, Radiant MLHub. [Date Accessed] https://doi.org/10.34911/RDNT.DW605X",
     "collections": [
-        {
-            "id": "ref_african_crops_kenya_02_labels",
-            "types": [
-                "labels"
-            ],
-            "license": "[CC-BY-SA-4.0](https://creativecommons.org/licenses/by-sa/4.0/)",
-            "description": "Crop Type Labels"
-        },
-        {
-            "id": "ref_african_crops_kenya_02_source",
-            "types": [
-                "source_imagery"
-            ],
-            "license": "[CC-BY-SA-4.0](https://creativecommons.org/licenses/by-sa/4.0/)",
-            "description": "Source Imagery"
-        }
+      {
+        "id": "ref_african_crops_kenya_02_labels",
+        "types": [
+          "labels"
+        ],
+        "license": "[CC-BY-SA-4.0](https://creativecommons.org/licenses/by-sa/4.0/)"
+      },
+      {
+        "id": "ref_african_crops_kenya_02_source",
+        "types": [
+          "source_imagery"
+        ],
+        "license": "[CC-BY-SA-4.0](https://creativecommons.org/licenses/by-sa/4.0/)"
+      }
     ],
     "creator_contact": {
-        "contact": "ml@radiant.earth",
-        "creator": "[Radiant Earth Foundation](https://www.radiant.earth/), [PlantVillage](https://plantvillage.psu.edu/)"
+      "contact": "ml@radiant.earth",
+      "creator": "[Radiant Earth Foundation](https://www.radiant.earth/), [PlantVillage](https://plantvillage.psu.edu/)"
     },
     "date_added": "2020-06-17T00:00:00+00:00",
     "date_modified": "2020-06-17T00:00:00+00:00",
     "description": "This dataset was produced as part of the [Crop Type Detection competition](https://zindi.africa/competitions/iclr-workshop-challenge-2-radiant-earth-computer-vision-for-crop-recognition) at the [Computer Vision for Agriculture (CV4A) Workshop](https://www.cv4gc.org/cv4a2020/) at the ICLR 2020 conference. The objective of the competition was to create a machine learning model to classify fields by crop type from images collected during the growing season by the Sentinel-2 satellites.\n<br><br>\nThe ground reference data were collected by the PlantVillage team, and Radiant Earth Foundation curated the training dataset after inspecting and selecting more than 4,000 fields from the original ground reference data. The dataset has been split into training and test sets (3,286 in the train and 1,402 in the test).\n<br><br>\nThe dataset is cataloged in four tiles. These tiles are smaller than the original Sentinel-2 tile that has been clipped and chipped to the geographical area that labels have been collected.\n<br><br>\nEach tile has a) 13 multi-band observations throughout the growing season. Each observation includes 12 bands from Sentinel-2 L2A product, and a cloud probability layer. The twelve bands are [B01, B02, B03, B04, B05, B06, B07, B08, B8A, B09, B11, B12]. The cloud probability layer is a product of the Sentinel-2 atmospheric correction algorithm (Sen2Cor) and provides an estimated cloud probability (0-100%) per pixel. All of the bands are mapped to a common 10 m spatial resolution grid.; b) A raster layer indicating the crop ID for the fields in the training set; and c) A raster layer indicating field IDs for the fields (both training and test sets). Fields with a crop ID of 0 are the test fields.",
-    "documentation_link": "https://radiant-mlhub.s3-us-west-2.amazonaws.com/kenya-crop-challenge/Documentation.pdf",
+    "documentation_link": "https://radiantearth.blob.core.windows.net/mlhub/kenya-crop-challenge/Documentation.pdf",
     "doi": "10.34911/rdnt.dw605x",
     "publications": [
-        {
-            "url": "https://arxiv.org/abs/2004.03023",
-            "title": "Field-Level Crop Type Classification with k Nearest Neighbors: A Baseline for a New Kenya Smallholder Dataset",
-            "author_url": null,
-            "author_name": "Hannah Kerner, Catherine Nakalembe and Inbal Becker-Reshef"
-        }
+      {
+        "url": "https://arxiv.org/abs/2004.03023",
+        "title": "Field-Level Crop Type Classification with k Nearest Neighbors: A Baseline for a New Kenya Smallholder Dataset",
+        "author_name": "Hannah Kerner, Catherine Nakalembe and Inbal Becker-Reshef",
+        "author_url": "https://arxiv.org/abs/2004.03023"
+      }
     ],
+    "registry": "https://mlhub.earth/ref_african_crops_kenya_02",
     "status": "ready",
-    "status_history": [
-        {
-            "action": "imported from mlhub_old_etl.datasets with status: ready",
-            "timestamp": "2021-07-23T13:47:13.309079"
-        }
-    ],
     "tags": [
-        "crop-type",
-        "segmentation",
-        "sentinel-2"
+      "crop type",
+      "segmentation",
+      "sentinel-2",
+      "agriculture"
     ],
     "title": "CV4A Kenya Crop Type Competition",
     "tools_applications": null,
     "tutorials": [
-        {
-            "url": "https://github.com/radiantearth/mlhub-tutorials/blob/main/notebooks/2020%20CV4A%20Crop%20Type%20Challenge/cv4a-crop-challenge-download-data.ipynb",
-            "title": "A Guide to Access the data on Radiant MLHub",
-            "author_url": "https://www.linkedin.com/in/hamedalemohammad/",
-            "author_name": "Hamed Alemohammad"
-        },
-        {
-            "url": "https://github.com/radiantearth/mlhub-tutorials/blob/main/notebooks/2020%20CV4A%20Crop%20Type%20Challenge/cv4a-crop-challenge-load-data.ipynb",
-            "title": "A Guide to load and visualize the data in Python",
-            "author_url": "https://www.linkedin.com/in/hamedalemohammad/",
-            "author_name": "Hamed Alemohammad"
-        },
-        {
-            "url": "https://github.com/sentinel-hub/cv4a-iclr-2020-starter-notebooks",
-            "title": "CV4A ICLR 2020 Starter Notebooks",
-            "author_url": "https://sites.google.com/site/devisperessutti/home",
-            "author_name": "Devis Peressutti"
-        }
-    ],
-    "registry": "https://mlhub.earth/ref_african_crops_kenya_02"
-}
+      {
+        "url": "https://nbviewer.org/github/radiantearth/mlhub-tutorials/blob/main/notebooks/2020%20CV4A%20Crop%20Type%20Challenge/cv4a-crop-challenge-download-data.ipynb",
+        "title": "A Guide to Access the data on Radiant MLHub",
+        "author_url": "https://www.linkedin.com/in/hamedalemo/",
+        "author_name": "Hamed Alemohammad"
+      },
+      {
+        "url": "https://nbviewer.org/github/radiantearth/mlhub-tutorials/blob/main/notebooks/2020%20CV4A%20Crop%20Type%20Challenge/cv4a-crop-challenge-load-data.ipynb",
+        "title": "A Guide to load and visualize the data in Python",
+        "author_url": "https://www.linkedin.com/in/hamedalemo/",
+        "author_name": "Hamed Alemohammad"
+      },
+      {
+        "url": "https://github.com/sentinel-hub/cv4a-iclr-2020-starter-notebooks",
+        "title": "CV4A ICLR 2020 Starter Notebooks",
+        "author_url": "https://www.linkedin.com/in/devis-peressutti-4246252a/",
+        "author_name": "Devis Peressutti"
+      }
+    ]
+  }

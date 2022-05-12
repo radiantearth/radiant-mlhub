@@ -1,0 +1,75 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
+        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
+    method: GET
+    uri: https://staging.api.radiant.earth/mlhub/v1/models
+  response:
+    body:
+      string: !!binary |
+        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
+        Y0zr+j/FgwMgyRwAAA==
+    headers:
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '2122'
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 11 May 2022 22:55:24 GMT
+      Vary:
+      - Accept-Encoding
+      X-Azure-Ref:
+      - 03D58YgAAAACw4ZI2ud2TR6fMcLFldX4/U0pDRURHRTA1MTEAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
+      X-Cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+version: 1

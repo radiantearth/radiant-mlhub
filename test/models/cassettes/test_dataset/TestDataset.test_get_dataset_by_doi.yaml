@@ -1,0 +1,63 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
+        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
+    method: GET
+    uri: https://staging.api.radiant.earth/mlhub/v1/datasets/doi/10.6084/m9.figshare.12047478.v2
+  response:
+    body:
+      string: !!binary |
+        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
+        AA==
+    headers:
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1426'
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 11 May 2022 23:10:18 GMT
+      Vary:
+      - Accept-Encoding
+      X-Azure-Ref:
+      - 0WkJ8YgAAAABVHge73A0HR52hIcTJiLlxU0pDRURHRTA1MjAAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
+      X-Cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+version: 1

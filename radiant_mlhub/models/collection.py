@@ -172,14 +172,14 @@ class Collection(pystac.collection.Collection):
         .. note::
 
             The ``get_items`` method is not implemented for Radiant MLHub :class:`Collection` instances for performance reasons. Please use
-            the :meth:`Collection.download` method to download Collection assets.
+            the :meth:`Dataset.download` method to download Dataset assets.
 
         Raises
         ------
         NotImplementedError
         """
         raise NotImplementedError('For performance reasons, the get_items method has not been implemented for Collection instances. Please '
-                                  'use the Collection.download method to download Collection assets.')
+                                  'use the Dataset.download method to download Dataset assets.')
 
     def fetch_item(self, item_id: str, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> pystac.item.Item:
         api_key = api_key or self.session_kwargs.get("api_key")

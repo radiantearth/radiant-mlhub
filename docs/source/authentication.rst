@@ -169,10 +169,10 @@ the following code would make a request to ``https://api.radiant.earth/mlhub/v1/
 
     >>> session.get('some-endpoint')
 
-but the following code would make a request to ``https://www.google.com``:
+but the following code would make a request to ``https://example.org``:
 
 .. code-block:: python
 
-    >>> session.get('https://www.google.com')
+    >>> session.get('https://example.org')
 
 It is not recommended to make calls to APIs other than the Radiant MLHub API using these sessions.

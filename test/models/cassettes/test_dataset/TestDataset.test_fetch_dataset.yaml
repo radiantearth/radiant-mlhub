@@ -1,0 +1,59 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
+        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
+    method: GET
+    uri: https://staging.api.radiant.earth/mlhub/v1/datasets/bigearthnet_v1
+  response:
+    body:
+      string: !!binary |
+        H4sIAOY+fGIC/7VWbW/bNhD+K4SAAQmmN8uxG/vTHNfL0jpdEHcDhrYwKOoiEaFIjS92vaL/fUcq
+        L2qabeiwGYZNi3fHu+eee+hPEa+ieVTyGqi2jQS73Y2iOCpL9TGaf4qYUrriklow0fwdvpJZmud5
+        MR6fTE7i8TSdTab4fpEXH+Iv96anaV6Mpqd+YzxKJ7PTk/EsnxV/vfF30b7Yw1cc2UMHmPmlE5Zf
+        KXGolYw+xxHjllqO63l0npKNa0snYnKZkmVD9Y0DQWVMzlLyElquY/JrSi6pvkWT99G7M16vPApv
+        wM7JgqypriHZMCqAnIFkTYuWZKFZw3dAbpQm19AqC2QD0nBZk4uW1kB+kRVoY6lE3OoPR4213TzL
+        7hFOEeLM+BxZVinmWpDWZIOTtxfni+vNZlvko1naVTfH76OYXKxWK3IhLWgZqqOCnIMyjGNaQPCo
+        p6lsDm2nDHdtTLouJZNZPkrw4yQmv6lb1dCWxuQV7TwY4SBsOVNCAPPRfas/PUeMrVFOM4h69L1Z
+        1D/Zcl+6PkTYGMEZJuF78275cr1IrkC33BjELBml+fOAVGovhaKVGWCy7uMEDLCzzyckaAnCDBO6
+        e/K/JYKBmQZqld4yJS1ltp+Tu+X96odh2OjBxyczaPbzSfhyowpnbkurCnzVRV7kST5N8tnbPJ+H
+        9/fhM7ozbFXFb/g/24Jhmnd3AzJIhHBDKJGwJyKw3gTWI5sslyCSgpQPA0D7AYgJVmq4sZ5u6sZT
+        LB4X06FPIAXpqGUNmJS8VcHFascsGZwdk1ExGfpZLgDTYb87rqHCo+0eQJJXToJn64tA+Et68D9O
+        idqBJrYBMsoxvpNWc/Q+Wjg8iSPNz0DUYRB+5BKnv8Jp0tAvXiujdioma24bR6W3XruP0JZI6jom
+        V0pbV1MUhw3o0u9u9tz+Adp7H/uiV06rDsgeNBAuueVUiAMx4AcJqpQshAip9RUFM2pbZboGNGfB
+        mCmtgzUpD8F2AMQadiBIsSCdVpVHrQYJOihAwAA1qKU2dMAqJciRAVlgwGMEuwGcbYx36I+t+I4j
+        lzBLqx56JZVMPHyCdp0P8qRhK8qa4TOyp9gWKRXK12O+rVfgDtniUUlYaAcT1BjfBZ5CGvcmST+Z
+        x+hEbZ8UltVndaNVG4Itf76+eLNC6cXqliEU0puW1ICH21sccE76xh8t18uwOvbydT+vAZ2t4PIW
+        Gf6t4ntJpaPCT3qIyDHEKE9HJ8WLWVaBV1SrUHGTUT46maFJ50pUGfoomk6Lf3HsU833esatgC9n
+        9L+6kzA6dbZBAZO09Wec+1tE312Wj7uPtRgsZr/fpx5VwBApU23GZVYHx8R8txx/d7Zsy/5bJOVk
+        clpOi0kW5FJDjTKBl8NjsFY0rkwDONlX/z08Ug7hREdaHTwWtL6TdmRFIBg+7HkZiIbK1/fAOz9M
+        j78CnkHRx8NZMVvk/KB30gmBOw41Gof4aTN9zrUXiTKUrmnFKd7GIf9QS/LgmZVClVlLER4cFCiV
+        ujX3DklvO6g45d1BloN+LxgDEzo3VGfbaOXqJgzAdR+LXK5/ciVZXF18S8duy7rOviLAa9hxSc6U
+        sg127POf1CWDohUKAAA=
+    headers:
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1211'
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 11 May 2022 22:55:33 GMT
+      Vary:
+      - Accept-Encoding
+      X-Azure-Ref:
+      - 05j58YgAAAADWUUoBJgQ6SIHWxEDUZn3dU0pDRURHRTA1MDkAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
+      X-Cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+version: 1
