@@ -249,7 +249,7 @@ class Dataset:
     def estimated_dataset_size(self) -> Optional[int]:
         """Size in bytes of entire dataset (bytes)"""
         info = client.get_catalog_info(self.id, **self.session_kwargs)
-        return info.get('stac_catalog_size', None)
+        return info.get('estimated_dataset_size', None)
 
     def download(
             self,

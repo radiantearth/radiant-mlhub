@@ -145,6 +145,19 @@ class TestDataset:
         assert "segmentation" in query_params["tags"], "'segmentation' was not in 'tags' query parameter"
         assert "sar" in query_params["tags"], "'sar' was not in 'tags' query parameter"
 
+    @pytest.mark.vcr
+    def test_stac_catalog_size(self) -> None:
+        expect_size = 263582
+        ds = Dataset.fetch_by_id('nasa_marine_debris')
+        size = ds.stac_catalog_size()
+        assert size == expect_size, 'unexpected stac_catalog_size'
+
+    @pytest.mark.vcr
+    def test_estimated_dataset_size(self) -> None:
+        ds = Dataset.fetch_by_id('nasa_marine_debris')
+        size = ds.estimated_dataset_size()
+        assert size > 0, 'unexpected estimated_dataset_size'
+
 
 class TestDatasetNoProfile:
     DATASET = {

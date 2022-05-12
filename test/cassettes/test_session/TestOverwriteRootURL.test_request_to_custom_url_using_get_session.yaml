@@ -30,7 +30,7 @@ interactions:
         ELM0iJOle6nS8UH7CyjrfG/oBAAA
     headers:
       Age:
-      - '566419'
+      - '482106'
       Cache-Control:
       - max-age=604800
       Content-Encoding:
@@ -40,15 +40,15 @@ interactions:
       Content-Type:
       - text/html; charset=UTF-8
       Date:
-      - Thu, 12 May 2022 16:45:44 GMT
+      - Thu, 12 May 2022 20:45:53 GMT
       Etag:
       - '"3147526947+gzip"'
       Expires:
-      - Thu, 19 May 2022 16:45:44 GMT
+      - Thu, 19 May 2022 20:45:53 GMT
       Last-Modified:
       - Thu, 17 Oct 2019 07:18:26 GMT
       Server:
-      - ECS (dna/63B7)
+      - ECS (dna/63B4)
       Vary:
       - Accept-Encoding
       X-Cache:

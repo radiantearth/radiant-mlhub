@@ -20,11 +20,11 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Thu, 12 May 2022 16:45:39 GMT
+      - Thu, 12 May 2022 20:45:48 GMT
       Location:
       - https://radiantearth.blob.core.windows.net/mlhub/archives/ref_african_crops_kenya_02_labels.tar.gz
       X-Azure-Ref:
-      - 0szl9YgAAAAAyiJ236VdMSrTe3lgupqGQU0pDRURHRTA1MTQAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
+      - 0/HF9YgAAAACJ7NY8Fpf7R6gH6Oe3vrjUU0pDRURHRTAzMTMAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
       X-Cache:
       - CONFIG_NOCACHE
     status:
@@ -55,7 +55,7 @@ interactions:
       Content-Type:
       - application/x-tar
       Date:
-      - Thu, 12 May 2022 16:45:39 GMT
+      - Thu, 12 May 2022 20:45:49 GMT
       ETag:
       - '0x8D968C5F3B94E1C'
       Last-Modified:
@@ -67,7 +67,7 @@ interactions:
       x-ms-lease-status:
       - unlocked
       x-ms-request-id:
-      - 34e870bf-c01e-0006-3d1f-66727d000000
+      - 5d876c19-801e-0002-2041-66de75000000
       x-ms-version:
       - '2009-09-19'
     status:
@@ -4539,7 +4539,7 @@ interactions:
       Content-Type:
       - application/x-tar
       Date:
-      - Thu, 12 May 2022 16:45:39 GMT
+      - Thu, 12 May 2022 20:45:49 GMT
       ETag:
       - '0x8D968C5F3B94E1C'
       Last-Modified:
@@ -4551,7 +4551,7 @@ interactions:
       x-ms-lease-status:
       - unlocked
       x-ms-request-id:
-      - 34e8716a-c01e-0006-391f-66727d000000
+      - 5d876d21-801e-0002-7741-66de75000000
       x-ms-version:
       - '2009-09-19'
     status:
