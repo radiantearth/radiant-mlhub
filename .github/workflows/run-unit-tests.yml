@@ -62,8 +62,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements_testing.txt
-
       - name: Run tests
+        env:
+          # some unit tests require an API_KEY env var, however it will not be used
+          # because VCR.py responses were already recorded.
+          MLHUB_API_KEY: 'required_but_not_used'
         run: |
           pip install .
           pytest --record-mode once --block-network
