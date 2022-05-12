@@ -29,8 +29,10 @@ interactions:
         3VOFhOgtWiWdI0eSpe0hz4weCItVHg3PhFum6WazSSTXPDF2nY4hXbpPMypujB1IEKAKQZKE0HgR
         ELM0iJOle6nS8UH7CyjrfG/oBAAA
     headers:
+      Accept-Ranges:
+      - bytes
       Age:
-      - '553323'
+      - '587232'
       Cache-Control:
       - max-age=604800
       Content-Encoding:
@@ -40,15 +42,15 @@ interactions:
       Content-Type:
       - text/html; charset=UTF-8
       Date:
-      - Thu, 12 May 2022 13:07:28 GMT
+      - Thu, 12 May 2022 16:45:44 GMT
       Etag:
-      - '"3147526947+gzip"'
+      - '"3147526947"'
       Expires:
-      - Thu, 19 May 2022 13:07:28 GMT
+      - Thu, 19 May 2022 16:45:44 GMT
       Last-Modified:
       - Thu, 17 Oct 2019 07:18:26 GMT
       Server:
-      - ECS (dna/63B7)
+      - ECS (dna/63A9)
       Vary:
       - Accept-Encoding
       X-Cache:

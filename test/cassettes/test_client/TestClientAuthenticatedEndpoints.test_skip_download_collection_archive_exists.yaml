@@ -1,0 +1,76 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
+        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
+    method: HEAD
+    uri: https://staging.api.radiant.earth/mlhub/v1/archive/ref_african_crops_kenya_02_labels
+  response:
+    body:
+      string: ''
+    headers:
+      Content-Length:
+      - '0'
+      Date:
+      - Thu, 12 May 2022 16:45:37 GMT
+      Location:
+      - https://radiantearth.blob.core.windows.net/mlhub/archives/ref_african_crops_kenya_02_labels.tar.gz
+      X-Azure-Ref:
+      - 0sjl9YgAAAAAye/aSrBWdSoCkZu4+05vjU0pDRURHRTA1MTYAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
+      X-Cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 303
+      message: See Other
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
+        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
+    method: HEAD
+    uri: https://radiantearth.blob.core.windows.net/mlhub/archives/ref_african_crops_kenya_02_labels.tar.gz
+  response:
+    body:
+      string: ''
+    headers:
+      Content-Length:
+      - '252970'
+      Content-MD5:
+      - k5SavQroK6Vk9akzzv2CFQ==
+      Content-Type:
+      - application/x-tar
+      Date:
+      - Thu, 12 May 2022 16:45:38 GMT
+      ETag:
+      - '0x8D968C5F3B94E1C'
+      Last-Modified:
+      - Thu, 26 Aug 2021 19:16:05 GMT
+      Server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-lease-status:
+      - unlocked
+      x-ms-request-id:
+      - a9729244-601e-0020-561f-661942000000
+      x-ms-version:
+      - '2009-09-19'
+    status:
+      code: 200
+      message: OK
+version: 1

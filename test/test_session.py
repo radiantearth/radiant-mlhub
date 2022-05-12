@@ -9,38 +9,34 @@ import pytest
 from requests_mock.exceptions import NoMockAddress
 
 from radiant_mlhub.exceptions import APIKeyNotFound, AuthenticationError
-from radiant_mlhub.session import Session, get_session
+from radiant_mlhub.session import Session, get_session, ANONYMOUS_PROFILE
 
 if TYPE_CHECKING:
     from requests_mock import Mocker as Mocker_Type
 
 
 class TestOverwriteRootURL:
-    @pytest.fixture(scope="function", autouse=True)
-    def root_url(self, monkeypatch: pytest.MonkeyPatch) -> str:
-        return Session.DEFAULT_ROOT_URL
 
-    def test_default_root_url(self) -> None:
+    @pytest.fixture()
+    def custom_root_url(self, monkeypatch: pytest.MonkeyPatch) -> str:
+        custom = 'https://example.org'
+        monkeypatch.setenv('MLHUB_ROOT_URL', custom)
+        return custom
+
+    def test_default_root_url(self, root_url: str) -> None:
         # Use anonymous session since we don't need to make actual requests
         session = Session(api_key=None)
+        assert session.root_url == root_url
 
-        assert session.root_url == Session.DEFAULT_ROOT_URL
-
-    def test_env_variable_root_url(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        custom_root_url = "https://example.org"
-        monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
+    def test_env_variable_root_url(self, custom_root_url: str) -> None:
         # Use anonymous session since we don't need to make actual requests
         session = Session(api_key=None)
-
         assert session.root_url == custom_root_url
 
     @pytest.mark.vcr
-    def test_request_to_custom_url(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        custom_root_url = "https://example.org"
-        monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
+    def test_request_to_custom_url(self, custom_root_url: str) -> None:
         session = Session(api_key=None)
         r = session.request("GET", "")
-
         assert r.request.url == custom_root_url + "/"
 
     @pytest.mark.vcr
@@ -313,7 +309,7 @@ class TestResolveAPIKeys:
 
 class TestSessionRequests:
 
-    @pytest.fixture(scope='function', autouse=True)
+    @pytest.fixture(autouse=True)
     def test_api_key(self, monkeypatch: pytest.MonkeyPatch) -> str:
         """Set the default (dummy) API key to use for testing."""
         monkeypatch.setenv('MLHUB_API_KEY', 'testapikey')
@@ -417,9 +413,11 @@ class TestSessionRequests:
 
 
 class TestAnonymousSession:
+
     @pytest.fixture(scope='function', autouse=True)
-    def mock_profile(self) -> None:
-        pass
+    def mock_profile(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        # remove this env var otherwise it will override the anonymous profile.
+        monkeypatch.delenv('MLHUB_API_KEY', raising=False)
 
     def test_anonymous_session_has_no_key(self, requests_mock: "Mocker_Type") -> None:
         """Session instantiated with api_key=None should not include a "key" query parameter."""
@@ -438,21 +436,14 @@ class TestAnonymousSession:
 
         assert 'key' not in query_params
 
-    def test_get_anonymous_session(
-                self,
-                monkeypatch: pytest.MonkeyPatch,
-                requests_mock: "Mocker_Type"
-            ) -> None:
+    def test_get_anonymous_session(self, requests_mock: "Mocker_Type") -> None:
         """get_session called with the anonymous profile should return a session that does not
         include a "key" query parameter."""
-
-        # Setup environment for this test.
-        monkeypatch.delenv('MLHUB_API_KEY', raising=False)
 
         url_pattern = re.compile(r"http://example.org\??.+")
         requests_mock.get(url_pattern, status_code=200, text="")
 
-        session = get_session(profile="__anonymous__")
+        session = get_session(profile=ANONYMOUS_PROFILE)
         session.get("http://example.org")
 
         history = requests_mock.request_history

@@ -1,0 +1,33 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
+        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
+    method: GET
+    uri: https://staging.api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_source/items
+  response:
+    body:
+      string: '{"detail":"Must provide API key or Bearer token to access this route."}'
+    headers:
+      Content-Length:
+      - '71'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 12 May 2022 16:45:43 GMT
+      X-Azure-Ref:
+      - 0tzl9YgAAAABBAuzYLxBgSLgSwmwrToZGU0pDRURHRTA1MTAAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
+      X-Cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 401
+      message: Unauthorized
+version: 1

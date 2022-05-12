@@ -1,0 +1,64 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
+        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
+    method: HEAD
+    uri: https://staging.api.radiant.earth/mlhub/v1/archive/no_archive
+  response:
+    body:
+      string: ''
+    headers:
+      Content-Length:
+      - '0'
+      Date:
+      - Thu, 12 May 2022 16:45:37 GMT
+      Location:
+      - https://radiantearth.blob.core.windows.net/mlhub/archives/no_archive.tar.gz
+      X-Azure-Ref:
+      - 0sTl9YgAAAAD5MCe93Z59SYXPSZxYfi2CU0pDRURHRTAzMTMAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
+      X-Cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 303
+      message: See Other
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
+        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
+    method: HEAD
+    uri: https://radiantearth.blob.core.windows.net/mlhub/archives/no_archive.tar.gz
+  response:
+    body:
+      string: ''
+    headers:
+      Date:
+      - Thu, 12 May 2022 16:45:37 GMT
+      Server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      Transfer-Encoding:
+      - chunked
+      x-ms-request-id:
+      - 70e4d450-001e-000a-461f-668664000000
+      x-ms-version:
+      - '2009-09-19'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+version: 1

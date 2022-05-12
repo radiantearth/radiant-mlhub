@@ -23,11 +23,6 @@ def vcr_config() -> Dict[str, Any]:
     return {'filter_query_parameters': ['key']}
 
 
-@pytest.fixture(scope='function', autouse=True)
-def mock_profile(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv('MLHUB_API_KEY', os.getenv("MLHUB_API_KEY") or 'test_key')
-
-
 @pytest.fixture(scope="function", autouse=True)
 def root_url(monkeypatch: pytest.MonkeyPatch) -> str:
     root_url = os.getenv(

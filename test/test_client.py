@@ -8,6 +8,7 @@ import pytest
 
 import radiant_mlhub.client
 from radiant_mlhub.exceptions import EntityDoesNotExist, MLHubException, AuthenticationError
+from radiant_mlhub.session import ANONYMOUS_PROFILE
 
 if TYPE_CHECKING:
     from requests_mock import Mocker as Mocker_Type
@@ -15,68 +16,86 @@ if TYPE_CHECKING:
 
 class TestCustomUrl:
 
-    def test_custom_url_list_datasets(self, monkeypatch: pytest.MonkeyPatch, requests_mock: "Mocker_Type") -> None:
-        # Set up custom URL
-        custom_root_url = "https://staging.api.radiant.earth"
-        monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
+    @pytest.fixture(autouse=True)
+    def test_api_key(self, monkeypatch: pytest.MonkeyPatch) -> str:
+        """Set the default (dummy) API key to use for testing."""
+        monkeypatch.setenv('MLHUB_API_KEY', 'testapikey')
+        return os.environ['MLHUB_API_KEY']
 
+    @pytest.fixture(autouse=True)
+    def custom_root_url(self, monkeypatch: pytest.MonkeyPatch) -> str:
+        """Set the custom root url to something other than staging.api.radiant.earth
+        (which is the default)"""
+        monkeypatch.setenv('MLHUB_ROOT_URL', 'https://custom.api.radiant.earth')
+        return os.environ['MLHUB_ROOT_URL']
+
+    def test_custom_url_list_datasets(
+            self,
+            requests_mock: "Mocker_Type",
+            custom_root_url: str,
+            test_api_key: str) -> None:
         # Mock this using requests-mock
-        url = 'https://staging.api.radiant.earth/datasets?key=test_key'
-        requests_mock.get(url, status_code=200, json=[])
-
-        # Making request to API
-        radiant_mlhub.client.list_datasets()
-
-        # Get request history and check that request was made to custom URL
-        history = requests_mock.request_history
-        assert len(history) == 1
-        assert history[0].url == "https://staging.api.radiant.earth/datasets?key=test_key"
-
-    def test_custom_url_get_collection(self, monkeypatch: pytest.MonkeyPatch, requests_mock: "Mocker_Type") -> None:
-        # Set up custom URL
-        custom_root_url = "https://staging.api.radiant.earth"
-        monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
-
-        # Mock this using requests-mock
-        url = 'https://staging.api.radiant.earth/collections/collection_id?key=test_key'
-        requests_mock.get(url, status_code=200, json=[])
-
-        # Making request to API
-        radiant_mlhub.client.get_collection("collection_id")
-
-        # Get request history and check that request was made to custom URL
-        history = requests_mock.request_history
-        assert len(history) == 1
-        assert history[0].url == "https://staging.api.radiant.earth/collections/collection_id?key=test_key"
-
-    def test_custom_url_list_collection_items(self, monkeypatch: pytest.MonkeyPatch, requests_mock: "Mocker_Type") -> None:
-        # Set up custom URL
-        custom_root_url = "https://staging.api.radiant.earth"
-        monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
-
-        # Mock this using requests-mock
-        url = 'https://staging.api.radiant.earth/collections/collection_id/items?key=test_key'
-        requests_mock.get(url, status_code=200, json={"features": []})
-
-        # Making request to API
-        list(radiant_mlhub.client.list_collection_items("collection_id"))
-
-        # Get request history and check that request was made to custom URL
-        history = requests_mock.request_history
-        assert len(history) == 1
-        assert history[0].url == "https://staging.api.radiant.earth/collections/collection_id/items?key=test_key"
-
-    def test_custom_url_list_ml_models(self, monkeypatch: pytest.MonkeyPatch, requests_mock: "Mocker_Type") -> None:
-        # Set up custom URL
-        custom_root_url = "https://staging.api.radiant.earth"
-        monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
-
-        # Mock this using requests-mock
-        expect_url = 'https://staging.api.radiant.earth/models?key=test_key'
+        expect_url = f'{custom_root_url}/datasets?key={test_api_key}'
         requests_mock.get(expect_url, status_code=200, json=[])
 
         # Making request to API
-        radiant_mlhub.client.list_models()
+        radiant_mlhub.client.list_datasets(api_key=test_api_key)
+
+        # Get request history and check that request was made to custom URL
+        history = requests_mock.request_history
+        assert len(history) == 1
+        assert history[0].url == expect_url
+
+    def test_custom_url_get_collection(
+                self,
+                requests_mock: "Mocker_Type",
+                custom_root_url: str,
+                test_api_key: str
+            ) -> None:
+        # Mock this using requests-mock
+        expect_url = f'{custom_root_url}/collections/collection_id?key={test_api_key}'
+        requests_mock.get(expect_url, status_code=200, json=[])
+
+        # Making request to API
+        radiant_mlhub.client.get_collection("collection_id", api_key=test_api_key)
+
+        # Get request history and check that request was made to custom URL
+        history = requests_mock.request_history
+        assert len(history) == 1
+        assert history[0].url == expect_url
+
+    def test_custom_url_list_collection_items(
+                self,
+                requests_mock: "Mocker_Type",
+                custom_root_url: str,
+                test_api_key: str
+            ) -> None:
+        # Mock this using requests-mock
+        expect_url = f'{custom_root_url}/collections/collection_id/items?key={test_api_key}'
+        requests_mock.get(expect_url, status_code=200, json={"features": []})
+
+        # Making request to API
+        list(radiant_mlhub.client.list_collection_items(
+            "collection_id", api_key=test_api_key
+        ))
+
+        # Get request history and check that request was made to custom URL
+        history = requests_mock.request_history
+        assert len(history) == 1
+        assert history[0].url == expect_url
+
+    def test_custom_url_list_ml_models(
+        self,
+        requests_mock: "Mocker_Type",
+        custom_root_url: str,
+        test_api_key: str
+    ) -> None:
+        # Mock this using requests-mock
+        expect_url = f'{custom_root_url}/models?key={test_api_key}'
+        requests_mock.get(expect_url, status_code=200, json=[])
+
+        # Making request to API
+        radiant_mlhub.client.list_models(api_key=test_api_key)
 
         # Get request history and check that request was made to custom URL
         history = requests_mock.request_history
@@ -300,7 +319,7 @@ class TestClientAuthenticatedEndpoints:
             )
 
     @pytest.mark.vcr
-    def test_download_archive(self, tmp_path: pathlib.Path) -> None:
+    def test_download_collection_archive(self, tmp_path: pathlib.Path) -> None:
         # Set CWD to temp path
         os.chdir(tmp_path)
 
@@ -311,7 +330,7 @@ class TestClientAuthenticatedEndpoints:
         assert output_path.exists()
 
     @pytest.mark.vcr
-    def test_download_archive_does_not_exist(self, tmp_path: pathlib.Path) -> None:
+    def test_download_collection_archive_does_not_exist(self, tmp_path: pathlib.Path) -> None:
         archive_id = 'no_archive'
 
         with pytest.raises(EntityDoesNotExist) as excinfo:
@@ -321,7 +340,7 @@ class TestClientAuthenticatedEndpoints:
                'Please try again later.' == str(excinfo.value)
 
     @pytest.mark.vcr
-    def test_skip_download_exists(self, tmp_path: pathlib.Path) -> None:
+    def test_skip_download_collection_archive_exists(self, tmp_path: pathlib.Path) -> None:
         collection_id = 'ref_african_crops_kenya_02_labels'
         expected_output_path = tmp_path / f'{collection_id}.tar.gz'
         expected_output_path.touch(exist_ok=True)
@@ -336,7 +355,7 @@ class TestClientAuthenticatedEndpoints:
         assert output_path.stat().st_size == original_size
 
     @pytest.mark.vcr
-    def test_overwrite_download_exists(self, tmp_path: pathlib.Path) -> None:
+    def test_overwrite_download_collection_archive_exists(self, tmp_path: pathlib.Path) -> None:
         collection_id = 'ref_african_crops_kenya_02_labels'
         expected_output_path = tmp_path / f'{collection_id}.tar.gz'
         expected_output_path.touch(exist_ok=True)
@@ -352,18 +371,23 @@ class TestClientAuthenticatedEndpoints:
 
 
 class TestAnonymousClient:
-    @pytest.fixture(scope='function', autouse=True)
-    def mock_profile(self) -> None:
-        pass
 
-    def test_list_datasets_anonymously_has_no_key(self, requests_mock: "Mocker_Type", root_url: str) -> None:
-        url = urljoin(root_url, 'datasets')
+    @pytest.fixture(autouse=True)
+    def make_anonymous_profile(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """The MLHUB_API_KEY overrides the anonymous profile."""
+        monkeypatch.delenv('MLHUB_API_KEY', raising=False)
+
+    def test_list_datasets_anonymously_has_no_key(
+            self,
+            requests_mock: "Mocker_Type",
+            root_url: str) -> None:
+        expect_url = urljoin(root_url, 'datasets')
 
         # Don't really care about the response here, since we're just interested in the request
         # parameters. We test that this gives a valid response in a different test
-        requests_mock.get(url, json=[])
+        requests_mock.get(expect_url, json=[])
 
-        _ = radiant_mlhub.client.list_datasets(profile="__anonymous__")
+        _ = radiant_mlhub.client.list_datasets(profile=ANONYMOUS_PROFILE)
 
         history = requests_mock.request_history
 
@@ -373,17 +397,20 @@ class TestAnonymousClient:
 
     @pytest.mark.vcr
     def test_list_datasets_anonymously_works(self) -> None:
-        datasets = radiant_mlhub.client.list_datasets(profile="__anonymous__")
+        datasets = radiant_mlhub.client.list_datasets(profile=ANONYMOUS_PROFILE)
         assert len(datasets) > 0
 
-    def test_list_collections_anonymously_has_no_key(self, requests_mock: "Mocker_Type", root_url: str) -> None:
-        url = urljoin(root_url, 'collections')
+    def test_list_collections_anonymously_has_no_key(
+            self,
+            requests_mock: "Mocker_Type",
+            root_url: str) -> None:
+        expect_url = urljoin(root_url, 'collections')
 
         # Don't really care about the response here, since we're just interested in the request
         # parameters. We test that this gives a valid response in a different test
-        requests_mock.get(url, json={"collections": []})
+        requests_mock.get(expect_url, json={"collections": []})
 
-        _ = radiant_mlhub.client.list_collections(profile="__anonymous__")
+        _ = radiant_mlhub.client.list_collections(profile=ANONYMOUS_PROFILE)
 
         history = requests_mock.request_history
 
@@ -393,18 +420,18 @@ class TestAnonymousClient:
 
     @pytest.mark.vcr
     def test_list_collections_anonymously_works(self) -> None:
-        collections = radiant_mlhub.client.list_collections(profile="__anonymous__")
+        collections = radiant_mlhub.client.list_collections(profile=ANONYMOUS_PROFILE)
         assert len(collections) > 0
 
     def test_get_collection_anonymously_has_no_key(self, requests_mock: "Mocker_Type", root_url: str) -> None:
         collection_id = 'bigearthnet_v1_source'
-        url = urljoin(root_url, f'collections/{collection_id}')
+        expect_url = urljoin(root_url, f'collections/{collection_id}')
 
         # Don't really care about the response here, since we're just interested in the request
         # parameters. We test that this gives a valid response in a different test
-        requests_mock.get(url, json={})
+        requests_mock.get(expect_url, json={})
 
-        _ = radiant_mlhub.client.get_collection(collection_id, profile="__anonymous__")
+        _ = radiant_mlhub.client.get_collection(collection_id, profile=ANONYMOUS_PROFILE)
 
         history = requests_mock.request_history
 
@@ -415,18 +442,18 @@ class TestAnonymousClient:
     @pytest.mark.vcr
     def test_get_collection_anonymously_works(self) -> None:
         collection_id = 'bigearthnet_v1_source'
-        collection = radiant_mlhub.client.get_collection(collection_id, profile="__anonymous__")
+        collection = radiant_mlhub.client.get_collection(collection_id, profile=ANONYMOUS_PROFILE)
         assert isinstance(collection, dict)
 
     def test_list_collection_items_anonymously_has_no_key(self, requests_mock: "Mocker_Type", root_url: str) -> None:
         collection_id = "bigearthnet_v1_source"
-        url = urljoin(root_url, f'collections/{collection_id}/items')
+        expect_url = urljoin(root_url, f'collections/{collection_id}/items')
 
         # Don't really care about the response here, since we're just interested in the request
         # parameters. We test that this gives a valid response in a different test
-        requests_mock.get(url, json={"features": []})
+        requests_mock.get(expect_url, json={"features": []})
 
-        _ = list(radiant_mlhub.client.list_collection_items(collection_id, profile="__anonymous__"))
+        _ = list(radiant_mlhub.client.list_collection_items(collection_id, profile=ANONYMOUS_PROFILE))
 
         history = requests_mock.request_history
 
@@ -439,11 +466,11 @@ class TestAnonymousClient:
         collection_id = "bigearthnet_v1_source"
 
         with pytest.raises(AuthenticationError) as excinfo:
-            _ = list(radiant_mlhub.client.list_collection_items(collection_id, profile="__anonymous__"))
+            _ = list(radiant_mlhub.client.list_collection_items(collection_id, profile=ANONYMOUS_PROFILE))
 
         assert "No API key provided" in str(excinfo.value)
 
     @pytest.mark.vcr
     def test_list_ml_models_anonymously_works(self) -> None:
-        ml_models = radiant_mlhub.client.list_models(profile="__anonymous__")
+        ml_models = radiant_mlhub.client.list_models(profile=ANONYMOUS_PROFILE)
         assert len(ml_models) > 0

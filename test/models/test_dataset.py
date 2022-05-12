@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Iterator, cast
 from urllib.parse import parse_qs, urljoin, urlsplit
 
 import pytest
-from radiant_mlhub.models import Collection, Dataset
+from radiant_mlhub.models import Dataset
 
 
 if TYPE_CHECKING:

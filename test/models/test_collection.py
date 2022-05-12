@@ -5,6 +5,7 @@ from urllib.parse import parse_qs, urljoin, urlsplit
 import pystac.item
 import pytest
 from radiant_mlhub.models import Collection
+from radiant_mlhub.session import ANONYMOUS_PROFILE
 
 
 if TYPE_CHECKING:
@@ -80,8 +81,9 @@ class TestCollectionAuthenticatedEndpoints:
 class TestAnonymousCollection:
 
     @pytest.fixture(scope='function', autouse=True)
-    def mock_profile(self) -> None:
-        pass
+    def mock_profile(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        # remove this env var otherwise it will override the anonymous profile.
+        monkeypatch.delenv('MLHUB_API_KEY', raising=False)
 
     def test_list_anonymously_has_no_key(self, requests_mock: "Mocker_Type", root_url: str) -> None:
         url = urljoin(root_url, 'collections')
@@ -90,7 +92,7 @@ class TestAnonymousCollection:
         # parameters. We test that this gives a valid response in a different test
         requests_mock.get(url, json={"collections": []})
 
-        _ = Collection.list(profile="__anonymous__")
+        _ = Collection.list(profile=ANONYMOUS_PROFILE)
 
         history = requests_mock.request_history
 
@@ -109,7 +111,7 @@ class TestAnonymousCollection:
         url = urljoin(root_url, f'collections/{collection_id}')
         requests_mock.get(url, json=json.loads(stac_mock_json))
 
-        _ = Collection.fetch(collection_id, profile="__anonymous__")
+        _ = Collection.fetch(collection_id, profile=ANONYMOUS_PROFILE)
 
         history = requests_mock.request_history
 
@@ -122,15 +124,15 @@ class TestAnonymousCollection:
                 self,
                 requests_mock: "Mocker_Type",
                 root_url: str,
-                stac_mock_json: str,
+                stac_mock_json: str
             ) -> None:
         collection_id = 'bigearthnet_v1_source'
         collection_url = urljoin(root_url, f'collections/{collection_id}')
 
         requests_mock.get(collection_url, json=json.loads(stac_mock_json))
 
-        collection = Collection.fetch(collection_id, profile="__anonymous__")
-        assert collection.session_kwargs.get("profile") == "__anonymous__"
+        collection = Collection.fetch(collection_id, profile=ANONYMOUS_PROFILE)
+        assert collection.session_kwargs.get("profile") == ANONYMOUS_PROFILE
 
     @pytest.mark.collection_id('bigearthnet_v1_source')
     def test_anonymous_archive_size(
@@ -140,7 +142,9 @@ class TestAnonymousCollection:
             stac_mock_json: str,
             ) -> None:
         collection_id = 'bigearthnet_v1_source'
-        collection = Collection.from_dict(json.loads(stac_mock_json), profile="__anonymous__")
+        collection = Collection.from_dict(
+            json.loads(stac_mock_json), profile=ANONYMOUS_PROFILE
+        )
         info_url = urljoin(root_url, f'archive/{collection_id}/info')
         requests_mock.get(info_url, json={})
 

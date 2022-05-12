@@ -11,53 +11,6 @@ interactions:
       User-Agent:
       - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
         2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
-    method: GET
-    uri: https://staging.api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_labels
-  response:
-    body:
-      string: !!binary |
-        H4sIAL05fWIC/7VU227TQBD9FctPIBJ77/bmrSQgJKAPpSqXNIo29iZZ6nit9Sa0qvLvzNpJG25C
-        IJAs2Z45c+b47IzvY1PGo9jp5VwtnSlUPS+cbdr5ja7v1ByReaUWumrjQezvGg3Qsa0qXXhja4hV
-        pr5p49H0HhgqSBqvNydY1TQVcAZwutL22ee2q1pDO8iuvW/aUZq2Xq1MvUpUYxKnSqNqn2jl/Drd
-        VOvtIt3htHho2qa/1Zr2KvaDo6pGOV37n8v6a0kn/M7a/8je6mr5j9n/yM54PxvE+tYHC0f3cdtA
-        c1WFx8XC3sLhTylLECFI5JxiQaiUA5RgkSFK84wJThkeAIQgSiiTnKKMYg4QxjBnnGOeSy4RmQ2O
-        RJJRIaRg8gGGc0JIjnJM2JFKwjvcKWECQBkWiAlBgI0IjHuuAEOMQz3n+UETwbmQnIuM88BEc+hF
-        GZFSQgv2Y7tHpu+1s1ywXFJJaXZgCjRQJbHMDpIQAXbEZZbls9keDlFvGut690zttduF5+k0JgjL
-        IcJwXSI06q5PcLRdGJMhPQ0D0z6sXqHrttvI8fD5x+G7syG4BzVtYUalNZDAKAHRGKeuhBkovwjE
-        bwHQOLszpXb94m5ddTI83wwMYGu1CS0u+nD0IoSjl3Zbl+rwC3C20oHpIMi6MJG29X2jQrchNAsz
-        VOq2cKbp6kbxuY0mJ4Fed2G8OuR/1TJ6QuDcn0bX8fiKnUVju2m0N13mdRjcaAxDHF3CtkQT5VWr
-        /XU8iK7gcwMEJ2gQHanfvnm1XSTRFHA6OiuCVl3OoqMXYGJi3Sp9sPFicn6ZTN6DjR+CXq+K+a7n
-        DWYnqLc/hLt1CYnOmZPNLIaPqWRlPCxkYmwK3w7rZZamgPUMRBBZ641KuhWf7b8Czd7VHqcFAAA=
-    headers:
-      Content-Encoding:
-      - gzip
-      Content-Length:
-      - '683'
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 12 May 2022 16:45:49 GMT
-      Vary:
-      - Accept-Encoding
-      X-Azure-Ref:
-      - 0vTl9YgAAAAA5n94aEQFqSorfDCPu91MLU0pDRURHRTAzMTEAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
-      X-Cache:
-      - CONFIG_NOCACHE
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
-        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
     method: HEAD
     uri: https://staging.api.radiant.earth/mlhub/v1/archive/ref_african_crops_kenya_02_labels
   response:
@@ -67,11 +20,11 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Thu, 12 May 2022 16:45:49 GMT
+      - Thu, 12 May 2022 16:45:39 GMT
       Location:
       - https://radiantearth.blob.core.windows.net/mlhub/archives/ref_african_crops_kenya_02_labels.tar.gz
       X-Azure-Ref:
-      - 0vTl9YgAAAAD1pzHzZrHORZb1q1OfokiRU0pDRURHRTA1MjEAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
+      - 0szl9YgAAAAAyiJ236VdMSrTe3lgupqGQU0pDRURHRTA1MTQAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
       X-Cache:
       - CONFIG_NOCACHE
     status:
@@ -102,7 +55,7 @@ interactions:
       Content-Type:
       - application/x-tar
       Date:
-      - Thu, 12 May 2022 16:45:49 GMT
+      - Thu, 12 May 2022 16:45:39 GMT
       ETag:
       - '0x8D968C5F3B94E1C'
       Last-Modified:
@@ -114,7 +67,7 @@ interactions:
       x-ms-lease-status:
       - unlocked
       x-ms-request-id:
-      - fb10f34f-201e-0018-201f-666042000000
+      - 34e870bf-c01e-0006-3d1f-66727d000000
       x-ms-version:
       - '2009-09-19'
     status:
@@ -4586,7 +4539,7 @@ interactions:
       Content-Type:
       - application/x-tar
       Date:
-      - Thu, 12 May 2022 16:45:50 GMT
+      - Thu, 12 May 2022 16:45:39 GMT
       ETag:
       - '0x8D968C5F3B94E1C'
       Last-Modified:
@@ -4598,7 +4551,7 @@ interactions:
       x-ms-lease-status:
       - unlocked
       x-ms-request-id:
-      - fb10f422-201e-0018-511f-666042000000
+      - 34e8716a-c01e-0006-391f-66727d000000
       x-ms-version:
       - '2009-09-19'
     status:

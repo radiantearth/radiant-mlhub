@@ -1,0 +1,33 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
+        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
+    method: GET
+    uri: https://staging.api.radiant.earth/mlhub/v1/collections/no_collection
+  response:
+    body:
+      string: '{"detail":"Collection no_collection does not exist."}'
+    headers:
+      Content-Length:
+      - '53'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 12 May 2022 16:45:26 GMT
+      X-Azure-Ref:
+      - 0pjl9YgAAAABpyp6gt6gUQoPkahAkq4KPU0pDRURHRTA1MTAAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
+      X-Cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 404
+      message: Not Found
+version: 1
