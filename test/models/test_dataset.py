@@ -146,12 +146,6 @@ class TestDataset:
         assert "sar" in query_params["tags"], "'sar' was not in 'tags' query parameter"
 
 
-class TestAnonymousDataset:
-    @pytest.fixture(scope='function', autouse=True)
-    def mock_profile(self) -> None:
-        pass
-
-
 class TestDatasetNoProfile:
     DATASET = {
         "citation": "Fake citation",
