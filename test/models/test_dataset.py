@@ -1,10 +1,17 @@
+import hashlib
 import re
 from typing import TYPE_CHECKING, Iterator, cast
 from urllib.parse import parse_qs, urljoin, urlsplit
+from pathlib import Path
+from glob import glob
+import tempfile
+import os
+from dateutil.parser import parse
+import sqlite3
 
 import pytest
 from radiant_mlhub.models import Dataset
-
+from shutil import rmtree
 
 if TYPE_CHECKING:
     from pathlib import Path as Path_Type
@@ -119,15 +126,6 @@ class TestDataset:
         assert len(history) == 1
         assert urlsplit(history[0].url).path == urlsplit(doi_endpoint).path
 
-    @pytest.mark.vcr
-    @pytest.mark.skip(reason="Download size is to large to store in cassette.")
-    def test_download_collection_archives(self, tmp_path: "Path_Type") -> None:
-        dataset = Dataset.fetch('ref_african_crops_kenya_02')
-        output_paths = dataset.download(output_dir=tmp_path)
-
-        assert len(output_paths) == 2
-        assert all(p.exists() for p in output_paths)
-
     def test_dataset_list_tags_filter(self, requests_mock: "Mocker_Type", root_url: str) -> None:
         escaped_root_url = root_url.replace(".", r"\.")
         route_match = re.compile(f"^{escaped_root_url}datasets")
@@ -146,17 +144,111 @@ class TestDataset:
         assert "sar" in query_params["tags"], "'sar' was not in 'tags' query parameter"
 
     @pytest.mark.vcr
+    @pytest.mark.skip
     def test_stac_catalog_size(self) -> None:
         expect_size = 263582
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         size = ds.stac_catalog_size()
-        assert size == expect_size, 'unexpected stac_catalog_size'
+        assert size is not None and size == expect_size, 'unexpected stac_catalog_size'
 
     @pytest.mark.vcr
+    @pytest.mark.skip
     def test_estimated_dataset_size(self) -> None:
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         size = ds.estimated_dataset_size()
-        assert size > 0, 'unexpected estimated_dataset_size'
+        assert size is not None and size > 0, 'unexpected estimated_dataset_size'
+
+    def checksum_asset_database(self, db: Path) -> str:
+        with open(db, 'rb') as fh:
+            return hashlib.md5(fh.read()).hexdigest()
+
+    @pytest.mark.vcr
+    def test_download_catalog_only(self, tmp_path: Path) -> None:
+        """
+        download() with catalog_only option.
+        """
+        ds = Dataset.fetch_by_id('nasa_marine_debris')
+        ds.download(
+            output_dir=tmp_path,
+            catalog_only=True
+        )
+        expect_archive_file = tmp_path / 'nasa_marine_debris.tar.gz'
+        assert expect_archive_file.exists()
+        stac_dir = tmp_path / 'nasa_marine_debris'
+        expect_catalog_file = stac_dir / 'catalog.json'
+        assert expect_catalog_file.exists()
+        assert not (stac_dir / 'mlhub_stac_assets.db').exists()
+        rmtree(tmp_path, ignore_errors=True)
+
+    @pytest.mark.vcr
+    def test_download_with_collection_filter_works(self, tmp_path: Path) -> None:
+        """
+        download() with collection_filter. (download not actually performed)
+        """
+        ds = Dataset.fetch_by_id('nasa_marine_debris')
+        ds.download(
+            output_dir=tmp_path,
+            collection_filter=dict(nasa_marine_debris_labels=['labels'])
+        )
+        stac_dir = tmp_path / 'nasa_marine_debris'
+        asset_db = stac_dir / 'mlhub_stac_assets.db'
+        assert asset_db.exists()
+        got_hash = self.checksum_asset_database(asset_db)
+        expect_hash = '0663697db11e3898935f5b5bd6e7a028'
+        assert got_hash == expect_hash
+        rmtree(tmp_path, ignore_errors=True)
+
+    @pytest.mark.vcr
+    def test_download_with_1datetime_filter_works(self, tmp_path: Path) -> None:
+        """
+        download() with datetime filter. (download not actually performed)
+        """
+        ds = Dataset.fetch_by_id('nasa_marine_debris')
+        ds.download(
+            output_dir=tmp_path,
+            datetime=parse("2018-12-15T00:00:00Z"),
+        )
+        stac_dir = tmp_path / 'nasa_marine_debris'
+        asset_db = stac_dir / 'mlhub_stac_assets.db'
+        assert asset_db.exists()
+        got_hash = self.checksum_asset_database(asset_db)
+        expect_hash = '9b5b9e900596a58b6392907960e7796b'
+        assert got_hash == expect_hash
+        rmtree(tmp_path, ignore_errors=True)
+
+    @pytest.mark.vcr
+    def test_download_with_2datetime_filter_works(self, tmp_path: Path) -> None:
+        """
+        download() with two datetime filter. (download not actually performed)
+        """
+        ds = Dataset.fetch_by_id('nasa_marine_debris')
+        ds.download(
+            output_dir=tmp_path,
+            datetime=(parse("2018-12-15T00:00:00Z"), parse("2018-12-16T00:00:00Z")),
+        )
+        stac_dir = tmp_path / 'nasa_marine_debris'
+        asset_db = stac_dir / 'mlhub_stac_assets.db'
+        assert asset_db.exists()
+        got_hash = self.checksum_asset_database(asset_db)
+        expect_hash = '912a226ae23f6a13a9d638b678a57fa6'
+        assert got_hash == expect_hash
+        rmtree(tmp_path, ignore_errors=True)
+
+    @pytest.mark.vcr
+    @pytest.mark.skip
+    def test_download_with_bbox_filter_works(self, nasa_marine_debris: Path) -> None:
+        """
+        download() with bbox filter.
+        """
+        assert False
+
+    @pytest.mark.vcr
+    @pytest.mark.skip
+    def test_download_with_intersects_filter_works(self, nasa_marine_debris: Path) -> None:
+        """
+        download() with intersects filter.
+        """
+        assert False
 
 
 class TestDatasetNoProfile:

@@ -77,7 +77,6 @@ class AssetRecord(BaseModel):
     filtered: bool = False
     geometry_json: Optional[str] = None
     item_id: Optional[str] = None
-    item_json_path: Optional[str] = None
 
 
 class CatalogDownloader():
@@ -89,7 +88,6 @@ class CatalogDownloader():
     work_dir: Path
     db_conn: sqlite3.Connection
     db_cur: sqlite3.Cursor
-    disable_progress_bar: bool
 
     def __init__(self, config: CatalogDownloaderConfig):
         if config.bbox is not None and config.intersects is not None:
@@ -101,7 +99,6 @@ class CatalogDownloader():
         self.work_dir = (config.output_dir / config.dataset_id)
         self.work_dir.mkdir(exist_ok=True, parents=True)
         self.err_report_path = self.work_dir / 'err_report.csv'
-        self.disable_progress_bar = 'PYTEST_CURRENT_TEST' in os.environ
 
     def _fetch_unfiltered_count(self) -> int:
         self.db_cur.execute(
@@ -122,6 +119,7 @@ class CatalogDownloader():
             """,
             [row_id]
         )
+        self.db_conn.commit()
 
     def _fetch_catalog_step(self) -> None:
         """
@@ -136,7 +134,7 @@ class CatalogDownloader():
             out_file=out_file,
             if_exists=c.if_exists,
             desc=f'{c.dataset_id}: fetch stac catalog',
-            disable_progress_bar=self.disable_progress_bar,
+            disable_progress_bar=False,
         )
         dl.run()
         assert out_file.exists()
@@ -193,7 +191,6 @@ class CatalogDownloader():
                     INSERT INTO assets (
                         collection_id,
                         item_id,
-                        item_json_path,
                         asset_key,
                         asset_url,
                         asset_save_path,
@@ -207,7 +204,6 @@ class CatalogDownloader():
                     ) VALUES (
                         :collection_id,
                         :item_id,
-                        :item_json_path,
                         :asset_key,
                         :asset_url,
                         :asset_save_path,
@@ -222,6 +218,7 @@ class CatalogDownloader():
                 """,
                 rec.dict()
             )
+            self.db_conn.commit()
 
         def _handle_item(stac_item: JsonDict) -> None:
             item_id = stac_item['id']
@@ -232,12 +229,11 @@ class CatalogDownloader():
             geometry = stac_item.get('geometry', None)
             if geometry and not bbox:
                 raise RuntimeError(f'item {item_id} has no bbox, but has geometry')
-            item_json_path = json_src.replace(str(self.work_dir), '')
+
             for k, v in assets.items():
                 rec = AssetRecord(
                     collection_id=stac_item['collection'],
                     item_id=item_id,
-                    item_json_path=item_json_path,
                     asset_key=k,
                     common_asset=k in COMMON_ASSET_NAMES,
                     asset_url=v['href'],
@@ -634,6 +630,13 @@ class CatalogDownloader():
                     asset_list.append(asset_rec)
                     uniq_asset_save_path.add(asset_save_path)
 
+        if 'PYTEST_CURRENT_TEST' in os.environ:
+            # vcr.py does not work multithreading `requests`, so bail out here
+            # and consider it a 'dry run'.
+            return
+
+        self._finalize_db()
+
         with ThreadPoolExecutor() as executor:
             future_to_asset_record = {
                 executor.submit(
@@ -646,8 +649,7 @@ class CatalogDownloader():
             for future in tqdm(
                         as_completed(future_to_asset_record),
                         desc='download assets',
-                        total=len(asset_list),
-                        disable=self.disable_progress_bar
+                        total=len(asset_list)
                     ):
                 asset_rec = future_to_asset_record[future]
                 try:
@@ -661,7 +663,6 @@ class CatalogDownloader():
                     ])
                     log.exception(e)
 
-    # TODO: remove unused assets columns, ex: item_json_path
     def _init_db(self) -> None:
         db_path = self.work_dir / 'mlhub_stac_assets.db'
         if db_path.exists():
@@ -676,7 +677,6 @@ class CatalogDownloader():
             CREATE TABLE assets (
                 collection_id TEXT,
                 item_id TEXT,
-                item_json_path TEXT,
                 asset_key TEXT,
                 asset_url TEXT,
                 asset_save_path TEXT,
@@ -690,12 +690,16 @@ class CatalogDownloader():
             )
         """)
 
+    def _finalize_db(self) -> None:
+        if not self.config.catalog_only:
+            self.db_cur.close()
+            self.db_conn.close()
+
     def __call__(self) -> None:
         """
         Create and run functions for each processing step.
         """
         c = self.config
-        self._init_db()
         self.err_report = open(self.err_report_path, 'w')
         self.err_writer = csv.writer(self.err_report, quoting=csv.QUOTE_MINIMAL)
 
@@ -704,6 +708,8 @@ class CatalogDownloader():
         steps.append(self._unarchive_catalog_step)
 
         if not c.catalog_only:
+
+            self._init_db()
 
             steps.append(self._create_asset_list_step)
 
@@ -737,9 +743,6 @@ class CatalogDownloader():
             msg = f'asset download error(s) were logged to {self.err_report.name}'
             log.error(msg)
             raise IOError(msg)
-
-        self.db_cur.close()
-        self.db_conn.close()
 
         if c.catalog_only:
             log.info(f'catalog saved to {self.work_dir}')
