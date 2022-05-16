@@ -122,6 +122,7 @@ class TestResolveAPIKeys:
             ) -> None:
         """The API key from the default profile of ~/.mlhub/profiles is stored on the session if no explicit profile is given."""
         monkeypatch.delenv('MLHUB_API_KEY', raising=False)
+        monkeypatch.delenv('MLHUB_PROFILE', raising=False)
         url_pattern = re.compile(r"http://example.org\??.+")
         requests_mock.get(url_pattern, status_code=200, text="")
 
@@ -213,6 +214,7 @@ class TestResolveAPIKeys:
         # Setup environment for this test
         monkeypatch.setenv('MLHUB_HOME', str(mlhub_home.resolve()))
         monkeypatch.delenv('MLHUB_API_KEY', raising=False)
+        monkeypatch.delenv('MLHUB_PROFILE', raising=False)
 
         url_pattern = re.compile(r"http://example.org\??.+")
         requests_mock.get(url_pattern, status_code=200, text="")
