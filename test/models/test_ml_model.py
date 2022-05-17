@@ -48,3 +48,11 @@ class TestMLModel:
     @pytest.mark.skip(reason="MLModel get by doi is not implemented")
     def test_get_ml_model_by_doi(self, requests_mock: "Mocker_Type", root_url: str) -> None:
         pass
+
+    @pytest.mark.vcr
+    def test_dunder_str_method(self) -> None:
+        model_id = 'model-cyclone-wind-estimation-torchgeo-v1'
+        ml_model = MLModel.fetch(model_id)
+        expect_str = 'model-cyclone-wind-estimation-torchgeo-v1: Tropical Cyclone Wind Estimation Model'  # noqa: E501
+        got_str = str(ml_model)
+        assert got_str == expect_str

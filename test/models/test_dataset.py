@@ -17,6 +17,30 @@ if TYPE_CHECKING:
 
 
 class TestDataset:
+
+    @pytest.fixture(autouse=False)
+    def stac_mock_json(self, request) -> str:
+        """
+        Reads a mocked api response from data/**/*.json files.
+        """
+        dataset_mark = request.node.get_closest_marker('dataset_id')
+        mock_data_dir = Path(__file__).parent.parent / 'data'
+        if dataset_mark is not None:
+            (dataset_id, ) = dataset_mark.args
+            response_path = mock_data_dir / 'datasets' / f'{dataset_id}.json'
+        else:
+            pytest.fail('pytest fixture TestDataset.stac_mock_json is misconfigured.')
+        with response_path.open(encoding='utf-8') as src:
+            return src.read()
+
+    @pytest.mark.vcr
+    def test_dunder_str_method(self) -> None:
+        dataset_id = 'nasa_marine_debris'
+        dataset = Dataset.fetch(dataset_id)
+        expect_str = 'nasa_marine_debris: Marine Debris Dataset for Object Detection in Planetscope Imagery'  # noqa: E501
+        got_str = str(dataset)
+        assert got_str == expect_str
+
     """
     Note: all of the test_download_* methods don't actually download assets.
     See comments in catalog_downloader.py.
@@ -352,7 +376,7 @@ class TestDatasetNoProfile:
         "stac_version": "1.0.0-beta.2"
     }
 
-    @pytest.fixture(scope='function', autouse=True)
+    @pytest.fixture(autouse=True)
     def mock_profile(self, monkeypatch: pytest.MonkeyPatch, tmp_path: "Path_Type") -> Iterator[None]:
         """Overwrite the fixture in conftest so we don't set up an API key here"""
 

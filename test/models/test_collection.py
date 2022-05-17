@@ -1,7 +1,7 @@
 import json
 from typing import TYPE_CHECKING, Any, Dict
 from urllib.parse import parse_qs, urljoin, urlsplit
-
+from pathlib import Path
 import pystac.item
 import pytest
 from radiant_mlhub.models import Collection
@@ -12,6 +12,23 @@ if TYPE_CHECKING:
     from pathlib import Path as Path_Type
 
     from requests_mock import Mocker as Mocker_Type
+
+
+@pytest.fixture(autouse=False)
+def stac_mock_json(request) -> str:
+    """
+    Reads a mocked api response from data/**/*.json files.
+    """
+    collection_mark = request.node.get_closest_marker('collection_id')
+    print(collection_mark)
+    mock_data_dir = Path(__file__).parent.parent / 'data'
+    if collection_mark is not None:
+        (collection_id, ) = collection_mark.args
+        response_path = mock_data_dir / 'collections' / f'{collection_id}.json'
+    else:
+        pytest.fail('pytest fixture test_collection.stac_mock_json is misconfigured.')
+    with response_path.open(encoding='utf-8') as src:
+        return src.read()
 
 
 class TestCollection:
@@ -80,10 +97,11 @@ class TestCollectionAuthenticatedEndpoints:
 
 class TestAnonymousCollection:
 
-    @pytest.fixture(scope='function', autouse=True)
+    @pytest.fixture(autouse=True)
     def mock_profile(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        # remove this env var otherwise it will override the anonymous profile.
+        # remove this (all these) env var otherwise it will override the anonymous profile.
         monkeypatch.delenv('MLHUB_API_KEY', raising=False)
+        monkeypatch.delenv(' MLHUB_PROFILE', raising=False)
 
     def test_list_anonymously_has_no_key(self, requests_mock: "Mocker_Type", root_url: str) -> None:
         url = urljoin(root_url, 'collections')
@@ -155,3 +173,11 @@ class TestAnonymousCollection:
         actual_url = history[0].url
         qs = parse_qs(urlsplit(actual_url).query)
         assert "key" not in qs
+
+    @pytest.mark.vcr
+    def test_dunder_str_method(self) -> None:
+        collection_id = 'bigearthnet_v1_source'
+        collection = Collection.fetch(collection_id)
+        expect_str = 'bigearthnet_v1_source: BigEarthNet v1.0'
+        got_str = str(collection)
+        assert got_str == expect_str

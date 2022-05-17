@@ -9,8 +9,8 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
-        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: HEAD
     uri: https://staging.api.radiant.earth/mlhub/v1/archive/ref_african_crops_kenya_02_labels
   response:
@@ -20,11 +20,11 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Thu, 12 May 2022 20:45:47 GMT
+      - Tue, 17 May 2022 20:15:15 GMT
       Location:
       - https://radiantearth.blob.core.windows.net/mlhub/archives/ref_african_crops_kenya_02_labels.tar.gz
       X-Azure-Ref:
-      - 0+3F9YgAAAACxlO6HqQi+T5bQ2H+ruE1YU0pDRURHRTAzMTUAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
+      - 0UwKEYgAAAACpYt89ZnnAQacBO3awxtKPQ1lTMDEzMDUwNzEwMDUxADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:
@@ -40,8 +40,8 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
-        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: HEAD
     uri: https://radiantearth.blob.core.windows.net/mlhub/archives/ref_african_crops_kenya_02_labels.tar.gz
   response:
@@ -55,7 +55,7 @@ interactions:
       Content-Type:
       - application/x-tar
       Date:
-      - Thu, 12 May 2022 20:45:47 GMT
+      - Tue, 17 May 2022 20:15:15 GMT
       ETag:
       - '0x8D968C5F3B94E1C'
       Last-Modified:
@@ -67,7 +67,7 @@ interactions:
       x-ms-lease-status:
       - unlocked
       x-ms-request-id:
-      - b3144356-f01e-0059-1841-669851000000
+      - 3b489765-901e-0063-132a-6ab755000000
       x-ms-version:
       - '2009-09-19'
     status:

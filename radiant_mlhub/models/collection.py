@@ -167,6 +167,10 @@ class Collection(pystac.collection.Collection):
         response = client.get_collection(collection_id, api_key=api_key, profile=profile)
         return cls.from_dict(response, api_key=api_key, profile=profile)
 
+    def __str__(self) -> str:
+        """Return the "informal" or nicely printable string representation of an object."""
+        return f'{self.id}: {self.description}'
+
     def get_items(self, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> Iterator[pystac.item.Item]:
         """
         .. note::

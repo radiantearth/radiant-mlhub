@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 class TestOverwriteRootURL:
 
-    @pytest.fixture()
+    @pytest.fixture(autouse=False)
     def custom_root_url(self, monkeypatch: pytest.MonkeyPatch) -> str:
         custom = 'https://example.org'
         monkeypatch.setenv('MLHUB_ROOT_URL', custom)
@@ -55,7 +55,7 @@ class TestOverwriteRootURL:
 
 class TestResolveAPIKeys:
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(autouse=False)
     def mock_profile(self, monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path) -> Iterator[configparser.ConfigParser]:
         config = configparser.ConfigParser()
 
@@ -416,10 +416,11 @@ class TestSessionRequests:
 
 class TestAnonymousSession:
 
-    @pytest.fixture(scope='function', autouse=True)
+    @pytest.fixture(autouse=True)
     def mock_profile(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        # remove this env var otherwise it will override the anonymous profile.
+        # remove all these env var otherwise it will override the anonymous profile.
         monkeypatch.delenv('MLHUB_API_KEY', raising=False)
+        monkeypatch.delenv('MNHUB_PROFILE', raising=False)
 
     def test_anonymous_session_has_no_key(self, requests_mock: "Mocker_Type") -> None:
         """Session instantiated with api_key=None should not include a "key" query parameter."""

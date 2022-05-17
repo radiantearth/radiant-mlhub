@@ -9,8 +9,8 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
-        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: HEAD
     uri: https://staging.api.radiant.earth/mlhub/v1/archive/no_archive
   response:
@@ -18,47 +18,16 @@ interactions:
       string: ''
     headers:
       Content-Length:
-      - '0'
+      - '55'
+      Content-Type:
+      - application/json
       Date:
-      - Thu, 12 May 2022 20:45:45 GMT
-      Location:
-      - https://radiantearth.blob.core.windows.net/mlhub/archives/no_archive.tar.gz
+      - Tue, 17 May 2022 20:15:14 GMT
       X-Azure-Ref:
-      - 0+nF9YgAAAABCW+UstO0eQYOK36fUYzwsU0pDRURHRTA1MjEAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
+      - 0UwKEYgAAAAARMec6V4dLS5wwwwIme509Q1lTMDEzMDUwNzA5MDMxADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:
-      code: 303
-      message: See Other
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
-        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
-    method: HEAD
-    uri: https://radiantearth.blob.core.windows.net/mlhub/archives/no_archive.tar.gz
-  response:
-    body:
-      string: ''
-    headers:
-      Date:
-      - Thu, 12 May 2022 20:45:46 GMT
-      Server:
-      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
-      Transfer-Encoding:
-      - chunked
-      x-ms-request-id:
-      - 3c191706-f01e-001d-1141-66e748000000
-      x-ms-version:
-      - '2009-09-19'
-    status:
       code: 404
-      message: The specified blob does not exist.
+      message: Not Found
 version: 1

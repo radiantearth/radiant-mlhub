@@ -3,7 +3,7 @@ import re
 from typing import Any, Dict
 
 import pytest
-from pathlib import Path
+
 
 download_url = re.compile(r'(https?://(?:staging.)?api.radiant.earth/mlhub/v1/download)/[-=\\\w]+/?')
 
@@ -23,7 +23,7 @@ def vcr_config() -> Dict[str, Any]:
     return {'filter_query_parameters': ['key']}
 
 
-@pytest.fixture(scope="function", autouse=True)
+@pytest.fixture(autouse=True)
 def root_url(monkeypatch: pytest.MonkeyPatch) -> str:
     root_url = os.getenv(
         "MLHUB_ROOT_URL",
@@ -31,23 +31,3 @@ def root_url(monkeypatch: pytest.MonkeyPatch) -> str:
     )
     monkeypatch.setenv("MLHUB_ROOT_URL", root_url)
     return root_url
-
-
-@pytest.fixture
-def stac_mock_json(request) -> str:
-    """
-    Reads a mocked api response from data/**/*.json files.
-    """
-    dataset_mark = request.node.get_closest_marker('dataset_id')
-    collection_mark = request.node.get_closest_marker('collection_id')
-    mock_data_dir = Path(__file__).parent / 'data'
-    if dataset_mark is not None:
-        (dataset_id, ) = dataset_mark.args
-        response_path = mock_data_dir / 'datasets' / f'{dataset_id}.json'
-    elif collection_mark is not None:
-        (collection_id, ) = collection_mark.args
-        response_path = mock_data_dir / 'collections' / f'{collection_id}.json'
-    else:
-        assert False, 'pytest fixture stac_mock_json is misconfigured.'
-    with response_path.open(encoding='utf-8') as src:
-        return src.read()

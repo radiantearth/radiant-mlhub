@@ -241,6 +241,10 @@ class Dataset:
             profile=profile,
         )
 
+    def __str__(self) -> str:
+        """Return the "informal" or nicely printable string representation of an object."""
+        return f'{self.id}: {self.title}'
+
     @property
     def stac_catalog_size(self) -> Optional[int]:
         """Size of the dataset_id.tar.gz STAC archive (bytes)"""

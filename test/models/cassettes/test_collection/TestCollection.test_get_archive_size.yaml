@@ -9,14 +9,14 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
-        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: GET
     uri: https://staging.api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_labels
   response:
     body:
       string: !!binary |
-        H4sIAARyfWIC/7VT72vbMBD9V4S/zpYl20lsf+svSkc7xtINtjQUxbnYWmXLSIppCfnfd3LaNRuF
+        H4sIAF8ChGIC/7VT72vbMBD9V4S/zpYl20lsf+svSkc7xtINtjQUxbnYWmXLSIppCfnfd3LaNRuF
         wdjAGHH37t3Tu9MukOugDFayBmFc04G7H/i9EitQNggD99QDps+0UlA5qTuMKdk92KBc7AIDCpPS
         QXuEFX2vZCU8OK5Bv/tux6rGwAazjXO9LePYOlHLrqail9SItRSdo6OCuFXNdhUPPK5+NrXxm/ri
         Q+d9+KKkFwY697aUv5ZxxG+0/o/sFtTmH7P/0cJgvwwDYS04nOhuHwbw6LyF5S6wPTYXyh9XK/2I
@@ -36,11 +36,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 12 May 2022 20:45:56 GMT
+      - Tue, 17 May 2022 20:15:27 GMT
       Vary:
       - Accept-Encoding
       X-Azure-Ref:
-      - 0BHJ9YgAAAAC44OiQ/tZuSY4WR+7PuTQnU0pDRURHRTA1MTYAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
+      - 0XgKEYgAAAACIlLouIucMTJ2sjl/fGH40Q1lTMDEzMDUwNzA3MDE5ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:
@@ -56,8 +56,8 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
-        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: GET
     uri: https://staging.api.radiant.earth/mlhub/v1/archive/bigearthnet_v1_labels/info
   response:
@@ -69,9 +69,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 12 May 2022 20:45:57 GMT
+      - Tue, 17 May 2022 20:15:27 GMT
       X-Azure-Ref:
-      - 0BXJ9YgAAAAAgkgYPiKT7SrpmedVksYHNU0pDRURHRTA1MDYAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
+      - 0XwKEYgAAAABoVSScn3rYTpxda8jMsVubQ1lTMDEzMDUwNzEwMDQ1ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:

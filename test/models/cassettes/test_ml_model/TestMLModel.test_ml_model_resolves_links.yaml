@@ -9,14 +9,14 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
-        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: GET
     uri: https://staging.api.radiant.earth/mlhub/v1/models/model-cyclone-wind-estimation-torchgeo-v1
   response:
     body:
       string: !!binary |
-        H4sIAA1yfWIC/81Wa2/jNhD8K4Q+JaglWU6DxG6vbZB7NMClONwZaHGGYdDU2mZDiQJJ23EP+e8d
+        H4sIAKEChGIC/81Wa2/jNhD8K4Q+JaglWU6DxG6vbZB7NMClONwZaHGGYdDU2mZDiQJJ23EP+e8d
         UpKtNE4vBYqigIKYj+XOzg53+SWSeTSKCp2TisVOKF1SvJVlHpN1suBO6jJ22ojVknS8yaJeNJ/r
         +2g0ibOLYTIcDnvxZf2/HdfDaS9yu4pw9lvibm0IlkqWdxamXyJDCitCK0XCu4j2u3lVKSmC3/R3
         G1ZWhhZYWTlX2VGaWseXslwmvJKJ4bnkpUuIG7dKC7Vaz9NNlh4OtunLQoseei2qihsq3f8JkdH6
@@ -48,11 +48,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 12 May 2022 20:46:05 GMT
+      - Tue, 17 May 2022 20:16:33 GMT
       Vary:
       - Accept-Encoding
       X-Azure-Ref:
-      - 0DXJ9YgAAAAAJQciu5taoT6yacyVQdJC5U0pDRURHRTA1MTIAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
+      - 0oQKEYgAAAAAUgy5dLyxRRYtSfePKRDrKREVOMzAxMDAwMTA5MDM1ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:
@@ -66,12 +66,12 @@ interactions:
       Host:
       - staging.api.radiant.earth
       User-Agent:
-      - Python-urllib/3.9
+      - Python-urllib/3.10
     method: GET
     uri: https://staging.api.radiant.earth/mlhub/v1/
   response:
     body:
-      string: '{"type":"Catalog","id":"stac-fastapi","title":"Radiant MLHub API","description":"stac-fastapi","stac_version":"1.0.0","conformsTo":["https://api.stacspec.org/v1.0.0-beta.3/ogcapi-features","http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30","https://api.stacspec.org/v1.0.0-beta.3/item-search/#fields","http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson","https://api.stacspec.org/v1.0.0-beta.3/item-search","https://api.stacspec.org/v1.0.0-beta.3/item-search/#query","https://api.stacspec.org/v1.0.0-beta.3/item-search/#sort","https://api.stacspec.org/v1.0.0-beta.3/core","http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core"],"links":[{"rel":"self","type":"application/json","href":"https://staging.api.radiant.earth/mlhub/v1/"},{"rel":"root","type":"application/json","href":"https://staging.api.radiant.earth/mlhub/v1/"},{"rel":"data","type":"application/json","href":"https://staging.api.radiant.earth/mlhub/v1/collections"},{"rel":"docs","type":"application/json","title":"OpenAPI
+      string: '{"type":"Catalog","id":"stac-fastapi","title":"Radiant MLHub API","description":"stac-fastapi","stac_version":"1.0.0","conformsTo":["https://api.stacspec.org/v1.0.0-beta.3/item-search","https://api.stacspec.org/v1.0.0-beta.3/item-search/#fields","http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core","https://api.stacspec.org/v1.0.0-beta.3/item-search/#sort","https://api.stacspec.org/v1.0.0-beta.3/ogcapi-features","https://api.stacspec.org/v1.0.0-beta.3/core","http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30","http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson","https://api.stacspec.org/v1.0.0-beta.3/item-search/#query"],"links":[{"rel":"self","type":"application/json","href":"https://staging.api.radiant.earth/mlhub/v1/"},{"rel":"root","type":"application/json","href":"https://staging.api.radiant.earth/mlhub/v1/"},{"rel":"data","type":"application/json","href":"https://staging.api.radiant.earth/mlhub/v1/collections"},{"rel":"docs","type":"application/json","title":"OpenAPI
         docs","href":"https://staging.api.radiant.earth/mlhub/v1/docs"},{"rel":"conformance","type":"application/json","title":"STAC/WFS3
         conformance classes implemented by this server","href":"https://staging.api.radiant.earth/mlhub/v1/conformance"},{"rel":"search","type":"application/geo+json","title":"STAC
         search","href":"https://staging.api.radiant.earth/mlhub/v1/search","method":"GET"},{"rel":"search","type":"application/json","title":"STAC
@@ -137,9 +137,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 12 May 2022 20:46:06 GMT
+      - Tue, 17 May 2022 20:16:33 GMT
       X-Azure-Ref:
-      - 0DnJ9YgAAAABxQgMjSNymTobSHoqddDWAU0pDRURHRTA1MDgAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
+      - 0ogKEYgAAAADpuh2rAGdlRrae3wcef+yhREVOMzAxMDAwMTEwMDM3ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:

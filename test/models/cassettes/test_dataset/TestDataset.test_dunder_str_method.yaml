@@ -16,7 +16,7 @@ interactions:
   response:
     body:
       string: !!binary |
-        H4sIAGcChGIC/61W72/bNhD9Vwh9GBpMlvwzif1pabK1AeK2WIINQ1IYlHiWuFKiRlJ23aL/+x4p
+        H4sIAGQChGIC/61W72/bNhD9Vwh9GBpMlvwzif1pabK1AeK2WIINQ1IYlHiWuFKiRlJ23aL/+x4p
         OXa6pvuwGQFik7y7x3fv7vg5kiJaRDW3fFVxI2taCcqMtFEcZZn+GC0+R7nWRsiaO7LR4h6fyTSZ
         TYbD8Xw8P4tnyfT0fHI6OZu9j5/uTObJaHh+NhtNZnPsDc7PEyyPRvPRdPT9zed9Hu3gE0du1xDw
         L1vl5DutdoWuoy9xlEvHncT3RXRb8jJmF0nM7kpdcRuzG3z/gS25/UC7mC0T9mI8HI9O2EO0DAyw
@@ -48,42 +48,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 17 May 2022 20:15:35 GMT
+      - Tue, 17 May 2022 20:15:32 GMT
       Vary:
       - Accept-Encoding
       X-Azure-Ref:
-      - 0ZwKEYgAAAADgMOrmg29EQYdtFhGZMTIpQ1lTMDEzMDUwNzEwMDI5ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
-      X-Cache:
-      - CONFIG_NOCACHE
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
-        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
-    method: GET
-    uri: https://staging.api.radiant.earth/mlhub/v1/catalog/nasa_marine_debris/info
-  response:
-    body:
-      string: '{"dataset":"nasa_marine_debris","stac_catalog_size":263582,"estimated_dataset_size":77207762}'
-    headers:
-      Content-Length:
-      - '93'
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 17 May 2022 20:15:36 GMT
-      X-Azure-Ref:
-      - 0ZwKEYgAAAABaG5CtpdzCQrum38k/lUD5Q1lTMDEzMDUwNzA5MDI3ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      - 0ZAKEYgAAAABKHxoPASLTToLKaYtHnttdQ1lTMDEzMDUwNzA4MDE3ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:

@@ -9,14 +9,14 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
-        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: GET
     uri: https://staging.api.radiant.earth/mlhub/v1/collections
   response:
     body:
       string: !!binary |
-        H4sIAP9xfWIC/+1963LbuLLuq6BStddJalE0cSMB71++JJnM2E7K9mRdZqZUtARLjClSQ0p2nFWr
+        H4sIAFgChGIC/+1963LbuLLuq6BStddJalE0cSMB71++JJnM2E7K9mRdZqZUtARLjClSQ0p2nFWr
         ar3Grtr73/lznmO/yXqS0w1Ksm62KFu26QwzHlsiQbDRAD50Nxrd/3jVSuPYtAZRmuSvtn/5x6uo
         /Wr7VR72+rFpRknTtDumGYdnJs5fOa8G130Dt/cmz8C1OEouikczE8PNaGB6U2XDfj+OWiEW3uqY
         9M9fcvtUNzPncLc7GPTz7a2tfBB2oqTjhv3IzcJ2FCYD14TZoLvVi7vDs61LujVF6NZS+raKN//T
@@ -256,11 +256,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 12 May 2022 20:45:51 GMT
+      - Tue, 17 May 2022 20:15:20 GMT
       Vary:
       - Accept-Encoding
       X-Azure-Ref:
-      - 0/3F9YgAAAABzNi9TErPFQ5KkwSMgpjdUU0pDRURHRTA1MTgAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
+      - 0WAKEYgAAAAB26w5uybHWRbFl8K4wQ10WQ1lTMDEzMDUwNzA3MDIzADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:
