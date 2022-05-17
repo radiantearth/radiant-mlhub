@@ -1,10 +1,10 @@
-import hashlib
 import json
 import re
 from pathlib import Path
 from shutil import rmtree
 from typing import TYPE_CHECKING, Iterator, cast
 from urllib.parse import parse_qs, urljoin, urlsplit
+import sqlite3
 
 import pytest
 from dateutil.parser import parse
@@ -157,9 +157,22 @@ class TestDataset:
         size = ds.estimated_dataset_size()
         assert size is not None and size == expect_size, 'unexpected estimated_dataset_size'
 
-    def checksum_asset_database(self, db: Path) -> str:
-        with open(db, 'rb') as fh:
-            return hashlib.md5(fh.read()).hexdigest()
+    def asset_database_record_count(self, db: Path) -> str:
+        db_conn = sqlite3.connect(
+            db,
+            detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES
+        )
+        db_cur = db_conn.cursor()
+        db_cur.execute(
+            """
+                SELECT COUNT(DISTINCT asset_save_path)
+                    FROM assets WHERE filtered = 0
+            """
+        )
+        (n, ) = db_cur.fetchone()
+        db_cur.close()
+        db_conn.close()
+        return n
 
     @pytest.mark.vcr
     def test_download_catalog_only(self, tmp_path: Path) -> None:
@@ -176,18 +189,19 @@ class TestDataset:
 
     @pytest.mark.vcr
     def test_download_all_assets_works(self, tmp_path: Path) -> None:
+        expect_assets = 2825
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         ds.download(output_dir=tmp_path)
         stac_dir = tmp_path / 'nasa_marine_debris'
         asset_db = stac_dir / 'mlhub_stac_assets.db'
         assert asset_db.exists()
-        got_hash = self.checksum_asset_database(asset_db)
-        expect_hash = '45685e79f7ebc44cc7a8237301951b93'
-        assert got_hash == expect_hash
+        n = self.asset_database_record_count(asset_db)
+        assert n == expect_assets
         rmtree(tmp_path, ignore_errors=True)
 
     @pytest.mark.vcr
     def test_download_with_collection_filter_works(self, tmp_path: Path) -> None:
+        expect_assets = 706
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         ds.download(
             output_dir=tmp_path,
@@ -196,13 +210,13 @@ class TestDataset:
         stac_dir = tmp_path / 'nasa_marine_debris'
         asset_db = stac_dir / 'mlhub_stac_assets.db'
         assert asset_db.exists()
-        got_hash = self.checksum_asset_database(asset_db)
-        expect_hash = '0663697db11e3898935f5b5bd6e7a028'
-        assert got_hash == expect_hash
+        n = self.asset_database_record_count(asset_db)
+        assert n == expect_assets
         rmtree(tmp_path, ignore_errors=True)
 
     @pytest.mark.vcr
     def test_download_with_1_datetime_filter_works(self, tmp_path: Path) -> None:
+        expect_assets = 81
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         ds.download(
             output_dir=tmp_path,
@@ -211,31 +225,28 @@ class TestDataset:
         stac_dir = tmp_path / 'nasa_marine_debris'
         asset_db = stac_dir / 'mlhub_stac_assets.db'
         assert asset_db.exists()
-        got_hash = self.checksum_asset_database(asset_db)
-        expect_hash = '9b5b9e900596a58b6392907960e7796b'
-        assert got_hash == expect_hash
+        n = self.asset_database_record_count(asset_db)
+        assert n == expect_assets
         rmtree(tmp_path, ignore_errors=True)
 
     @pytest.mark.vcr
     def test_download_with_2_datetime_filter_works(self, tmp_path: Path) -> None:
-        """
-        download() with two datetime filter. (download not actually performed)
-        """
+        expect_assets = 325  # FIXME: this should be more assets than the 1 datetime filter
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         ds.download(
             output_dir=tmp_path,
-            datetime=(parse("2018-12-15T00:00:00Z"), parse("2018-12-16T00:00:00Z")),
+            datetime=(parse("2018-01-01T00:00:00Z"), parse("2018-02-28T00:00:00Z")),
         )
         stac_dir = tmp_path / 'nasa_marine_debris'
         asset_db = stac_dir / 'mlhub_stac_assets.db'
         assert asset_db.exists()
-        got_hash = self.checksum_asset_database(asset_db)
-        expect_hash = '912a226ae23f6a13a9d638b678a57fa6'
-        assert got_hash == expect_hash
+        n = self.asset_database_record_count(asset_db)
+        assert n == expect_assets
         rmtree(tmp_path, ignore_errors=True)
 
     @pytest.mark.vcr
     def test_download_with_bbox_filter_works(self, tmp_path: Path) -> None:
+        expect_assets = 9
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         ds.download(
             output_dir=tmp_path,
@@ -244,9 +255,8 @@ class TestDataset:
         stac_dir = tmp_path / 'nasa_marine_debris'
         asset_db = stac_dir / 'mlhub_stac_assets.db'
         assert asset_db.exists()
-        got_hash = self.checksum_asset_database(asset_db)
-        expect_hash = '047eaec864a575c6e335dee5d300805d'
-        assert got_hash == expect_hash
+        n = self.asset_database_record_count(asset_db)
+        assert n == expect_assets
         rmtree(tmp_path, ignore_errors=True)
 
     @pytest.mark.vcr
@@ -284,6 +294,7 @@ class TestDataset:
                 }
             }
             """)
+        expect_assets = 37
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         ds.download(
             output_dir=tmp_path,
@@ -292,9 +303,8 @@ class TestDataset:
         stac_dir = tmp_path / 'nasa_marine_debris'
         asset_db = stac_dir / 'mlhub_stac_assets.db'
         assert asset_db.exists()
-        got_hash = self.checksum_asset_database(asset_db)
-        expect_hash = '7e8852cb55fe6648ec1a80e85ad14800'
-        assert got_hash == expect_hash
+        n = self.asset_database_record_count(asset_db)
+        assert n == expect_assets
         rmtree(tmp_path, ignore_errors=True)
 
 

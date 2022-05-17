@@ -9,14 +9,14 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
-        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: GET
     uri: https://staging.api.radiant.earth/mlhub/v1/datasets/nasa_marine_debris
   response:
     body:
       string: !!binary |
-        H4sIALDhfmIC/61W72/bNhD9Vwh9GBpMlvwzif1pabK1AeK2WIINQ1IYlHiWuFKiRlJ23aL/+x4p
+        H4sIAGPCg2IC/61W72/bNhD9Vwh9GBpMlvwzif1pabK1AeK2WIINQ1IYlHiWuFKiRlJ23aL/+x4p
         OXa6pvuwGQFik7y7x3fv7vg5kiJaRDW3fFVxI2taCcqMtFEcZZn+GC0+R7nWRsiaO7LR4h6fyTSZ
         TYbD8Xw8P4tnyfT0fHI6OZu9j5/uTObJaHh+NhtNZnPsDc7PEyyPRvPRdPT9zed9Hu3gE0du1xDw
         L1vl5DutdoWuoy9xlEvHncT3RXRb8jJmF0nM7kpdcRuzG3z/gS25/UC7mC0T9mI8HI9O2EO0DAyw
@@ -48,11 +48,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 13 May 2022 22:54:40 GMT
+      - Tue, 17 May 2022 15:42:27 GMT
       Vary:
       - Accept-Encoding
       X-Azure-Ref:
-      - 0sOF+YgAAAAAmeYHxlxyTSIsbt3k8eF7bU0pDRURHRTA1MTcAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
+      - 0Y8KDYgAAAACobOdvzjg4TJ3Et8j6jKy7REVOMzAxMDAwMTA5MDUzADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:
@@ -68,8 +68,8 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
-        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
       x-ms-version:
       - '2021-06-08'
     method: GET
@@ -81,11 +81,11 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Fri, 13 May 2022 22:54:40 GMT
+      - Tue, 17 May 2022 15:42:27 GMT
       Location:
       - https://radiantearth.blob.core.windows.net/mlhub/catalogs/nasa_marine_debris.tar.gz
       X-Azure-Ref:
-      - 0sOF+YgAAAABM7islMMBGRKWTX7bbQ8UGU0pDRURHRTAzMDgAMDg0MTE2ZjAtMmYwMy00OTdiLTllMjEtNzNlNjQ1NGMwNjcw
+      - 0ZMKDYgAAAABAyfnuWRFxRrnYVWlpwdPcREVOMzAxMDAwMTEwMDM3ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:
@@ -101,8 +101,8 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.4.0: Fri Mar 18 00:45:05 PDT
-        2022; root:xnu-8020.101.4~15/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
       x-ms-version:
       - '2021-06-08'
     method: GET
@@ -4745,7 +4745,7 @@ interactions:
       Content-Type:
       - application/octet-stream
       Date:
-      - Fri, 13 May 2022 22:54:41 GMT
+      - Tue, 17 May 2022 15:42:28 GMT
       ETag:
       - '"0x8DA27B5CF6B14FA"'
       Last-Modified:
@@ -4761,7 +4761,7 @@ interactions:
       x-ms-lease-status:
       - unlocked
       x-ms-request-id:
-      - 8f123fce-001e-001a-121c-673646000000
+      - e3e05eaa-301e-0069-2004-6ab940000000
       x-ms-server-encrypted:
       - 'true'
       x-ms-version:
