@@ -59,13 +59,13 @@ To run against all supported Python versions in parallel:
 > tox -p
 ```
 
-To run against just Python 3.8, for example:
+To run against just Python 3.10, for example:
 
 ```shell
-> tox -e py38
+> tox -e py310
 ```
 
-*Note that you must have all supported Python versions installed in order to run tests against them. See 
+*Note that you must have all supported Python versions installed in order to run tests against them. See
 [`tox-pyenv`](https://pypi.org/project/tox-pyenv/) if you are using `pyenv` to manage your installed Python versions.*  
 
 ### VCR.py Cassettes
@@ -121,4 +121,4 @@ When the code on the `main` branch has stabilized, we will cut a new release usi
   
 After the release has been published to PyPi, you should also update the recipe in the [`conda-forge` 
 feedstock](https://github.com/conda-forge/radiant-mlhub-feedstock) to use the new release. See the README in that repo 
-for instructions on how to update the recipe. 
+for instructions on how to update the recipe.

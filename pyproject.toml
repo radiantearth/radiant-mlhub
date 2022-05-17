@@ -31,7 +31,7 @@ ignore_missing_imports = true
 
 legacy_tox_ini = """
 [tox]
-envlist = py37, py38, py39, py310
+envlist = py38, py39, py310
 
 [testenv]
 deps = -rrequirements_testing.txt
