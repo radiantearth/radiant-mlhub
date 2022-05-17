@@ -16,7 +16,7 @@ interactions:
   response:
     body:
       string: !!binary |
-        H4sIAAAAAAAA/31UTXPbIBC9+1ds1UsyIyQnaRqPLWn6mWkPaQ9pDz0SsbKYCFAByfZ08t+7Qo4j
+        H4sIAMIVqF0AA31UTXPbIBC9+1ds1UsyIyQnaRqPLWn6mWkPaQ9pDz0SsbKYCFAByfZ08t+7Qo4j
         N5makYFdeLvvsZC9Eqb0uxah9qopZtljh1wUM6Bf5qVvsPi85aptED4ZxaXO0tE6G5co9BzKmluH
         Po86X7FFBGkxcdbetwx/d7LPo49Ge9SeDWEjKMdZHnnc+nQIvzpAvYSkucI86iVuWmP9ZP9GCl/n
         AntZIguTGKSWXvKGuZI3mJ89QTm/IzJDBvvApXPR6LszYgd/wjBMeXm/tqbTgpWmMXYJr6s5tfPV
@@ -29,10 +29,8 @@ interactions:
         3VOFhOgtWiWdI0eSpe0hz4weCItVHg3PhFum6WazSSTXPDF2nY4hXbpPMypujB1IEKAKQZKE0HgR
         ELM0iJOle6nS8UH7CyjrfG/oBAAA
     headers:
-      Accept-Ranges:
-      - bytes
       Age:
-      - '454916'
+      - '434559'
       Cache-Control:
       - max-age=604800
       Content-Encoding:
@@ -42,15 +40,15 @@ interactions:
       Content-Type:
       - text/html; charset=UTF-8
       Date:
-      - Tue, 17 May 2022 20:15:22 GMT
+      - Tue, 17 May 2022 20:23:33 GMT
       Etag:
-      - '"3147526947"'
+      - '"3147526947+ident+gzip"'
       Expires:
-      - Tue, 24 May 2022 20:15:22 GMT
+      - Tue, 24 May 2022 20:23:33 GMT
       Last-Modified:
       - Thu, 17 Oct 2019 07:18:26 GMT
       Server:
-      - ECS (dna/63AA)
+      - ECS (dna/63B4)
       Vary:
       - Accept-Encoding
       X-Cache:

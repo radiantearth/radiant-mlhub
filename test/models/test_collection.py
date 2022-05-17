@@ -34,6 +34,14 @@ def stac_mock_json(request) -> str:
 class TestCollection:
 
     @pytest.mark.vcr
+    def test_dunder_str_method(self) -> None:
+        collection_id = 'bigearthnet_v1_source'
+        collection = Collection.fetch(collection_id)
+        expect_str = 'bigearthnet_v1_source: BigEarthNet v1.0'
+        got_str = str(collection)
+        assert got_str == expect_str
+
+    @pytest.mark.vcr
     def test_list_collections(self) -> None:
         collections = Collection.list()
         assert isinstance(collections, list)
@@ -174,10 +182,3 @@ class TestAnonymousCollection:
         qs = parse_qs(urlsplit(actual_url).query)
         assert "key" not in qs
 
-    @pytest.mark.vcr
-    def test_dunder_str_method(self) -> None:
-        collection_id = 'bigearthnet_v1_source'
-        collection = Collection.fetch(collection_id)
-        expect_str = 'bigearthnet_v1_source: BigEarthNet v1.0'
-        got_str = str(collection)
-        assert got_str == expect_str

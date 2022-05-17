@@ -16,7 +16,7 @@ interactions:
   response:
     body:
       string: !!binary |
-        H4sIAGEChGIC/7VU227TQBD9FctPIBJ77/bmrSQgJKAPpSqXNIo29iZZ6nit9Sa0qvLvzNpJG25C
+        H4sIAEwEhGIC/7VU227TQBD9FctPIBJ77/bmrSQgJKAPpSqXNIo29iZZ6nit9Sa0qvLvzNpJG25C
         IJAs2Z45c+b47IzvY1PGo9jp5VwtnSlUPS+cbdr5ja7v1ByReaUWumrjQezvGg3Qsa0qXXhja4hV
         pr5p49H0HhgqSBqvNydY1TQVcAZwutL22ee2q1pDO8iuvW/aUZq2Xq1MvUpUYxKnSqNqn2jl/Drd
         VOvtIt3htHho2qa/1Zr2KvaDo6pGOV37n8v6a0kn/M7a/8je6mr5j9n/yM54PxvE+tYHC0f3cdtA
@@ -36,11 +36,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 17 May 2022 20:15:29 GMT
+      - Tue, 17 May 2022 20:23:39 GMT
       Vary:
       - Accept-Encoding
       X-Azure-Ref:
-      - 0YQKEYgAAAADjaiXUUmZ7RosgNo/3/RuuQ1lTMDEzMDUwNzA3MDQ5ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      - 0TASEYgAAAAB7c4d+CGZESr8LwjLfgRmvREVOMzAxMDAwMTA5MDM3ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:
@@ -67,11 +67,11 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Tue, 17 May 2022 20:15:29 GMT
+      - Tue, 17 May 2022 20:23:40 GMT
       Location:
       - https://radiantearth.blob.core.windows.net/mlhub/archives/ref_african_crops_kenya_02_labels.tar.gz
       X-Azure-Ref:
-      - 0YgKEYgAAAABAlJi+/+CsQqbsk9/wNvrAQ1lTMDEzMDUwNzA3MDI3ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      - 0TASEYgAAAAAxV1NAPb4iRa61uclsediIREVOMzAxMDAwMTA5MDIxADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:
@@ -102,7 +102,7 @@ interactions:
       Content-Type:
       - application/x-tar
       Date:
-      - Tue, 17 May 2022 20:15:30 GMT
+      - Tue, 17 May 2022 20:23:41 GMT
       ETag:
       - '0x8D968C5F3B94E1C'
       Last-Modified:
@@ -114,7 +114,7 @@ interactions:
       x-ms-lease-status:
       - unlocked
       x-ms-request-id:
-      - 9012d4d1-201e-0070-0e2a-6a7a71000000
+      - a0aaa342-701e-0005-192b-6a0f7b000000
       x-ms-version:
       - '2009-09-19'
     status:
@@ -4586,7 +4586,7 @@ interactions:
       Content-Type:
       - application/x-tar
       Date:
-      - Tue, 17 May 2022 20:15:31 GMT
+      - Tue, 17 May 2022 20:23:41 GMT
       ETag:
       - '0x8D968C5F3B94E1C'
       Last-Modified:
@@ -4598,7 +4598,7 @@ interactions:
       x-ms-lease-status:
       - unlocked
       x-ms-request-id:
-      - 9012d5ba-201e-0070-5a2a-6a7a71000000
+      - a0aaa3eb-701e-0005-152c-6a0f7b000000
       x-ms-version:
       - '2009-09-19'
     status:
