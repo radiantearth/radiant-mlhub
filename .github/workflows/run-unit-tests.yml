@@ -71,7 +71,6 @@ jobs:
           pip install .
           pytest --record-mode once --block-network
           flake8
-          flake8_nb examples/
           mypy radiant_mlhub
 
   # verify importing all top-level modules, without polluting the package namespace
