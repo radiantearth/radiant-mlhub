@@ -181,4 +181,3 @@ class TestAnonymousCollection:
         actual_url = history[0].url
         qs = parse_qs(urlsplit(actual_url).query)
         assert "key" not in qs
-
