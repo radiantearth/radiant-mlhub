@@ -241,11 +241,13 @@ class Dataset:
             profile=profile,
         )
 
+    @property
     def stac_catalog_size(self) -> Optional[int]:
         """Size of the dataset_id.tar.gz STAC archive (bytes)"""
         info = client.get_catalog_info(self.id, **self.session_kwargs)
         return info.get('stac_catalog_size', None)
 
+    @property
     def estimated_dataset_size(self) -> Optional[int]:
         """Size in bytes of entire dataset (bytes)"""
         info = client.get_catalog_info(self.id, **self.session_kwargs)

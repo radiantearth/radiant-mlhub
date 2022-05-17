@@ -9,16 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `Dataset.stac_catalog_size`, `estimated_dataset_size` methods.
+- Add `Dataset.stac_catalog_size`, and `estimated_dataset_size` properties.
 
 ### Removed
 
 - Remove Python 3.7 support. ([#106](https://github.com/radiantearth/radiant-mlhub/pull/106))
-- Remove `Dataset.total_archive_size`, because of Dataset.download changes. ([#104](https://github.com/radiantearth/radiant-mlhub/pull/104))
+- Remove `Dataset.total_archive_size` property, because of Dataset.download changes. ([#104](https://github.com/radiantearth/radiant-mlhub/pull/104))
 
 ### Changed
 
-- Refactor `Dataset.download` plus more robust downloading and filtering options. ([#104](https://github.com/radiantearth/radiant-mlhub/pull/104))
+- Rewrite `Dataset.download()` plus more robust downloading and filtering options. ([#104](https://github.com/radiantearth/radiant-mlhub/pull/104))
 
 ### Fixed
 

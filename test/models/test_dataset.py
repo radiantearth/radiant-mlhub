@@ -147,14 +147,14 @@ class TestDataset:
     def test_stac_catalog_size(self) -> None:
         expect_size = 263582
         ds = Dataset.fetch_by_id('nasa_marine_debris')
-        size = ds.stac_catalog_size()
+        size = ds.stac_catalog_size
         assert size is not None and size == expect_size, 'unexpected stac_catalog_size'
 
     @pytest.mark.vcr
     def test_estimated_dataset_size(self) -> None:
         expect_size = 77207762
         ds = Dataset.fetch_by_id('nasa_marine_debris')
-        size = ds.estimated_dataset_size()
+        size = ds.estimated_dataset_size
         assert size is not None and size == expect_size, 'unexpected estimated_dataset_size'
 
     def asset_database_record_count(self, db: Path) -> str:
