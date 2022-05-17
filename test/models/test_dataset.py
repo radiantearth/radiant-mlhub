@@ -152,9 +152,10 @@ class TestDataset:
 
     @pytest.mark.vcr
     def test_estimated_dataset_size(self) -> None:
+        expect_size = 77207762
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         size = ds.estimated_dataset_size()
-        assert size is not None and size > 0, 'unexpected estimated_dataset_size'
+        assert size is not None and size == expect_size, 'unexpected estimated_dataset_size'
 
     def checksum_asset_database(self, db: Path) -> str:
         with open(db, 'rb') as fh:
