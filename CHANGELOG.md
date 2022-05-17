@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Developer
 
 - Remove `tox` from development environment. ([#104](https://github.com/radiantearth/radiant-mlhub/pull/104))
+- Add Python 3.10 on Windows to CI test matrix. ([#104](https://github.com/radiantearth/radiant-mlhub/pull/104))
 
 ## [v0.4.1]
 
