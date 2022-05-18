@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. image:: https://radiant-assets.s3-us-west-2.amazonaws.com/PrimaryRadiantMLHubLogo.png
-   :width: 600
+.. image:: https://radiantmlhub.blob.core.windows.net/frontend-misc-assets/radiant_mlhub_white_bg_750.png
+   :width: 750
    :alt: Radiant MLHub Logo
    :target: https://mlhub.earth
 

@@ -108,7 +108,7 @@ For more information on a Collection, you can check out the MLHub Registry page:
 .. code-block:: python
 
     >>> collection.registry_url
-    https://registry.mlhub.earth/10.14279/depositonce-10149/
+    https://mlhub.earth/10.14279/depositonce-10149/
 
 Downloading a Collection
 ++++++++++++++++++++++++

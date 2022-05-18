@@ -2,9 +2,9 @@ Authentication
 ==============
 
 The Radiant MLHub API uses API keys to authenticate users. These keys must be passed as a ``key`` query parameter in any request made to the API.
-Anyone can register for an API key by going to `https://dashboard.mlhub.earth <https://dashboard.mlhub.earth>`_ and creating an account.
-Once you have logged into your account, go to `http://dashboard.mlhub.earth/api-keys <http://dashboard.mlhub.earth/api-keys>`_ to create
-API keys.
+Anyone can register for an API key by going to `https://mlhub.earth <https://mlhub.earth>`_ and creating an account.
+Once you have logged into your account, go to the Settings & API keys page at 
+`https://mlhub.earth/profile <https://mlhub.earth/profile>`_ to create an API key.
 
 Using API Keys
 ++++++++++++++

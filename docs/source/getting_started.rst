@@ -1,12 +1,21 @@
 Getting Started
 ===============
 
+
 This guide will walk you through the basic usage of the ``radiant_mlhub`` library, including:
 
 * Installing & configuring the library
 * Discovering & fetching datasets
 * Discovering & fetching collections
 * Downloading assets
+
+Background Info
++++++++++++++++
+
+For general knowledge, if you have not already:
+
+* Browse `Radiant MLHub <https://mlhub.earth>`_ to discover the datasets and ML models which are published on MLHub.
+* Browse the `STAC specification <https://stacspec.org>`_ to learn about SpatioTemporal Asset Catalogs (STAC). The MLHub API serves Collections, Items and Assets which are STAC objects.
 
 Installation
 ++++++++++++
@@ -28,7 +37,8 @@ Install with ``conda``
 Configuration
 +++++++++++++
 
-If you have not done so already, you will need to register for an MLHub API key `here <http://dashboard.mlhub.earth/>`_.
+If you have not done so already, you will need to register for an MLHub API key 
+at `https://mlhub.earth <https://mlhub.earth/profile>`_.
 
 Once you have your API key, you will need to create a default profile by setting up a ``.mlhub/profiles`` file in your
 home directory. You can use the :ref:`mlhub configure <configure>` command line tool to do this:
@@ -50,16 +60,21 @@ List Datasets
 +++++++++++++++++
 
 Once you have your profile configured, you can get a list of the available datasets from the Radiant MLHub API using the
-:meth:`Dataset.list <radiant_mlhub.models.Dataset.list>` method. This method is a :term:`generator` that yields
-:class:`~radiant_mlhub.models.Dataset` instances. You can use the ``id`` and ``title`` properties to get more information about a dataset.
+:meth:`Dataset.list <radiant_mlhub.models.Dataset.list>` method. Remember that all datasets are also browseable and searchable on
+`Radiant MLHub <https://mlhub.earth/datasets>`_.
 
 .. code-block:: python
 
     >>> from radiant_mlhub import Dataset
-    >>> for dataset in Dataset.list():
-    ...     print(f'{dataset.id}: {dataset.title}')
-    'bigearthnet_v1: BigEarthNet V1'
-
+    >>> datasets = Dataset.list()
+    >>> # print the first 5 datasets for example
+    >>> for dataset in datasets[0:5]:
+    ...     print(dataset)
+    umd_mali_crop_type: 2019 Mali CropType Training Data
+    idiv_asia_crop_type: A crop type dataset for consistent land cover classification in Central Asia
+    dlr_fusion_competition_germany: A Fusion Dataset for Crop Type Classification in Germany
+    ref_fusion_competition_south_africa: A Fusion Dataset for Crop Type Classification in Western Cape, South Africa
+    bigearthnet_v1: BigEarthNet
 
 Fetch a Dataset
 +++++++++++++++
@@ -70,8 +85,8 @@ You can also fetch a dataset by ID using the :meth:`Dataset.fetch <radiant_mlhub
 .. code-block:: python
 
     >>> dataset = Dataset.fetch('bigearthnet_v1')
-    >>> print(f'{dataset.id}: {dataset.title}')
-    'bigearthnet_v1: BigEarthNet V1'
+    >>> print(dataset)
+    bigearthnet_v1: BigEarthNet V1
 
 Work with Dataset Collections
 +++++++++++++++++++++++++++++
@@ -89,9 +104,10 @@ To list all the collections associated with a dataset use the :attr:`~radiant_ml
     >>> dataset.collections
     [<Collection id=bigearthnet_v1_source>, <Collection id=bigearthnet_v1_labels>]
     >>> type(dataset.collections[0])
-    <class 'radiant_mlhub.models.Collection'>
+    radiant_mlhub.models.collection.Collection
 
-You can also list the collections by type using the ``collections.source_imagery`` and ``collections.labels`` properties
+You can also list the collections by type using the ``collections.source_imagery`` and ``collections.labels`` properties.
+This example code shows that collections are actually `STAC objects <https://stacspec.org/>`_.
 
 .. code-block:: python
 
@@ -101,50 +117,78 @@ You can also list the collections by type using the ``collections.source_imagery
     >>> source_collection = dataset.collections.source_imagery[0]
     >>> pprint(source_collection.to_dict())
     {'description': 'BigEarthNet v1.0',
-     'extent': {'spatial': {'bbox': [[-9.00023345437725,
-                                      1.7542686833884724,
-                                      83.44558248555553,
-                                      68.02168200047284]]},
+    'extent': {'spatial': {'bbox': [[-9.00023345437725,
+                                    36.956956702083396,
+                                    31.598439091981028,
+                                    68.02168200047284]]},
                 'temporal': {'interval': [['2017-06-13T10:10:31Z',
-                                           '2018-05-29T11:54:01Z']]}},
-     'id': 'bigearthnet_v1_source',
-     'keywords': [],
-     'license': 'CDLA-Permissive-1.0',
-     'links': [{'href': 'https://api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_source',
-                'rel': 'self',
+                                        '2018-05-29T11:54:01Z']]}},
+    'id': 'bigearthnet_v1_source',
+    'license': 'CDLA-Permissive-1.0',
+    'links': [{'href': 'https://api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_source/items',
+                'rel': 'items',
+                'type': 'application/geo+json'},
+            {'href': 'https://api.radiant.earth/mlhub/v1/',
+                'rel': 'parent',
                 'type': 'application/json'},
-               {'href': 'https://api.radiant.earth/mlhub/v1',
-                'rel': 'root',
+            {'href': 'https://api.radiant.earth/mlhub/v1/',
+                'rel': <RelType.ROOT: 'root'>,
+                'title': 'Radiant MLHub API',
+                'type': <MediaType.JSON: 'application/json'>},
+            {'href': 'https://api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_source',
+                'rel': 'self',
                 'type': 'application/json'}],
-     'properties': {},
-     'providers': [{'name': 'BigEarthNet',
+    'providers': [{'name': 'BigEarthNet',
                     'roles': ['processor', 'licensor'],
-                    'url': 'https://api.radiant.earth/mlhub/v1/download/dummy-download-key'}],
-     'sci:citation': 'G. Sumbul, M. Charfuelan, B. Demir, V. Markl, "BigEarthNet: '
-                     'A Large-Scale Benchmark Archive for Remote Sensing Image '
-                     'Understanding", IEEE International Geoscience and Remote '
-                     'Sensing Symposium, pp. 5901-5904, Yokohama, Japan, 2019.',
-     'stac_extensions': ['eo', 'sci'],
-     'stac_version': '1.0.0-beta.2',
-     'summaries': {},
-     'title': None}
+                    'url': 'http://bigearth.net'}],
+    'sci:citation': 'G. Sumbul, M. Charfuelan, B. Demir, V. Markl, "BigEarthNet: '
+                    'A Large-Scale Benchmark Archive for Remote Sensing Image '
+                    'Understanding", IEEE International Geoscience and Remote '
+                    'Sensing Symposium, pp. 5901-5904, Yokohama, Japan, 2019.',
+    'sci:doi': '10.14279/depositonce-10149',
+    'stac_extensions': ['https://stac-extensions.github.io/scientific/v1.0.0/schema.json'],
+    'stac_version': '1.0.0',
+    'type': 'Collection'}
 
-Download a Collection Archive
-+++++++++++++++++++++++++++++
+Download a Dataset
+++++++++++++++++++
 
-You can download all the assets associated with a collection using the :meth:`Collection.download <radiant_mlhub.models.Collection.download>`
-method. This method takes a path to a directory on the local file system where the archive should be saved.
-
-If a file of the same name already exists, the client will check whether the downloaded file is complete by comparing its size against the
-size of the remote file. If they are the same size, the download is skipped, otherwise the download will be resumed from the point where it
-stopped. You can control this behavior using the ``if_exists`` argument. Setting this to ``"skip"`` will skip the download for existing
-files *without* checking for completeness (a bit faster since it doesn't require a network request), and setting this to ``"overwrite"``
-will overwrite any existing file.
+You can download a Dataset's STAC catalog, and all of it's linked assets, using the
+:meth:`Dataset.download <radiant_mlhub.models.Dataset.download>` method. Consider
+checking the dataset size before downloading.  Here is an example dataset which
+is relatively small in size. The downloader can also scale up to the largest datasets.
 
 .. code-block:: python
 
-    >>> source_collection.download('~/Downloads')
-    28%|██▊       | 985.0/3496.9 [00:35<00:51, 48.31M/s]
+    >>> dataset = Dataset.fetch('nasa_marine_debris')
+    >>> print(dataset)
+    nasa_marine_debris: Marine Debris Dataset for Object Detection in Planetscope Imagery
+    >>> print(dataset.stac_catalog_size)  # OK the STAC catalog archive is only ~260KB
+    263582
+    >>> print(dataset.estimated_dataset_size)  # OK the total dataset assets are ~77MB
+    77207762
+    >>> dataset.download()
+    nasa_marine_debris: fetch stac catalog: 258KB [00:00, 404.83KB/s]                                                                                                        
+    unarchive nasa_marine_debris.tar.gz: 100%|█████████████████████████████████████████████████████████████████████████████████████████| 2830/2830 [00:00<00:00, 4744.75it/s]
+    download assets: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2825/2825 [03:48<00:00, 12.36it/s]
 
-Collection archives are gzipped tarballs. You can read more about the structure of these archives in `this Medium post
-<https://medium.com/radiant-earth-insights/archived-training-dataset-downloads-now-available-on-radiant-mlhub-7eb67daf094e>`_.
+The :meth:`Dataset.download <radiant_mlhub.models.Dataset.download>` method
+saves the STAC catalog and assets into your current working directory (by default).
+
+The downloader has the ability to download in parallel with many cores, resume
+interrupted downloads, as well as options for filtering the assets to a more manageable size
+(highly recommended, depending on your application).
+
+The asset filtering options are:
+
+* Filter assets by collection id and asset key
+* Filter assets datetime or date range
+* Filter assets by bounding box spatial query
+* Filter assets by GeoJSON intersection spatial query
+
+The :class:`Dataset <radiant_mlhub.models.Dataset>` section has a complete guide
+to all the downloading options. (Recommended)
+
+The :class:`Collection <radiant_mlhub.models.Collection>` section has some
+examples of downloading Collection archives. (Not available for all Collections, 
+consider using the Dataset downloader instead).

@@ -7,16 +7,15 @@ Collection contains the source imagery for the `BigEarthNet <http://bigearth.net
 ``bigearthnet_v1_labels`` Collection contains the annotations for that same dataset. These 2 collections are grouped together into the
 ``bigearthnet_v1`` dataset.
 
-The `Radiant MLHub Training Data Registry <http://registry.mlhub.earth/>`_ provides an overview of the datasets available through the
+`Radiant MLHub <https://mlhub.earth/>`_ provides an overview of the datasets available through the
 Radiant MLHub API along with dataset metadata and a listing of the associated Collections.
 
-To discover and fetch datasets you can either use the low-level client methods from :mod:`radiant_mlhub.client` or the
-:class:`~radiant_mlhub.models.Dataset` class. Using the :class:`~radiant_mlhub.models.Dataset` class is the recommended approach, but
-both methods are described below.
+To list and fetch datasets, the :class:`~radiant_mlhub.models.Dataset` class is the recommended approach,
+but there are also low-level client methods from :mod:`radiant_mlhub.client`. Both methods are described below.
 
 .. note::
 
-    The objects returned by the Radiant MLHub API dataset endpoints are not STAC-compliant objects and therefore the :class:`Dataset`
+    The objects returned by the Radiant MLHub API Dataset endpoints are not STAC-compliant objects and therefore the :class:`Dataset`
     class described below is not a :doc:`PySTAC <pystac:index>` object.
 
 Discovering Datasets
@@ -24,7 +23,7 @@ Discovering Datasets
 
 The Radiant MLHub ``/datasets`` endpoint returns a list of objects describing the available datasets and their associated collections. You
 can use the low-level :func:`~radiant_mlhub.client.list_datasets` function to work with these responses as native Python data types
-(:class:`list` and :class:`dict`). This function is a generator that yields a :class:`dict` for each dataset.
+(:class:`list` and :class:`dict`).
 
 .. code-block:: python
 
