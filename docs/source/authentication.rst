@@ -93,7 +93,7 @@ The easiest way to configure a profile is using the ``mlhub configure`` CLI tool
 
     $ mlhub configure
     API Key: <Enter your API key when prompted>
-    Wrote profile to /Users/youruser/.mlhub/profiles
+    Wrote profile to /home/user/.mlhub/profiles
 
 Given the following ``profiles`` file...
 

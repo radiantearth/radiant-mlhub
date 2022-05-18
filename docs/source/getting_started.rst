@@ -48,7 +48,7 @@ home directory. You can use the :ref:`mlhub configure <configure>` command line 
 
     $ mlhub configure
     API Key: Enter your API key here...
-    Wrote profile to /Users/youruser/.mlhub/profiles
+    Wrote profile to /home/user/.mlhub/profiles
 
 .. hint::
 
@@ -180,14 +180,6 @@ saves the STAC catalog and assets into your current working directory (by defaul
 The downloader has the ability to download in parallel with many cores, resume
 interrupted downloads, as well as options for filtering the assets to a more
 manageable size (highly recommended, depending on your application).
-
-The asset filtering options are:
-
-* Filter assets by collection id and asset key
-* Filter assets datetime or date range
-* Filter assets by bounding box spatial query
-* Filter assets by GeoJSON intersection spatial query
-
 
 .. hint::
     The :ref:`Datasets` guide has more downloading examples
