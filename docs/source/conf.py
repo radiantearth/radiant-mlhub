@@ -22,7 +22,7 @@ from typing import Any, List
 # -- Project information -----------------------------------------------------
 
 project = 'radiant_mlhub'
-copyright = '2020, Radiant Earth Foundation'
+copyright = '2020-2022, Radiant Earth Foundation'
 author = 'Radiant Earth Foundation'
 
 # The short X.Y version
