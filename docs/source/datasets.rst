@@ -280,6 +280,21 @@ In the following sections, all the filtering options are explained.
     Download filters may be freely combined, except ``bbox`` and ``intersects``
     which are independent options.
 
+Checking Dataset Size
+---------------------
+
+Consider checking the dataset size before downloading.
+
+.. code-block:: python
+
+    >>> dataset = Dataset.fetch('nasa_marine_debris')
+    >>> print(dataset)
+    nasa_marine_debris: Marine Debris Dataset for Object Detection in Planetscope Imagery
+    >>> print(dataset.stac_catalog_size)  # OK the STAC catalog archive is only ~260KB
+    263582
+    >>> print(dataset.estimated_dataset_size)  # OK the total dataset assets are ~77MB
+    77207762
+
 Filter by Collection and Asset Keys
 -----------------------------------
 
