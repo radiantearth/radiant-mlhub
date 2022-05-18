@@ -331,7 +331,7 @@ to specify a datetime range (tuple of ``datetime`` objects), or a single day (si
     sen12floods.download(datetime=(my_start_date, my_end_date))
 
 Filter by Bounding Box
--------------------------------------
+----------------------
 
 To download only STAC assets with a spatial bounding box, use the ``bbox``
 parameter to specify a bounding box in lat/lng (CRS EPSG:4326). This performs a

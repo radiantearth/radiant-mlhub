@@ -181,6 +181,11 @@ The downloader has the ability to download in parallel with many cores, resume
 interrupted downloads, as well as options for filtering the assets to a more
 manageable size (highly recommended, depending on your application).
 
+* :ref:`Filter by Collection and Asset Keys`
+* :ref:`Filter by Temporal Range`
+* :ref:`Filter by Bounding Box`
+* :ref:`Filter by GeoJSON Area of Interest`
+
 .. hint::
     The :ref:`Datasets` guide has more downloading examples
     and the :func:`Dataset.download <radiant_mlhub.models.Dataset.download>`
