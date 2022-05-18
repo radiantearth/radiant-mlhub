@@ -441,5 +441,9 @@ Asset Database:
 
     ``{output_dir}/{dataset_id}/mlhub_stac_assets.db``
 
+Error Report:
+
+    ``{output_dir}/{dataset_id}/err_report.csv``
+
 .. hint::
     The ``mlhub_stac_assets.db`` file is an artifact which may be safely deleted to free up disk space.
