@@ -255,7 +255,7 @@ class Collection(pystac.collection.Collection):
         if doi is None:
             return None
 
-        return f'https://registry.mlhub.earth/{doi}'
+        return f'https://mlhub.earth/{doi}'
 
     @property
     def archive_size(self) -> Optional[int]:

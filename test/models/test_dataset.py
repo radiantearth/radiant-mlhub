@@ -345,7 +345,7 @@ class TestDatasetNoProfile:
         ],
         "doi": "10.12345/depositonce-12345",
         "id": "test_dataset",
-        "registry": "https://registry.mlhub.earth/10.12345/depositonce-12345",
+        "registry": "https://mlhub.earth/10.12345/depositonce-12345",
         "title": "Test Dataset"
     }
 

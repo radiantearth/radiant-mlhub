@@ -67,7 +67,7 @@ class TestCollection:
     @pytest.mark.vcr
     def test_get_registry_url(self) -> None:
         collection = Collection.fetch('ref_african_crops_kenya_02_labels')
-        assert collection.registry_url == 'https://registry.mlhub.earth/10.34911/rdnt.dw605x'
+        assert collection.registry_url == 'https://mlhub.earth/10.34911/rdnt.dw605x'
 
     @pytest.mark.vcr
     def test_get_registry_url_no_doi(self) -> None:
