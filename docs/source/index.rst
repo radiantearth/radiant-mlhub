@@ -8,10 +8,10 @@
    :alt: Radiant MLHub Logo
    :target: https://mlhub.earth
 
-Welcome to radiant_mlhub's documentation!
+radiant_mlhub: Python client
 =========================================
 
-The Python client for the `Radiant MLHub API <https://mlhub.earth>`_.
+Welcome to the documentation for the `Radiant MLHub <https://mlhub.earth>`_ Python client.
 
 .. toctree::
    :maxdepth: 2
@@ -19,8 +19,8 @@ The Python client for the `Radiant MLHub API <https://mlhub.earth>`_.
 
    getting_started
    authentication
-   collections
    datasets
+   collections
    ml_models
    API Documentation <api/radiant_mlhub>
    cli

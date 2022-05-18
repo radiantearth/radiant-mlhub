@@ -7,15 +7,16 @@ This guide will walk you through the basic usage of the ``radiant_mlhub`` librar
 * Installing & configuring the library
 * Discovering & fetching datasets
 * Discovering & fetching collections
-* Downloading assets
+* Downloading dataset STAC catalog and assets
 
 Background Info
 +++++++++++++++
 
-For general knowledge, if you have not already:
-
-* Browse `Radiant MLHub <https://mlhub.earth>`_ to discover the datasets and ML models which are published on MLHub.
-* Browse the `STAC specification <https://stacspec.org>`_ to learn about SpatioTemporal Asset Catalogs (STAC). The MLHub API serves Collections, Items and Assets which are STAC objects.
+If you have not already, browse `Radiant MLHub <https://mlhub.earth>`_ to
+discover the datasets and ML models which are currently published on MLHub.
+Consider browsing the `STAC specification <https://stacspec.org>`_ to learn
+about SpatioTemporal Asset Catalogs (STAC). The MLHub API serves STAC
+Collections, Items and Assets.
 
 Installation
 ++++++++++++
@@ -91,7 +92,8 @@ You can also fetch a dataset by ID using the :meth:`Dataset.fetch <radiant_mlhub
 Work with Dataset Collections
 +++++++++++++++++++++++++++++
 
-Datasets have 1 or more collections associated with them. Collections fall into 2 types:
+Datasets have one or more collections associated with them. Collections fall
+into two types:
 
 * ``source_imagery``: Collections of source imagery associated with the dataset
 * ``labels``: Collections of labeled data associated with the dataset (these collections implement the
@@ -153,7 +155,7 @@ This example code shows that collections are actually `STAC objects <https://sta
 Download a Dataset
 ++++++++++++++++++
 
-You can download a Dataset's STAC catalog, and all of it's linked assets, using the
+You can download a dataset's STAC catalog, and all of it's linked assets, using the
 :meth:`Dataset.download <radiant_mlhub.models.Dataset.download>` method. Consider
 checking the dataset size before downloading.  Here is an example dataset which
 is relatively small in size. The downloader can also scale up to the largest datasets.
@@ -176,8 +178,8 @@ The :meth:`Dataset.download <radiant_mlhub.models.Dataset.download>` method
 saves the STAC catalog and assets into your current working directory (by default).
 
 The downloader has the ability to download in parallel with many cores, resume
-interrupted downloads, as well as options for filtering the assets to a more manageable size
-(highly recommended, depending on your application).
+interrupted downloads, as well as options for filtering the assets to a more
+manageable size (highly recommended, depending on your application).
 
 The asset filtering options are:
 
@@ -186,9 +188,19 @@ The asset filtering options are:
 * Filter assets by bounding box spatial query
 * Filter assets by GeoJSON intersection spatial query
 
-The :class:`Dataset <radiant_mlhub.models.Dataset>` section has a complete guide
-to all the downloading options. (Recommended)
 
-The :class:`Collection <radiant_mlhub.models.Collection>` section has some
-examples of downloading Collection archives. (Not available for all Collections, 
-consider using the Dataset downloader instead).
+.. hint::
+    The :ref:`Datasets` guide has more downloading examples
+    and the :func:`Dataset.download <radiant_mlhub.models.Dataset.download>`
+    API reference is available as well.
+
+.. hint::
+    The :ref:`Collections` guide has examples of downloading collection
+    archives. Collection archives are not available for all collections, so
+    consider using the Dataset downloader instead.
+
+Discovering ML Models
++++++++++++++++++++++
+
+ML Models are discoverable through the Python client as well.
+See the :ref:`ML Models` guide for more information.
