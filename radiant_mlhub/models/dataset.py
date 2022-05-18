@@ -332,7 +332,7 @@ class Dataset:
 
         Error Reporting
         ---------------
-        Any unrecoverable download errors will be logged to `{output_dir}/err_report.csv`.
+        Any unrecoverable download errors will be logged to `{output_dir}/{dataset_id}/err_report.csv`.
         """
 
         assert output_dir

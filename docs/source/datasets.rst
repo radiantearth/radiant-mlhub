@@ -230,7 +230,7 @@ Output Directory
 ----------------
 
 The output directory is by default, the current working directory. The
-``output_dir`` parameter takes a ``str`` or ```pathlib.Path``. It will be
+``output_dir`` parameter takes a ``str`` or ``pathlib.Path``. It will be
 created if it does not exist.
 
 .. code-block:: python
@@ -415,7 +415,7 @@ the assets just pass the ``catalog_only`` option to the download method:
 Error reporting
 ---------------
 
-Any unrecoverable download errors will be logged to ``{output_dir}/err_report.csv``
+Any unrecoverable download errors will be logged to ``{output_dir}/{dataset_id}/err_report.csv``
 and a Python exception will be raised.
 
 Appendix: Filesystem Layout of Downloads
