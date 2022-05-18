@@ -224,7 +224,7 @@ The Python logging module can be used to control the verbosity of the download. 
     INFO:radiant_mlhub.client.catalog_downloader:create stac asset list...
     INFO:radiant_mlhub.client.catalog_downloader:2825 unique assets in stac catalog.
     download assets: 100%|█████████████████████████████████████████████████████████████| 2825/2825 [00:18<00:00, 152.37it/s]
-    INFO:radiant_mlhub.client.catalog_downloader:assets saved to /data/ME-1140-dataset-archive-support/radiant-mlhub/examples/nasa_marine_debris
+    INFO:radiant_mlhub.client.catalog_downloader:assets saved to /home/user/nasa_marine_debris
 
 Output Directory
 ----------------
@@ -266,7 +266,7 @@ bandwidth.
     INFO:radiant_mlhub.client.catalog_downloader:create stac asset list...
     INFO:radiant_mlhub.client.catalog_downloader:39063 unique assets in stac catalog.
     download assets: 100%|███████████████████████████████████████████████████████████| 39063/39063 [06:26<00:00, 101.06it/s]
-    INFO:radiant_mlhub.client.catalog_downloader:assets saved to /data/ME-1140-dataset-archive-support/radiant-mlhub/examples/sen12floods
+    INFO:radiant_mlhub.client.catalog_downloader:assets saved to /home/user/sen12floods
 
     CPU times: user 11min 44s, sys: 2min 15s, total: 14min
     Wall time: 6min 40s
@@ -410,7 +410,7 @@ the assets just pass the ``catalog_only`` option to the download method:
     sen12floods: fetch stac catalog: 2060KB [00:00, 127903.52KB/s]                                                          
     INFO:radiant_mlhub.client.catalog_downloader:unarchive sen12floods.tar.gz...
     unarchive sen12floods.tar.gz: 100%|█████████████████████████████████████████| 22278/22278 [00:01<00:00, 14284.65it/s]
-    INFO:radiant_mlhub.client.catalog_downloader:catalog saved to /data/ME-1140-dataset-archive-support/radiant-mlhub/examples/sen12floods
+    INFO:radiant_mlhub.client.catalog_downloader:catalog saved to /home/user/sen12floods
 
 Error reporting
 ---------------
