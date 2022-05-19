@@ -199,7 +199,7 @@ The output directory is the current working directory (by default).
 
 .. code-block:: python
 
-    >>> from radiant_mlhub.models import Dataset
+    >>> from radiant_mlhub import Dataset
     >>> nasa_marine_debris = Dataset.fetch_by_id('nasa_marine_debris')
     >>> print(nasa_marine_debris)
     nasa_marine_debris: Marine Debris Dataset for Object Detection in Planetscope Imagery
