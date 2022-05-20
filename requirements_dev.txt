@@ -1,4 +1,4 @@
 tbump==6.7.0
-tox==3.24.5
+tox==3.25.0
 jupyter==1.0.0
 -r requirements_docs.txt
