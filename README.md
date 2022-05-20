@@ -13,7 +13,7 @@
 
 ## Documentation
 
-API reference and Getting Started guides are available on [Read the Docs](https://radiant-mlhub.readthedocs.io/en/latest/).
+API reference and Getting Started guides are available on [Read the Docs](https://radiant-mlhub.readthedocs.io/en/stable/).
 
 ## Python Version Support
 
