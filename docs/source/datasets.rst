@@ -208,6 +208,22 @@ The output directory is the current working directory (by default).
     unarchive nasa_marine_debris.tar.gz: 100%|████████████████████████████████████| 2830/2830 [00:00<00:00, 14185.00it/s]
     download assets: 100%|█████████████████████████████████████████████████████████████| 2825/2825 [00:19<00:00, 145.36it/s]
 
+
+Download STAC Catalog Archive Only
+----------------------------------
+
+If you want to inspect the STAC catalog or write your own download client for
+the assets just pass the ``catalog_only`` option to the download method:
+
+.. code-block:: python
+
+    >>> sen12floods.download(catalog_only=True)
+    sen12floods: fetch stac catalog: 2060KB [00:00, 127903.52KB/s]                                                          
+    INFO:radiant_mlhub.client.catalog_downloader:unarchive sen12floods.tar.gz...
+    unarchive sen12floods.tar.gz: 100%|█████████████████████████████████████████| 22278/22278 [00:01<00:00, 14284.65it/s]
+    INFO:radiant_mlhub.client.catalog_downloader:catalog saved to /home/user/sen12floods
+
+
 Logging
 -------
 
@@ -396,21 +412,6 @@ bounding box.
 .. hint::
 
    The ``intersects`` filter may not be used with the ``bbox`` filter (use one or the other).
-
-
-STAC Catalog Download
---------------------------
-
-If you want to inspect the STAC catalog or write your own download client for
-the assets just pass the ``catalog_only`` option to the download method:
-
-.. code-block:: python
-
-    >>> sen12floods.download(catalog_only=True)
-    sen12floods: fetch stac catalog: 2060KB [00:00, 127903.52KB/s]                                                          
-    INFO:radiant_mlhub.client.catalog_downloader:unarchive sen12floods.tar.gz...
-    unarchive sen12floods.tar.gz: 100%|█████████████████████████████████████████| 22278/22278 [00:01<00:00, 14284.65it/s]
-    INFO:radiant_mlhub.client.catalog_downloader:catalog saved to /home/user/sen12floods
 
 Error reporting
 ---------------
