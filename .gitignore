@@ -222,4 +222,3 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/osx,python,windows,linux
 
 tmp/
-_*
