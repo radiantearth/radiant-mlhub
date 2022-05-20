@@ -398,7 +398,7 @@ bounding box.
    The ``intersects`` filter may not be used with the ``bbox`` filter (use one or the other).
 
 
-STAC Catalog Only download
+STAC Catalog Download
 --------------------------
 
 If you want to inspect the STAC catalog or write your own download client for
