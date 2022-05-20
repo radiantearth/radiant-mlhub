@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Removed
+
+### Changed
+
+### Fixed
+
+### Deprecated
+
+### Developer
+
+## [v0.5.0]
+
+### Added
+
 - Add `Dataset.stac_catalog_size`, and `estimated_dataset_size` properties. ([#104](https://github.com/radiantearth/radiant-mlhub/pull/104))
 - Add descriptive `__str__`  methods to model classes. ([#104](https://github.com/radiantearth/radiant-mlhub/pull/104))
 
@@ -24,8 +38,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Remove outdated jupyter notebooks from the `examples/` folder. ([#104](https://github.com/radiantearth/radiant-mlhub/pull/104))
-
-### Deprecated
 
 ### Developer
 
@@ -187,7 +199,8 @@ Includes support for:
 * Fetching datasets and collections by ID
 * Downloading collection archives
 
-[Unreleased]: <https://github.com/stac-utils/pystac/compare/v0.4.1...main>
+[Unreleased]: <https://github.com/stac-utils/pystac/compare/v0.5.0...main>
+[v0.5.0]: <https://github.com/stac-utils/pystac/compare/v0.4.1...0.5.0>
 [v0.4.1]: <https://github.com/stac-utils/pystac/compare/v0.4.0...0.4.1>
 [v0.4.0]: <https://github.com/stac-utils/pystac/compare/v0.3.1...0.4.0>
 [v0.3.1]: <https://github.com/stac-utils/pystac/compare/v0.3.0...0.3.1>
