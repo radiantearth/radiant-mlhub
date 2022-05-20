@@ -5,36 +5,28 @@ build-backend = "setuptools.build_meta"
 [tool.pytest.ini_options]
 testpaths = ["test"]
 addopts = "--block-network --record-mode once"
+markers = [
+  "collection_id",
+  "dataset_id",
+]
+
 [tool.mypy]
 strict = true
 show_error_codes = true
 
 [[tool.mypy.overrides]]
 module = [
-  "setuptools",
-  "urllib3.*",
+  "dateutil.*",
+  "geojson.*",
   "requests_mock.*",
+  "setuptools",
+  "shapely.*",
+  "sphinx_rtd_theme.*",
   "tqdm.*",
-  "sphinx_rtd_theme.*"
+  "urllib3.*",
 ]
 ignore_missing_imports = true
 
-[tool.tox]
-
-legacy_tox_ini = """
-[tox]
-envlist = py37, py38, py39, py310
-
-[testenv]
-deps = -rrequirements_testing.txt
-isolated_build = true
-commands =
-    pytest --record-mode once --block-network
-    flake8
-    flake8_nb examples/
-    mypy radiant_mlhub
-
-"""
 # Uncomment this if your project is hosted on GitHub:
 # github_url = "https://github.com/<user or organization>/<project>/"
 

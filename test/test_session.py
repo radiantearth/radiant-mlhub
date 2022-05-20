@@ -9,46 +9,42 @@ import pytest
 from requests_mock.exceptions import NoMockAddress
 
 from radiant_mlhub.exceptions import APIKeyNotFound, AuthenticationError
-from radiant_mlhub.session import Session, get_session
+from radiant_mlhub.session import Session, get_session, ANONYMOUS_PROFILE
 
 if TYPE_CHECKING:
     from requests_mock import Mocker as Mocker_Type
 
 
 class TestOverwriteRootURL:
-    @pytest.fixture(scope="function", autouse=True)
-    def root_url(self, monkeypatch: pytest.MonkeyPatch) -> str:
-        return Session.DEFAULT_ROOT_URL
 
-    def test_default_root_url(self) -> None:
+    @pytest.fixture(autouse=False)
+    def custom_root_url(self, monkeypatch: pytest.MonkeyPatch) -> str:
+        custom = 'https://example.org'
+        monkeypatch.setenv('MLHUB_ROOT_URL', custom)
+        return custom
+
+    def test_default_root_url(self, root_url: str) -> None:
         # Use anonymous session since we don't need to make actual requests
         session = Session(api_key=None)
+        assert session.root_url == root_url
 
-        assert session.root_url == Session.DEFAULT_ROOT_URL
-
-    def test_env_variable_root_url(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        custom_root_url = "https://some-other-url"
-        monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
+    def test_env_variable_root_url(self, custom_root_url: str) -> None:
         # Use anonymous session since we don't need to make actual requests
         session = Session(api_key=None)
-
         assert session.root_url == custom_root_url
 
     @pytest.mark.vcr
-    def test_request_to_custom_url(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        custom_root_url = "https://www.google.com"
-        monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
-        # Use anonymous session since we don't need to make actual requests
+    def test_request_to_custom_url(self, custom_root_url: str) -> None:
         session = Session(api_key=None)
-
         r = session.request("GET", "")
-
         assert r.request.url == custom_root_url + "/"
 
     @pytest.mark.vcr
     def test_request_to_custom_url_using_get_session(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        custom_root_url = "https://www.google.com"
+        custom_root_url = "https://example.org"
         monkeypatch.setenv('MLHUB_ROOT_URL', custom_root_url)
+        monkeypatch.setenv('MLHUB_API_KEY', 'test_key')
+
         # Use anonymous session since we don't need to make actual requests
         session = get_session()
 
@@ -59,7 +55,7 @@ class TestOverwriteRootURL:
 
 class TestResolveAPIKeys:
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(autouse=False)
     def mock_profile(self, monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path) -> Iterator[configparser.ConfigParser]:
         config = configparser.ConfigParser()
 
@@ -83,11 +79,11 @@ class TestResolveAPIKeys:
 
     def test_api_key_from_argument(self, requests_mock: "Mocker_Type") -> None:
         """The API key given as an init argument is stored on the session."""
-        url_pattern = re.compile(r"http://some-domain.com\??.+")
+        url_pattern = re.compile(r"http://example.org\??.+")
         requests_mock.get(url_pattern, status_code=200, text="")
         session = get_session(api_key='fromargument')
 
-        session.get("http://some-domain.com")
+        session.get("http://example.org")
 
         history = requests_mock.request_history
 
@@ -102,11 +98,11 @@ class TestResolveAPIKeys:
     def test_api_key_from_environment(self, monkeypatch: pytest.MonkeyPatch, requests_mock: "Mocker_Type") -> None:
         """The API key given by the MLHUB_API_KEY environment variable is stored on the session."""
         monkeypatch.setenv('MLHUB_API_KEY', 'fromenvironment')
-        url_pattern = re.compile(r"http://some-domain.com\??.+")
+        url_pattern = re.compile(r"http://example.org\??.+")
         requests_mock.get(url_pattern, status_code=200, text="")
 
         session = get_session()
-        session.get("http://some-domain.com")
+        session.get("http://example.org")
 
         history = requests_mock.request_history
 
@@ -118,13 +114,20 @@ class TestResolveAPIKeys:
         assert 'key' in query_params
         assert 'fromenvironment' in query_params['key']
 
-    def test_api_key_from_default_profile(self, mock_profile: configparser.ConfigParser, requests_mock: "Mocker_Type") -> None:
+    def test_api_key_from_default_profile(
+                self,
+                monkeypatch: pytest.MonkeyPatch,
+                mock_profile: configparser.ConfigParser,
+                requests_mock: "Mocker_Type",
+            ) -> None:
         """The API key from the default profile of ~/.mlhub/profiles is stored on the session if no explicit profile is given."""
-        url_pattern = re.compile(r"http://some-domain.com\??.+")
+        monkeypatch.delenv('MLHUB_API_KEY', raising=False)
+        monkeypatch.delenv('MLHUB_PROFILE', raising=False)
+        url_pattern = re.compile(r"http://example.org\??.+")
         requests_mock.get(url_pattern, status_code=200, text="")
 
         session = get_session()
-        session.get("http://some-domain.com")
+        session.get("http://example.org")
 
         history = requests_mock.request_history
 
@@ -136,13 +139,22 @@ class TestResolveAPIKeys:
         assert 'key' in query_params
         assert 'defaultapikey' in query_params['key']
 
-    def test_api_key_from_named_profile(self, mock_profile: configparser.ConfigParser, requests_mock: "Mocker_Type") -> None:
+    def test_api_key_from_named_profile(
+                self,
+                monkeypatch: pytest.MonkeyPatch,
+                mock_profile: configparser.ConfigParser,
+                requests_mock: "Mocker_Type"
+            ) -> None:
         """The API key from the given profile in ~/.mlhub/profiles is stored on the session."""
-        url_pattern = re.compile(r"http://some-domain.com\??.+")
+
+        # setup environment for this test
+        monkeypatch.delenv('MLHUB_API_KEY', raising=False)
+
+        url_pattern = re.compile(r"http://example.org\??.+")
         requests_mock.get(url_pattern, status_code=200, text="")
 
         session = get_session(profile='other-profile')
-        session.get("http://some-domain.com")
+        session.get("http://example.org")
 
         history = requests_mock.request_history
 
@@ -161,12 +173,16 @@ class TestResolveAPIKeys:
         requests_mock: "Mocker_Type"
     ) -> None:
         """The API key from the profile given in the MLHUB_PROFILE environment variable is stored on the session."""
+
+        # setup environment for this test
+        monkeypatch.delenv('MLHUB_API_KEY', raising=False)
         monkeypatch.setenv('MLHUB_PROFILE', 'environment-profile')
-        url_pattern = re.compile(r"http://some-domain.com\??.+")
+
+        url_pattern = re.compile(r"http://example.org\??.+")
         requests_mock.get(url_pattern, status_code=200, text="")
 
         session = get_session()
-        session.get("http://some-domain.com")
+        session.get("http://example.org")
 
         history = requests_mock.request_history
 
@@ -181,6 +197,8 @@ class TestResolveAPIKeys:
     def test_user_defined_mlhub_home(self, monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path, requests_mock: "Mocker_Type") -> None:
         """If the MLHUB_HOME environment variable is set, the client should look for a profiles file in that directory.
         """
+        # setup environment for this test
+
         # Create user-defined home directory
         mlhub_home = tmp_path / 'some-directory' / '.mlhub'
         mlhub_home.mkdir(parents=True)
@@ -193,14 +211,16 @@ class TestResolveAPIKeys:
         with (mlhub_home / 'profiles').open('w') as dst:
             config.write(dst)
 
-        # Monkeypatch the MLHUB_HOME variable
+        # Setup environment for this test
         monkeypatch.setenv('MLHUB_HOME', str(mlhub_home.resolve()))
+        monkeypatch.delenv('MLHUB_API_KEY', raising=False)
+        monkeypatch.delenv('MLHUB_PROFILE', raising=False)
 
-        url_pattern = re.compile(r"http://some-domain.com\??.+")
+        url_pattern = re.compile(r"http://example.org\??.+")
         requests_mock.get(url_pattern, status_code=200, text="")
 
         session = get_session()
-        session.get("http://some-domain.com")
+        session.get("http://example.org")
 
         history = requests_mock.request_history
 
@@ -214,7 +234,8 @@ class TestResolveAPIKeys:
 
     def test_from_env_error(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Raises an exception if no MLHUB_API_KEY environment variable is found when explicitly loading session from environment."""
-        # Ensure there is not MLHUB_API_KEY environment variable
+
+        # Setup the environment for this test
         monkeypatch.delenv('MLHUB_API_KEY', raising=False)
 
         with pytest.raises(APIKeyNotFound) as excinfo:
@@ -237,15 +258,31 @@ class TestResolveAPIKeys:
 
         assert 'No file found' in str(excinfo.value)
 
-    def test_invalid_profile_name(self, mock_profile: configparser.ConfigParser) -> None:
+    def test_invalid_profile_name(
+                self,
+                monkeypatch: pytest.MonkeyPatch,
+                mock_profile: configparser.ConfigParser
+            ) -> None:
         """Raises an exception if a non-existent profile name is given."""
+
+        # Setup the environment for this test
+        monkeypatch.delenv('MLHUB_API_KEY', raising=False)
+
         with pytest.raises(APIKeyNotFound) as excinfo:
             Session.from_config(profile='does-not-exist')
 
         assert 'Could not find "does-not-exist" section' in str(excinfo.value)
 
-    def test_missing_api_key(self, mock_profile: configparser.ConfigParser) -> None:
+    def test_missing_api_key(
+                self,
+                monkeypatch: pytest.MonkeyPatch,
+                mock_profile: configparser.ConfigParser
+            ) -> None:
         """Raises an exception if the profile does not have an api_key value."""
+
+        # Setup the environment for this test
+        monkeypatch.delenv('MLHUB_API_KEY', raising=False)
+
         with pytest.raises(APIKeyNotFound) as excinfo:
             Session.from_config(profile='blank-profile')
 
@@ -253,6 +290,7 @@ class TestResolveAPIKeys:
 
     def test_unresolved_api_key(self, monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path) -> None:
         """Raises an exception if no API key can be resolved from arguments, environment, or profiles."""
+
         # Monkeypatch the user's home directory to be the temp directory.
         monkeypatch.setenv('HOME', str(tmp_path))
 
@@ -273,7 +311,7 @@ class TestResolveAPIKeys:
 
 class TestSessionRequests:
 
-    @pytest.fixture(scope='function', autouse=True)
+    @pytest.fixture(autouse=True)
     def test_api_key(self, monkeypatch: pytest.MonkeyPatch) -> str:
         """Set the default (dummy) API key to use for testing."""
         monkeypatch.setenv('MLHUB_API_KEY', 'testapikey')
@@ -283,12 +321,12 @@ class TestSessionRequests:
         """The API key stored on the session is used in requests and any additional query params that are passed in the
         request method are preserved."""
 
-        requests_mock.get('https://some-domain.com', text='{}')
+        requests_mock.get('https://example.org', text='{}')
 
         session = get_session()  # Gets the API key from the monkeypatched environment variable
 
         # Test injection of API key
-        session.get('https://some-domain.com')
+        session.get('https://example.org')
 
         history = requests_mock.request_history
 
@@ -298,7 +336,7 @@ class TestSessionRequests:
         assert query_params.get('key') == [test_api_key]
 
         # Test preservation of other query params
-        session.get('https://some-domain.com', params={'otherparam': 'here'})
+        session.get('https://example.org', params={'otherparam': 'here'})
 
         history = requests_mock.request_history
 
@@ -309,7 +347,7 @@ class TestSessionRequests:
         assert query_params.get('otherparam') == ['here']
 
         # Test overwriting api key in request method
-        session.get('https://some-domain.com', params={'key': 'new-api-key'})
+        session.get('https://example.org', params={'key': 'new-api-key'})
 
         history = requests_mock.request_history
 
@@ -321,11 +359,11 @@ class TestSessionRequests:
     def test_inject_headers(self, requests_mock: "Mocker_Type") -> None:
         """The session injects the User-Agent and Accept headers."""
 
-        requests_mock.get('https://some-domain.com')
+        requests_mock.get('https://example.org')
 
         session = get_session()
 
-        session.get('https://some-domain.com')
+        session.get('https://example.org')
 
         history = requests_mock.request_history
         assert len(history) == 1
@@ -377,17 +415,20 @@ class TestSessionRequests:
 
 
 class TestAnonymousSession:
-    @pytest.fixture(scope='function', autouse=True)
-    def mock_profile(self) -> None:
-        pass
+
+    @pytest.fixture(autouse=True)
+    def mock_profile(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        # remove all these env var otherwise it will override the anonymous profile.
+        monkeypatch.delenv('MLHUB_API_KEY', raising=False)
+        monkeypatch.delenv('MNHUB_PROFILE', raising=False)
 
     def test_anonymous_session_has_no_key(self, requests_mock: "Mocker_Type") -> None:
         """Session instantiated with api_key=None should not include a "key" query parameter."""
-        url_pattern = re.compile(r"http://some-domain.com\??.+")
+        url_pattern = re.compile(r"http://example.org\??.+")
         requests_mock.get(url_pattern, status_code=200, text="")
 
         session = Session(api_key=None)
-        session.get("http://some-domain.com")
+        session.get("http://example.org")
 
         history = requests_mock.request_history
 
@@ -399,13 +440,14 @@ class TestAnonymousSession:
         assert 'key' not in query_params
 
     def test_get_anonymous_session(self, requests_mock: "Mocker_Type") -> None:
-        """get_session called with the anonymouse profile should return a session that does not
+        """get_session called with the anonymous profile should return a session that does not
         include a "key" query parameter."""
-        url_pattern = re.compile(r"http://some-domain.com\??.+")
+
+        url_pattern = re.compile(r"http://example.org\??.+")
         requests_mock.get(url_pattern, status_code=200, text="")
 
-        session = get_session(profile="__anonymous__")
-        session.get("http://some-domain.com")
+        session = get_session(profile=ANONYMOUS_PROFILE)
+        session.get("http://example.org")
 
         history = requests_mock.request_history
 

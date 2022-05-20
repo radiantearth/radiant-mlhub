@@ -1,0 +1,33 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
+    method: HEAD
+    uri: https://staging.api.radiant.earth/mlhub/v1/archive/no_archive
+  response:
+    body:
+      string: ''
+    headers:
+      Content-Length:
+      - '55'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 17 May 2022 20:23:26 GMT
+      X-Azure-Ref:
+      - 0PgSEYgAAAAB0YFpAH7A2TLhJkZI6xDAnREVOMzAxMDAwMTA5MDQ3ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      X-Cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 404
+      message: Not Found
+version: 1

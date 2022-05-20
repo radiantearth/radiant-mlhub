@@ -2,9 +2,9 @@ Authentication
 ==============
 
 The Radiant MLHub API uses API keys to authenticate users. These keys must be passed as a ``key`` query parameter in any request made to the API.
-Anyone can register for an API key by going to `https://dashboard.mlhub.earth <https://dashboard.mlhub.earth>`_ and creating an account.
-Once you have logged into your account, go to `http://dashboard.mlhub.earth/api-keys <http://dashboard.mlhub.earth/api-keys>`_ to create
-API keys.
+Anyone can register for an API key by going to `https://mlhub.earth <https://mlhub.earth>`_ and creating an account.
+Once you have logged into your account, go to the Settings & API keys page at 
+`https://mlhub.earth/profile <https://mlhub.earth/profile>`_ to create an API key.
 
 Using API Keys
 ++++++++++++++
@@ -93,7 +93,7 @@ The easiest way to configure a profile is using the ``mlhub configure`` CLI tool
 
     $ mlhub configure
     API Key: <Enter your API key when prompted>
-    Wrote profile to /Users/youruser/.mlhub/profiles
+    Wrote profile to /home/user/.mlhub/profiles
 
 Given the following ``profiles`` file...
 
@@ -169,10 +169,10 @@ the following code would make a request to ``https://api.radiant.earth/mlhub/v1/
 
     >>> session.get('some-endpoint')
 
-but the following code would make a request to ``https://www.google.com``:
+but the following code would make a request to ``https://example.org``:
 
 .. code-block:: python
 
-    >>> session.get('https://www.google.com')
+    >>> session.get('https://example.org')
 
 It is not recommended to make calls to APIs other than the Radiant MLHub API using these sessions.

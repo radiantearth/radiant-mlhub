@@ -17,6 +17,7 @@ import pystac.summaries
 
 from .. import client
 from ..exceptions import EntityDoesNotExist
+from ..if_exists import DownloadIfExistsOpts
 
 TagOrTagList = Union[str, Iterable[str]]
 TextOrTextList = Union[str, Iterable[str]]
@@ -166,19 +167,23 @@ class Collection(pystac.collection.Collection):
         response = client.get_collection(collection_id, api_key=api_key, profile=profile)
         return cls.from_dict(response, api_key=api_key, profile=profile)
 
+    def __str__(self) -> str:
+        """Return the "informal" or nicely printable string representation of an object."""
+        return f'{self.id}: {self.description}'
+
     def get_items(self, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> Iterator[pystac.item.Item]:
         """
         .. note::
 
             The ``get_items`` method is not implemented for Radiant MLHub :class:`Collection` instances for performance reasons. Please use
-            the :meth:`Collection.download` method to download Collection assets.
+            the :meth:`Dataset.download` method to download Dataset assets.
 
         Raises
         ------
         NotImplementedError
         """
         raise NotImplementedError('For performance reasons, the get_items method has not been implemented for Collection instances. Please '
-                                  'use the Collection.download method to download Collection assets.')
+                                  'use the Dataset.download method to download Dataset assets.')
 
     def fetch_item(self, item_id: str, *, api_key: Optional[str] = None, profile: Optional[str] = None) -> pystac.item.Item:
         api_key = api_key or self.session_kwargs.get("api_key")
@@ -190,7 +195,7 @@ class Collection(pystac.collection.Collection):
             self,
             output_dir: Union[str, Path],
             *,
-            if_exists: str = 'resume',
+            if_exists: DownloadIfExistsOpts = DownloadIfExistsOpts.resume,
             api_key: Optional[str] = None,
             profile: Optional[str] = None
     ) -> Path:
@@ -236,7 +241,7 @@ class Collection(pystac.collection.Collection):
             "api_key": api_key,
             "profile": profile
         }
-        return client.download_archive(self.id, output_dir=os.fspath(output_dir), if_exists=if_exists, **session_kwargs)
+        return client.download_collection_archive(self.id, output_dir=os.fspath(output_dir), if_exists=if_exists, **session_kwargs)
 
     @property
     def registry_url(self) -> Optional[str]:
@@ -250,7 +255,7 @@ class Collection(pystac.collection.Collection):
         if doi is None:
             return None
 
-        return f'https://registry.mlhub.earth/{doi}'
+        return f'https://mlhub.earth/{doi}'
 
     @property
     def archive_size(self) -> Optional[int]:
@@ -261,7 +266,7 @@ class Collection(pystac.collection.Collection):
         #  exist (HEAD returns a 404).
         if self._archive_size == -1:
             try:
-                self._archive_size = client.get_archive_info(self.id, **self.session_kwargs).get('size')
+                self._archive_size = client.get_collection_archive_info(self.id, **self.session_kwargs).get('size')
             except EntityDoesNotExist:
                 self._archive_size = None
 

@@ -21,6 +21,14 @@ radiant\_mlhub.exceptions module
    :undoc-members:
    :show-inheritance:
 
+radiant\_mlhub.if\_exists module
+--------------------------------
+
+.. automodule:: radiant_mlhub.if_exists
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 radiant\_mlhub.session module
 -----------------------------
 

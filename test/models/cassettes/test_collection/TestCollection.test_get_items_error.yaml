@@ -1,0 +1,49 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
+    method: GET
+    uri: https://staging.api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_source
+  response:
+    body:
+      string: !!binary |
+        H4sIAEcEhGIC/7VT72vbMBD9V4S/zpYl20lsf+uPUDraMZZusKWhKMrF1mpbRlJMS8j/vpPTrt0o
+        DMYGwoi7d+/ePZ33gdoEZbBWFQjj6g7c3cDvrN4ZCUEYuMceMH2mmwakU7rDWKO6exuUy31goMGk
+        ctDaF6zo+0ZJ4cFxBfrddztW1Qa2mK2d620Zx9aJSnUVFb2iRmyU6BwdFcRtU+/W8cBj+bOpjd/U
+        Fx87H8JnJb0w0Lm3pfy1jFf8Ruv/yG6h2f5j9j9aGBxWYQAPzttW7gPbY0PR+Ot6rR/wkZdRQRlj
+        SZpmkyydzZJJmE5pMZnimbGE5WlaTMOU00mRZ2nBCl7knCV5OM0pS/g0T7A6myV5tlodcDhoe22O
+        HVTnwAz+vlwGCeOziE0jnt5wVuJJ+TccGcN5xCZRUtxwXk6ykmEYmQ5+DSV0dtzO86uT6COYVlmr
+        Bog4ZVhqpSo3WmGeM8qzZFbEG+i1VU53EkGMZwXCeqMHtQFz3OidaZ4cRoOfHaNoGSI70fpup6qa
+        ++iHMWh0A77U80iwVpvgWRpeV97eDVhpVD/+Pb+Uk+FFqVROPCEuKFns2vWuCck1JWe1MNsdNKIL
+        ySkl59AqE5IvlFwLc4+Q29eMJTkhV8JUEC2kaICcQifrFoHkxMgavSFbbcgnaLUDskCNuD/kshUV
+        kM+dN8GJboOx2yAkl/P5nFz6N+pGZaIhF6BRK3ICQdzvPIvH1tu7a0PS95RMCsYj/GQh+arvdS1a
+        EZL3oveD4LMW1E/uhLwbsO9xcrTjaIgPj1vpE6O9r5ZeRi8pWimHu06VjkdlTm2VjIeRCCM1tIKO
+        f8/q8AOzQ2uP6gQAAA==
+    headers:
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '640'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 17 May 2022 20:23:35 GMT
+      Vary:
+      - Accept-Encoding
+      X-Azure-Ref:
+      - 0RwSEYgAAAAAUHBk9Rk5MToqLz6SI4yCuREVOMzAxMDAwMTEwMDI3ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      X-Cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+version: 1

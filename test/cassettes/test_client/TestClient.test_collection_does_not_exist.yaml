@@ -9,8 +9,8 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.2.2 (Darwin Kernel Version 19.6.0: Tue Jun 22 19:49:55 PDT
-        2021; root:xnu-6153.141.35~1/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: GET
     uri: https://staging.api.radiant.earth/mlhub/v1/collections/no_collection
   response:
@@ -22,9 +22,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 16 Sep 2021 19:43:07 GMT
+      - Tue, 17 May 2022 20:23:15 GMT
       X-Azure-Ref:
-      - 0S55DYQAAAABhqzhzXTprRZ8CL0qcW/KSQk9TMzFFREdFMDQyMQAwODQxMTZmMC0yZjAzLTQ5N2ItOWUyMS03M2U2NDU0YzA2NzA=
+      - 0MwSEYgAAAAAKeUvlF+I+R5Pm1FCYxnKXREVOMzAxMDAwMTEwMDE5ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:

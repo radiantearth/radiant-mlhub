@@ -1,0 +1,157 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
+    method: GET
+    uri: https://staging.api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_source
+  response:
+    body:
+      string: !!binary |
+        H4sIAEoEhGIC/7VU227TQBD9FctPIBJ77/bmrSQgJKAPpSqXNIo29iZZ6nit9Sa0qvLvzNpJG25C
+        IJAs2Z45c+b47IzvY1PGo9jp5VwtnSlUPS+cbdr5ja7v1ByReWu3rtDxIPZ3jQbo2FaVLryxNcQq
+        U9+08Wh6DwwVJI3Xm/YRq5qmAs4ATlfaPvvcdlVraAfZtfdNO0rT1quVqVeJakziVGlU7ROtnF+n
+        m2q9XaQ7nBYPTdv0t1rTXsV+cFTVKKdr/3NZfy3phN9Z+x/ZW10t/zH7H9kZ72eDWN/6YOHoPm4b
+        aK6q8LhY2Fs4/CllCSIEiZxTLAiVcoASLDJEaZ4xwSnDA4AQRAllklOUUcwBwhjmjHPMc8klIrPB
+        kUgyKoQUTD7AcE4IyVGOCTtSSXiHOyVMACjDAjEhCLARgXHPFWCIcajnPD9oIjgXknORcR6YaA69
+        KCNSSmjBfmz3yPS9dpYLlksqKc0OTIEGqiSW2UESIsCOuMyyfDbbwyHqTWNd756pvXa78DydxgRh
+        OUQYrkuERt31CY62C2MypKdhYNqH1St03XYbOR4+/zh8dzYE96CmLcyotAYSGCUgGuPUlTAD5ReB
+        +C0AGmd3ptSuX9ytq06G55uBAWytNqHFRR+OXoRw9NJu61IdfgHOVjowHQRZFybStr5vVOg2hGZh
+        hkrdFs40Xd0oPrfR5CTQ6y6MV4f8r1pGTwic+9PoOh5fsbNobDeN9qbLvA6DG41hiKNL2JZoorxq
+        tb+OB9EVfG6A4AQNoiP12zevtoskmgJOR2dF0KrLWXT0AkxMrFulDzZeTM4vk8l7sPFD0OtVMd/1
+        vMHsBPX2h3C3LiHROXOymcXwMZWsjIeFTIxN4dthvczSFLCegQgia71RSbfis/1XW3JGhKcFAAA=
+    headers:
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '683'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 17 May 2022 20:23:38 GMT
+      Vary:
+      - Accept-Encoding
+      X-Azure-Ref:
+      - 0SgSEYgAAAACxiGXM5VoUQ5yFE18lBio/REVOMzAxMDAwMTA5MDI1ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      X-Cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
+    method: GET
+    uri: https://staging.api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_source/items/ref_african_crops_kenya_02_tile_02_20190721
+  response:
+    body:
+      string: !!binary |
+        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
+        WsM///K/WyIWIGMgAAA=
+    headers:
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '4118'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 17 May 2022 20:23:39 GMT
+      Vary:
+      - Accept-Encoding
+      X-Azure-Ref:
+      - 0SwSEYgAAAADxiZGl4oMySbbOMDrV6G7pREVOMzAxMDAwMTEwMDQ5ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      X-Cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+version: 1

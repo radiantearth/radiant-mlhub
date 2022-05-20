@@ -9,17 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `Dataset.stac_catalog_size`, and `estimated_dataset_size` properties. ([#104](https://github.com/radiantearth/radiant-mlhub/pull/104))
+- Add descriptive `__str__`  methods to model classes. ([#104](https://github.com/radiantearth/radiant-mlhub/pull/104))
+
 ### Removed
 
-- Remove Python 3.7 support. ([106])(https://github.com/radiantearth/radiant-mlhub/pull/106)
+- Remove Python 3.7 support. ([#106](https://github.com/radiantearth/radiant-mlhub/pull/106))
+- Remove `Dataset.total_archive_size` property, because of Dataset.download changes. ([#104](https://github.com/radiantearth/radiant-mlhub/pull/104))
 
 ### Changed
 
+- Rewrite `Dataset.download()` plus more robust downloading and filtering options. ([#104](https://github.com/radiantearth/radiant-mlhub/pull/104))
+
 ### Fixed
+
+- Remove outdated jupyter notebooks from the `examples/` folder. ([#104](https://github.com/radiantearth/radiant-mlhub/pull/104))
 
 ### Deprecated
 
 ### Developer
+
+- Remove `tox` from development environment. ([#104](https://github.com/radiantearth/radiant-mlhub/pull/104))
+- Add Python 3.10 on Windows to CI test matrix. ([#104](https://github.com/radiantearth/radiant-mlhub/pull/104))
 
 ## [v0.4.1]
 

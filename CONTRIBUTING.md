@@ -42,31 +42,21 @@ New PRs will use our PR template, which includes the following checklist:
 Install development dependencies:
 
 ```shell
-> pip install -r requirements_dev.txt
+pip install -r requirements_dev.txt
 ```
 
 ## Tests
 
-This library uses [`pytest`](https://docs.pytest.org/en/stable/) for unit testing, 
-[`flake8`](https://flake8.pycqa.org/en/latest/) and [`flake8-nb`](https://pypi.org/project/flake8-nb/)
-for code style checking, and [`mypy`](https://mypy.readthedocs.io/en/stable/) for type checking.
-We also use [`tox`](https://tox.readthedocs.io/en/latest/examples.html) run each of these tools against
-all supported Python versions.
-
-To run against all supported Python versions in parallel:
+This library uses [`pytest`](https://docs.pytest.org/en/stable/) for unit testing,
+[`flake8`](https://flake8.pycqa.org/en/latest/)
+and [`mypy`](https://mypy.readthedocs.io/en/stable/) for type checking.
+To run them locally:
 
 ```shell
-> tox -p
+pytest
+flake8
+mypy radiant_mlhub/
 ```
-
-To run against just Python 3.8, for example:
-
-```shell
-> tox -e py38
-```
-
-*Note that you must have all supported Python versions installed in order to run tests against them. See 
-[`tox-pyenv`](https://pypi.org/project/tox-pyenv/) if you are using `pyenv` to manage your installed Python versions.*  
 
 ### VCR.py Cassettes
 
@@ -121,4 +111,4 @@ When the code on the `main` branch has stabilized, we will cut a new release usi
   
 After the release has been published to PyPi, you should also update the recipe in the [`conda-forge` 
 feedstock](https://github.com/conda-forge/radiant-mlhub-feedstock) to use the new release. See the README in that repo 
-for instructions on how to update the recipe. 
+for instructions on how to update the recipe.

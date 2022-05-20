@@ -208,12 +208,17 @@ class Session(requests.Session):
 
 
 def get_session(*, api_key: Optional[str] = None, profile: Optional[str] = None) -> Session:
-    """Gets a :class:`Session` object that uses the given ``api_key`` for all requests. If no ``api_key`` argument is
-    provided then the function will try to resolve an API key by finding the following values (in order of preference):
+    """Gets a :class:`Session` object that uses the given ``api_key`` for all requests.
+    Resolves an API key by trying each of the following (in this order):
 
-    1) An ``MLHUB_API_KEY`` environment variable
-    2) A ``api_key`` value found in the given ``profile`` section of ``~/.mlhub/profiles``
-    3) A ``api_key`` value found in the given ``default`` section of ``~/.mlhub/profiles``
+        1. Use the `api_key` argument provided (Optional).
+        2. Use an `MLHUB_API_KEY` environment variable.
+        3. Use the profile argument provided (Optional).
+        4. Use the `MLHUB_PROFILE` environment variable.
+        5. Use the default profile
+
+    If none of the above strategies results in a valid API key, then an APIKeyNotFound exception is raised.
+    See Using Profiles section for details.
 
     Parameters
     ----------
@@ -244,21 +249,23 @@ def get_session(*, api_key: Optional[str] = None, profile: Optional[str] = None)
     # Alternatively, you could set the MLHUB_API_KEY environment variable to "some-api-key"
     >>> session = get_session(api_key='some-api-key')
     """
-
+    # 1. Use the `api_key` argument provided (Optional)
     if api_key:
         return Session(api_key=api_key)
 
+    # 2. Use an `MLHUB_API_KEY` environment variable
     if Session.API_KEY_ENV_VARIABLE in os.environ:
         return Session.from_env()
 
+    # 3. Use the profile argument provided (Optional, see Using Profiles section for details)
+    # 4. Use the `MLHUB_PROFILE` environment variable (see Using Profiles section for details)
+    # 5. Use the default profile (see Using Profiles section for details)
     try:
-        # Use the profile argument (if not None or empty), otherwise try to get the profile name from the MLHUB_PROFILE env variable.
-        profile = profile or os.getenv(Session.PROFILE_ENV_VARIABLE)
-
         if profile == ANONYMOUS_PROFILE:
             # For the special case of the "__anonymous__" profile, create a Session with no API key
             return Session(api_key=None)
 
-        return Session.from_config(profile=profile)
+        return Session.from_config(profile=profile or os.getenv(Session.PROFILE_ENV_VARIABLE))
+
     except APIKeyNotFound:
         raise APIKeyNotFound('Could not resolve an API key from arguments, the environment, or a config file.') from None

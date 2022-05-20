@@ -2,15 +2,56 @@ ML Models
 =========
 
 A **Model** represents a STAC Item implementing the `ML Model extension <https://github.com/stac-extensions/ml-model/>`_.
-The goal of the ML Model Extension is to provide a way of cataloging machine learning (ML) models that operate on
-Earth observation (EO) data described as a STAC catalog.
+The goal of the ML Model Extension is to provide a way of cataloging machine
+learning models that operate on earth observation (EO) data described as a STAC
+catalog.
 
-To discover and fetch models you can either use the low-level client methods from :mod:`radiant_mlhub.client` or the
-:class:`~radiant_mlhub.models.MLModel` class. Using the :class:`~radiant_mlhub.models.MLModel` class is the recommended
-approach, but both methods are described below.
+To discover and fetch models you can either use the
+:class:`~radiant_mlhub.models.MLModel` class or the low-level client methods
+from :mod:`radiant_mlhub.client`. Using the
+:class:`~radiant_mlhub.models.MLModel` class is the recommended approach, but
+both methods are described below.
+
+.. hint::
+    The `Radiant MLHub <https://mlhub.earth/>`_ web application provides an
+    overview of all the ML models available through the Radiant
+    MLHub API.
 
 Discovering Models
 ++++++++++++++++++
+
+You can discover models using the :meth:`MLModel.list <radiant_mlhub.models.MLModel.list>` method. This method returns a list of :class:`MLModel <radiant_mlhub.models.MLModel>` instances.
+
+.. code-block:: python
+
+    >>> from radiant_mlhub import MLModel
+    >>> models = MLModel.list()
+    >>> first_model = models[0]
+    >>> for model in models[0:2]:  # print first two models, for example
+    >>>     print(model)
+    model-crop-detection-torchgeo-v1: A Spatio-Temporal Deep Learning-Based Crop Classification Model for Satellite Imagery
+    model-cyclone-wind-estimation-torchgeo-v1: Tropical Cyclone Wind Estimation Model
+
+You can fetch a model by ID using :meth:`MLModel.fetch <radiant_mlhub.models.MLModel.fetch>` method.
+
+.. code-block:: python
+
+    >>> model = MLModel.fetch('model-cyclone-wind-estimation-torchgeo-v1')
+    >>> mode.assets
+    {'inferencing-checkpoint': <Asset href=https://zenodo.org/record/5773331/files/last.ckpt?download=1>,
+    >>> len(first_model.links)
+    7
+    >>> # print only the ml-model and mlhub related links
+    >>> pprint([ link for link in first_model.links if 'ml-model:' in link.rel or 'mlhub:' in link.rel])
+    [<Link rel=ml-model:inferencing-image target=docker://docker.io/radiantearth/cyclone-model-torchgeo:1>,
+     <Link rel=ml-model:train-data target=https://api.radiant.earth/mlhub/v1/collections/nasa_tropical_storm_competition_train_source>,
+     <Link rel=mlhub:training-dataset target=https://mlhub.earth/data/nasa_tropical_storm_competition>]
+    >>> # you can access rest of properties as a dict
+    >>> first_model.properties.keys()
+    dict_keys(['title', 'license', 'sci:doi', 'datetime', 'providers', 'description', 'end_datetime', 'sci:citation', 'ml-model:type', 'start_datetime', 'sci:publications', 'ml-model:architecture', 'ml-model:prediction_type', 'ml-model:learning_approach'])
+
+Low-level Client
+----------------
 
 The Radiant MLHub ``/models`` endpoint returns a list of objects describing the available models and their properties. You
 can use the low-level :func:`~radiant_mlhub.client.list_models` function to work with these responses as native Python data types
@@ -28,33 +69,8 @@ can use the low-level :func:`~radiant_mlhub.client.list_models` function to work
     >>> first_model['properties'].keys()
     dict_keys(['title', 'license', 'sci:doi', 'datetime', 'providers', 'description', 'end_datetime', 'sci:citation', 'ml-model:type', 'start_datetime', 'sci:publications', 'ml-model:architecture', 'ml-model:prediction_type', 'ml-model:learning_approach'])
 
-You can also discover models using the :meth:`MLModel.list <radiant_mlhub.models.MLModel.list>` method. This is the recommended way of
-listing models. This method returns a list of :class:`MLModel <radiant_mlhub.models.MLModel>` instances.
-
-.. code-block:: python
-
-    >>> from radiant_mlhub import MLModel
-    >>> from pprint import pprint
-    >>> models = MLModel.list()
-    >>> first_model = models[0]
-    >>> first_model.id
-    'model-cyclone-wind-estimation-torchgeo-v1'
-    >>> pprint(first_model.assets)
-    {'inferencing-checkpoint': <Asset href=https://zenodo.org/record/5773331/files/last.ckpt?download=1>,
-     'inferencing-compose': <Asset href=https://raw.githubusercontent.com/RadiantMLHub/cyclone-model-torchgeo/main/inferencing.yml>}
-    >>> len(first_model.links)
-    7
-    >>> # print only the ml-model and mlhub related links
-    >>> pprint([ link for link in first_model.links if 'ml-model:' in link.rel or 'mlhub:' in link.rel])
-    [<Link rel=ml-model:inferencing-image target=docker://docker.io/radiantearth/cyclone-model-torchgeo:1>,
-     <Link rel=ml-model:train-data target=https://api.radiant.earth/mlhub/v1/collections/nasa_tropical_storm_competition_train_source>,
-     <Link rel=mlhub:training-dataset target=https://mlhub.earth/data/nasa_tropical_storm_competition>]
-    >>> # you can access rest of properties as a dict
-    >>> first_model.properties.keys()
-    dict_keys(['title', 'license', 'sci:doi', 'datetime', 'providers', 'description', 'end_datetime', 'sci:citation', 'ml-model:type', 'start_datetime', 'sci:publications', 'ml-model:architecture', 'ml-model:prediction_type', 'ml-model:learning_approach'])
- 
-Fetching a Model
-++++++++++++++++
+Fetching Model Metadata
++++++++++++++++++++++++
 
 The Radiant MLHub ``/models/{model_id}`` endpoint returns an object representing a single model. You can use the low-level
 :func:`~radiant_mlhub.client.get_model_by_id` function to work with this response as a :class:`dict`.
@@ -79,5 +95,3 @@ method. This is the recommended way of fetching a model. This method returns a :
     2
     >>> len(model.links)
     7
-
-See the Discovering Models section above for more Python example code.

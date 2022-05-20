@@ -118,3 +118,8 @@ class MLModel(Item):
         if profile is not None:
             ml_model.session_kwargs['profile'] = profile
         return ml_model
+
+    def __str__(self) -> str:
+        """Return the "informal" or nicely printable string representation of an object."""
+        title = self.properties.get('title', '')
+        return f'{self.id}: {title}'
