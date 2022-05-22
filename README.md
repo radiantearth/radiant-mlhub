@@ -3,7 +3,7 @@
 # Radiant MLHub Python Client
 
 [![Unit tests](https://github.com/radiantearth/radiant-mlhub/workflows/Unit%20tests/badge.svg)](https://github.com/radiantearth/radiant-mlhub/actions)
-[![Documentation](https://readthedocs.org/projects/radiant-mlhub/badge/)](https://radiant-mlhub.readthedocs.io/en/latest/)
+[![Documentation](https://readthedocs.org/projects/radiant-mlhub/badge/)](https://radiant-mlhub.readthedocs.io/)
 [![PyPI version](https://badge.fury.io/py/radiant-mlhub.svg)](https://pypi.org/project/radiant-mlhub/)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/radiant-mlhub)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/radiantearth/radiant-mlhub/main?filepath=examples%2Findex.ipynb)
@@ -13,7 +13,7 @@
 
 ## Documentation
 
-API reference and Getting Started guides are available on [Read the Docs](https://radiant-mlhub.readthedocs.io/en/stable/).
+API reference and Getting Started guides are available on [Read the Docs](https://radiant-mlhub.readthedocs.io/).
 
 ## Python Version Support
 

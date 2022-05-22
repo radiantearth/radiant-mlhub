@@ -1,13 +1,13 @@
 Datasets
 ========
 
-A **dataset** represents a group of 1 or more related STAC Collections. They
+A **dataset** represents a group of one or more related STAC Collections. They
 group together any source imagery collections with the associated label
 collections to provide a convenient mechanism for accessing all of these data
 together. For instance, the ``bigearthnet_v1_source`` collection contains the
 source imagery for the `BigEarthNet <http://bigearth.net/>`_ training dataset
-and, likewise, the ``bigearthnet_v1_labels`` ollection contains the
-annotations for that same dataset. These 2 collections are grouped together
+and, likewise, the ``bigearthnet_v1_labels`` collection contains the
+annotations for that same dataset. These two collections are grouped together
 into the ``bigearthnet_v1`` dataset.
 
 `Radiant MLHub <https://mlhub.earth/>`_ provides an overview of the datasets
