@@ -7,7 +7,7 @@ Contributions to this project are welcome and encouraged! Please be sure to revi
 
 The easiest way to contribute to the `radiant-mlhub` library is by opening issues to report bugs or request features 
 that might be useful to you or others. Before opening a new issue, please review the 
-[documentation](https://radiant-mlhub.readthedocs.io/en/latest/) and existing 
+[documentation](https://radiant-mlhub.readthedocs.io/) and existing 
 [issues](https://github.com/radiantearth/radiant-mlhub/issues) (both open and closed) to see if the topic is already 
 covered by an existing issue. Issues in this repository should pertain directly to the `radiant_mlhub` Python client 
 itself and not the [Radiant MLHub API](https://mlhub.earth/) or the datasets contained therein. For questions and 

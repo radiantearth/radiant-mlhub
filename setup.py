@@ -50,7 +50,7 @@ setuptools.setup(
         "Topic :: Software Development :: Libraries :: Python Modules"
     ],
     project_urls={
-        'Documentation': 'https://radiant-mlhub.readthedocs.io/en/stable/',
+        'Documentation': 'https://radiant-mlhub.readthedocs.io/',
         'Issue Tracker': 'https://github.com/radiantearth/radiant-mlhub/issues',
         'Radiant MLHub': 'https://mlhub.earth',
     },
