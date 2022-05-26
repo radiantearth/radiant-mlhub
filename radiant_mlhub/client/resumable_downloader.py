@@ -97,7 +97,6 @@ class ResumableDownloader():
         with open(self.out_file, mode='ab') as fh:
             req_headers = self.session.headers.copy()
             if isinstance(self.session, MLHubSession) or 'blob.core.windows.net' in self.url:
-                print(self.url, req_headers)
                 req_headers.update({'x-ms-version': AZ_STORAGE_VERSION})
             pos = fh.tell()
             if pos > 0:
