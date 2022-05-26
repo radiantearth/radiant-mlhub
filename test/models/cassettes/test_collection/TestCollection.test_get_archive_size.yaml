@@ -9,14 +9,14 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+      - 'radiant_mlhub/0.5.0 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
         2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: GET
     uri: https://staging.api.radiant.earth/mlhub/v1/collections/bigearthnet_v1_labels
   response:
     body:
       string: !!binary |
-        H4sIAEkEhGIC/7VT72vbMBD9V4S/zpYl20lsf+svSkc7xtINtjQUxbnYWmXLSIppCfnfd3LaNRuF
+        H4sIAGzoj2IC/7VT72vbMBD9V4S/zpYl20lsf+svSkc7xtINtjQUxbnYWmXLSIppCfnfd3LaNRuF
         wdjAGHH37t3Tu9MukOugDFayBmFc04G7H/i9EitQNggD99QDps+0UlA5qTuMKdk92KBc7AIDCpPS
         QXuEFX2vZCU8OK5Bv/tux6rGwAazjXO9LePYOlHLrqail9SItRSdo6OCuFXNdhUPPK5+NrXxm/ri
         Q+d9+KKkFwY697aUv5ZxxG+0/o/sFtTmH7P/0cJgvwwDYS04nOhuHwbw6LyF5S6wPTYXyh9XK/2I
@@ -36,11 +36,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 17 May 2022 20:23:37 GMT
+      - Thu, 26 May 2022 20:51:56 GMT
       Vary:
       - Accept-Encoding
       X-Azure-Ref:
-      - 0SQSEYgAAAAAaMkl7zImPSaZg7T620n3yREVOMzAxMDAwMTA5MDE5ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      - 0bOiPYgAAAADWaNCBP39JRIOKvzk1LacXREVOMzAxMDAwMTEwMDM5ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:
@@ -56,7 +56,7 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+      - 'radiant_mlhub/0.5.0 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
         2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: GET
     uri: https://staging.api.radiant.earth/mlhub/v1/archive/bigearthnet_v1_labels/info
@@ -69,9 +69,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 17 May 2022 20:23:37 GMT
+      - Thu, 26 May 2022 20:51:56 GMT
       X-Azure-Ref:
-      - 0SgSEYgAAAACIhoY0IGo9T4KWD7PN8CzOREVOMzAxMDAwMTEwMDMzADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      - 0bOiPYgAAAADm65vo8cNUS7d32FntyvcjREVOMzAxMDAwMTA5MDQ3ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:

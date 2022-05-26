@@ -15,10 +15,10 @@ from typing import Any, Dict, Iterator, Optional
 
 import requests
 import requests.adapters
-from urllib3.util import Retry
 
 from .__version__ import __version__
 from .exceptions import APIKeyNotFound, AuthenticationError
+from .retry_config import config as retry_config
 
 ANONYMOUS_PROFILE = "__anonymous__"
 
@@ -56,15 +56,9 @@ class Session(requests.Session):
             # Add the package name + version and the system info to the user-agent header
             'User-Agent': f'{__name__.split(".")[0]}/{__version__} ({platform.version()})'
         })
-
-        # Configure retries
-        retries = Retry(
-            total=None,
-            connect=5,
-            backoff_factor=0.2
-        )
-        self.mount('https://', requests.adapters.HTTPAdapter(max_retries=retries))
-        self.mount('http://', requests.adapters.HTTPAdapter(max_retries=retries))
+        adapter = requests.adapters.HTTPAdapter(max_retries=retry_config())
+        for prefix in 'http://', 'https://':
+            self.mount(prefix, adapter)
 
     def request(self, method: str, url: str, **kwargs: Any) -> requests.Response:  # type: ignore[override]
         """Overwrites the default :meth:`requests.Session.request` method to prepend the MLHub root URL if the given

@@ -54,7 +54,8 @@ class CatalogDownloaderConfig(BaseModel):
     intersects: Optional[GeoJSON] = None
     output_dir: Path
     profile: Optional[str] = None
-    session: Session
+    mlhub_api_session: Session
+    """Requests session for mlhub api calls."""
     temporal_query: Optional[Union[datetime, Tuple[datetime, datetime]]] = None
 
 
@@ -129,7 +130,7 @@ class CatalogDownloader():
         c = self.config
         out_file = c.output_dir / f'{c.dataset_id}.tar.gz'
         dl = ResumableDownloader(
-            session=c.session,
+            session=c.mlhub_api_session,
             url=f'/catalog/{c.dataset_id}',
             out_file=out_file,
             if_exists=c.if_exists,

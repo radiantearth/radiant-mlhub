@@ -9,14 +9,14 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+      - 'radiant_mlhub/0.5.0 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
         2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: GET
     uri: https://staging.api.radiant.earth/mlhub/v1/models/model-cyclone-wind-estimation-torchgeo-v1
   response:
     body:
       string: !!binary |
-        H4sIAI0EhGIC/81Wa2/jNhD8K4Q+JaglWU6DxG6vbZB7NMClONwZaHGGYdDU2mZDiQJJ23EP+e8d
+        H4sIALLoj2IC/81Wa2/jNhD8K4Q+JaglWU6DxG6vbZB7NMClONwZaHGGYdDU2mZDiQJJ23EP+e8d
         UpKtNE4vBYqigIKYj+XOzg53+SWSeTSKCp2TisVOKF1SvJVlHpN1suBO6jJ22ojVknS8yaJeNJ/r
         +2g0ibOLYTIcDnvxZf2/HdfDaS9yu4pw9lvibm0IlkqWdxamXyJDCitCK0XCu4j2u3lVKSmC3/R3
         G1ZWhhZYWTlX2VGaWseXslwmvJKJ4bnkpUuIG7dKC7Vaz9NNlh4OtunLQoseei2qihsq3f8JkdH6
@@ -48,11 +48,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 17 May 2022 20:24:45 GMT
+      - Thu, 26 May 2022 20:53:06 GMT
       Vary:
       - Accept-Encoding
       X-Azure-Ref:
-      - 0jQSEYgAAAAABQZeBjn0nSaKNblnZQiV8REVOMzAxMDAwMTEwMDE5ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      - 0suiPYgAAAADoOsx9GhmHSYh/GYQyLGT0REVOMzAxMDAwMTEwMDM1ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:
