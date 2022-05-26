@@ -11,7 +11,7 @@ from datetime import datetime
 from io import TextIOWrapper
 from logging import getLogger
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Tuple, Union, Any
+from typing import Callable, Dict, List, Optional, Tuple, Union, Any, Set
 from urllib.parse import urlparse
 from dateutil.parser import parse as date_parser
 
@@ -111,7 +111,7 @@ class CatalogDownloader():
         (total_count, ) = self.db_cur.fetchone()
         return int(total_count)
 
-    def _mark_assets_filtered(self, row_ids: set[int]) -> None:
+    def _mark_assets_filtered(self, row_ids: Set[int]) -> None:
         in_clause = ','.join([str(row_id) for row_id in row_ids])
         self.db_cur.execute(
             f"""
