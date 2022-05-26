@@ -111,16 +111,15 @@ class CatalogDownloader():
         (total_count, ) = self.db_cur.fetchone()
         return int(total_count)
 
-    def _mark_asset_filtered(self, row_id: int) -> None:
+    def _mark_assets_filtered(self, row_ids: set[int]) -> None:
+        in_clause = ','.join([str(row_id) for row_id in row_ids])
         self.db_cur.execute(
-            """
+            f"""
                 UPDATE assets
                     SET filtered = 1
-                    WHERE rowid = ?
+                    WHERE rowid in ( { in_clause } )
             """,
-            [row_id]
         )
-        self.db_conn.commit()
 
     def _fetch_catalog_step(self) -> None:
         """
@@ -219,7 +218,6 @@ class CatalogDownloader():
                 """,
                 rec.dict()
             )
-            self.db_conn.commit()
 
         def _handle_item(stac_item: JsonDict) -> None:
             item_id = stac_item['id']
@@ -230,7 +228,7 @@ class CatalogDownloader():
             geometry = stac_item.get('geometry', None)
             if geometry and not bbox:
                 raise RuntimeError(f'item {item_id} has no bbox, but has geometry')
-
+            n = 0
             for k, v in assets.items():
                 rec = AssetRecord(
                     collection_id=stac_item['collection'],
@@ -247,12 +245,16 @@ class CatalogDownloader():
                 asset_save_path = _asset_save_path(rec).relative_to(self.work_dir)
                 rec.asset_save_path = str(asset_save_path)
                 _insert_asset_rec(rec)
+                n += 1
+                if n % 1000 == 0:
+                    self.db_conn.commit()
 
         def _handle_collection(stac_collection: JsonDict) -> None:
             collection_id = stac_collection['id']
             assets = stac_collection.get('assets', None)
             if assets is None:
                 return
+            n = 0
             for k, v in assets.items():
                 rec = AssetRecord(
                     collection_id=collection_id,
@@ -262,6 +264,9 @@ class CatalogDownloader():
                 asset_save_path = _asset_save_path(rec).relative_to(self.work_dir)
                 rec.asset_save_path = str(asset_save_path)
                 _insert_asset_rec(rec)
+                n += 1
+                if n % 1000 == 0:
+                    self.db_conn.commit()
 
         json_srcs = iglob(str(self.work_dir / '**/*.json'), recursive=True)
         for json_src in json_srcs:
@@ -327,8 +332,7 @@ class CatalogDownloader():
                 if filtered:
                     row_ids_to_filter.add(row_id)
 
-        for row_id in row_ids_to_filter:
-            self._mark_asset_filtered(row_id)
+        self._mark_assets_filtered(row_ids_to_filter)
 
         total_asset_ct = self._fetch_unfiltered_count()
         if total_asset_ct == 0:
@@ -390,8 +394,7 @@ class CatalogDownloader():
                 if not hit:
                     row_ids_to_filter.add(row_id)
 
-        for row_id in row_ids_to_filter:
-            self._mark_asset_filtered(row_id)
+        self._mark_assets_filtered(row_ids_to_filter)
 
         total_asset_ct = self._fetch_unfiltered_count()
         if total_asset_ct == 0:
@@ -455,8 +458,7 @@ class CatalogDownloader():
                 if not hit:
                     row_ids_to_filter.add(row_id)
 
-        for row_id in row_ids_to_filter:
-            self._mark_asset_filtered(row_id)
+        self._mark_assets_filtered(row_ids_to_filter)
 
         total_asset_ct = self._fetch_unfiltered_count()
         if total_asset_ct == 0:
@@ -552,8 +554,7 @@ class CatalogDownloader():
                 if filtered:
                     row_ids_to_filter.add(row_id)
 
-        for row_id in row_ids_to_filter:
-            self._mark_asset_filtered(row_id)
+        self._mark_assets_filtered(row_ids_to_filter)
 
         total_asset_ct = self._fetch_unfiltered_count()
         if total_asset_ct == 0:
@@ -631,12 +632,12 @@ class CatalogDownloader():
                     asset_list.append(asset_rec)
                     uniq_asset_save_path.add(asset_save_path)
 
+        self._finalize_db()
+
         if 'PYTEST_CURRENT_TEST' in os.environ:
             # vcr.py does not work multithreading `requests`, so bail out here
             # and consider it a 'dry run'.
             return
-
-        self._finalize_db()
 
         with ThreadPoolExecutor() as executor:
             future_to_asset_record = {
@@ -693,6 +694,7 @@ class CatalogDownloader():
 
     def _finalize_db(self) -> None:
         if not self.config.catalog_only:
+            self.db_conn.commit()
             self.db_cur.close()
             self.db_conn.close()
 
