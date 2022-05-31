@@ -6,9 +6,9 @@ from typing import Optional
 import requests
 from requests.adapters import HTTPAdapter
 from tqdm import tqdm
-from urllib3 import Retry
 
 from ..if_exists import DownloadIfExistsOpts
+from ..retry_config import config as retry_config
 from ..session import Session as MLHubSession
 
 http.client.HTTPConnection.debuglevel = 0  # change to > 0 for verbose logging
@@ -33,10 +33,9 @@ class ResumableDownloader():
     """
     Resumable downloader, for a single file.
 
-    * Similar to _download_collection_archive_chunked(), but this is not parallelized.
+    * Similar to datasets._download_collection_archive_chunked(), but this is not parallelized.
     * Supports DownloadIfExistsOpts.
-    * Displays progress bar.
-    * Has backoff/retry logic (if requests session is not overridden)
+    * Displays progress bar (optional).
     """
     session: requests.Session
     url: str
@@ -70,16 +69,10 @@ class ResumableDownloader():
             self.session = session
         else:
             # no session provided, configure own session using backoff/retry logic
-            retry_strategy = Retry(
-                total=5,
-                backoff_factor=0.2,
-                status_forcelist=[429, 500, 502, 503, 504]
-            )
-            adapter = HTTPAdapter(max_retries=retry_strategy)
-            s = requests.Session()
-            s.mount("https://", adapter)
-            s.mount("http://", adapter)
-            self.session = s
+            adapter = HTTPAdapter(max_retries=retry_config())
+            self.session = requests.Session()
+            for prefix in 'http://', 'https://':
+                self.session.mount(prefix, adapter)
 
     def run(self) -> None:
         self.out_file.parent.mkdir(exist_ok=True, parents=True)
@@ -102,10 +95,9 @@ class ResumableDownloader():
                 log.debug(f'{self.out_file.resolve()} -> resume')
 
         with open(self.out_file, mode='ab') as fh:
+            req_headers = self.session.headers.copy()
             if isinstance(self.session, MLHubSession) or 'blob.core.windows.net' in self.url:
-                req_headers = {'x-ms-version': AZ_STORAGE_VERSION}
-            else:
-                req_headers = dict()
+                req_headers.update({'x-ms-version': AZ_STORAGE_VERSION})
             pos = fh.tell()
             if pos > 0:
                 req_headers['range'] = f'bytes={pos}-'

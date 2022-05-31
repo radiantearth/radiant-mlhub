@@ -339,6 +339,10 @@ class Dataset:
         output_path = Path(output_dir)
         if output_path.exists() and not output_path.is_dir():
             raise IOError('output_dir is not directory.')
+
+        # get the python client's default http session which has api key and other mlhub-related things
+        mlhub_api_session = get_session(api_key=api_key, profile=profile)
+
         output_path.mkdir(exist_ok=True, parents=True)
         config = CatalogDownloaderConfig(
             catalog_only=catalog_only,
@@ -350,7 +354,7 @@ class Dataset:
             intersects=intersects,
             output_dir=output_path,
             profile=profile,
-            session=get_session(api_key=api_key, profile=profile),
+            mlhub_api_session=mlhub_api_session,
             temporal_query=datetime,
         )
         dl = CatalogDownloader(config=config)

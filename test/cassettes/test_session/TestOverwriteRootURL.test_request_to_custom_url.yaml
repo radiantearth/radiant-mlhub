@@ -9,14 +9,14 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+      - 'radiant_mlhub/0.5.0 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
         2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: GET
     uri: https://example.org/
   response:
     body:
       string: !!binary |
-        H4sIAMIVqF0AA31UTXPbIBC9+1ds1UsyIyQnaRqPLWn6mWkPaQ9pDz0SsbKYCFAByfZ08t+7Qo4j
+        H4sIAAAAAAAA/31UTXPbIBC9+1ds1UsyIyQnaRqPLWn6mWkPaQ9pDz0SsbKYCFAByfZ08t+7Qo4j
         N5makYFdeLvvsZC9Eqb0uxah9qopZtljh1wUM6Bf5qVvsPi85aptED4ZxaXO0tE6G5co9BzKmluH
         Po86X7FFBGkxcdbetwx/d7LPo49Ge9SeDWEjKMdZHnnc+nQIvzpAvYSkucI86iVuWmP9ZP9GCl/n
         AntZIguTGKSWXvKGuZI3mJ89QTm/IzJDBvvApXPR6LszYgd/wjBMeXm/tqbTgpWmMXYJr6s5tfPV
@@ -29,8 +29,10 @@ interactions:
         3VOFhOgtWiWdI0eSpe0hz4weCItVHg3PhFum6WazSSTXPDF2nY4hXbpPMypujB1IEKAKQZKE0HgR
         ELM0iJOle6nS8UH7CyjrfG/oBAAA
     headers:
+      Accept-Ranges:
+      - bytes
       Age:
-      - '434559'
+      - '419049'
       Cache-Control:
       - max-age=604800
       Content-Encoding:
@@ -40,15 +42,15 @@ interactions:
       Content-Type:
       - text/html; charset=UTF-8
       Date:
-      - Tue, 17 May 2022 20:23:33 GMT
+      - Thu, 26 May 2022 20:51:51 GMT
       Etag:
-      - '"3147526947+ident+gzip"'
+      - '"3147526947"'
       Expires:
-      - Tue, 24 May 2022 20:23:33 GMT
+      - Thu, 02 Jun 2022 20:51:51 GMT
       Last-Modified:
       - Thu, 17 Oct 2019 07:18:26 GMT
       Server:
-      - ECS (dna/63B4)
+      - ECS (dna/63AA)
       Vary:
       - Accept-Encoding
       X-Cache:

@@ -9,14 +9,14 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+      - 'radiant_mlhub/0.5.0 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
         2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: GET
     uri: https://staging.api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_labels
   response:
     body:
       string: !!binary |
-        H4sIAEwEhGIC/7VU227TQBD9FctPIBJ77/bmrSQgJKAPpSqXNIo29iZZ6nit9Sa0qvLvzNpJG25C
+        H4sIAG/oj2IC/7VU227TQBD9FctPIBJ77/bmrSQgJKAPpSqXNIo29iZZ6nit9Sa0qvLvzNpJG25C
         IJAs2Z45c+b47IzvY1PGo9jp5VwtnSlUPS+cbdr5ja7v1ByReaUWumrjQezvGg3Qsa0qXXhja4hV
         pr5p49H0HhgqSBqvNydY1TQVcAZwutL22ee2q1pDO8iuvW/aUZq2Xq1MvUpUYxKnSqNqn2jl/Drd
         VOvtIt3htHho2qa/1Zr2KvaDo6pGOV37n8v6a0kn/M7a/8je6mr5j9n/yM54PxvE+tYHC0f3cdtA
@@ -36,11 +36,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 17 May 2022 20:23:39 GMT
+      - Thu, 26 May 2022 20:51:58 GMT
       Vary:
       - Accept-Encoding
       X-Azure-Ref:
-      - 0TASEYgAAAAB7c4d+CGZESr8LwjLfgRmvREVOMzAxMDAwMTA5MDM3ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      - 0b+iPYgAAAAA0I7rxbFlpQqy2rTLadebGREVOMzAxMDAwMTEwMDIzADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:
@@ -56,7 +56,7 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+      - 'radiant_mlhub/0.5.0 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
         2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: HEAD
     uri: https://staging.api.radiant.earth/mlhub/v1/archive/ref_african_crops_kenya_02_labels
@@ -67,11 +67,11 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Tue, 17 May 2022 20:23:40 GMT
+      - Thu, 26 May 2022 20:51:59 GMT
       Location:
       - https://radiantearth.blob.core.windows.net/mlhub/archives/ref_african_crops_kenya_02_labels.tar.gz
       X-Azure-Ref:
-      - 0TASEYgAAAAAxV1NAPb4iRa61uclsediIREVOMzAxMDAwMTA5MDIxADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      - 0b+iPYgAAAAAWNDLI2f0WT66X1QH6f2QVREVOMzAxMDAwMTA5MDA5ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:
@@ -87,7 +87,7 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+      - 'radiant_mlhub/0.5.0 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
         2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: HEAD
     uri: https://radiantearth.blob.core.windows.net/mlhub/archives/ref_african_crops_kenya_02_labels.tar.gz
@@ -102,7 +102,7 @@ interactions:
       Content-Type:
       - application/x-tar
       Date:
-      - Tue, 17 May 2022 20:23:41 GMT
+      - Thu, 26 May 2022 20:52:00 GMT
       ETag:
       - '0x8D968C5F3B94E1C'
       Last-Modified:
@@ -114,7 +114,7 @@ interactions:
       x-ms-lease-status:
       - unlocked
       x-ms-request-id:
-      - a0aaa342-701e-0005-192b-6a0f7b000000
+      - 5b51184c-701e-006d-7c42-711548000000
       x-ms-version:
       - '2009-09-19'
     status:
@@ -132,7 +132,7 @@ interactions:
       Range:
       - bytes=0-252970
       User-Agent:
-      - 'radiant_mlhub/0.4.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+      - 'radiant_mlhub/0.5.0 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
         2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: GET
     uri: https://radiantearth.blob.core.windows.net/mlhub/archives/ref_african_crops_kenya_02_labels.tar.gz
@@ -4586,7 +4586,7 @@ interactions:
       Content-Type:
       - application/x-tar
       Date:
-      - Tue, 17 May 2022 20:23:41 GMT
+      - Thu, 26 May 2022 20:52:00 GMT
       ETag:
       - '0x8D968C5F3B94E1C'
       Last-Modified:
@@ -4598,7 +4598,7 @@ interactions:
       x-ms-lease-status:
       - unlocked
       x-ms-request-id:
-      - a0aaa3eb-701e-0005-152c-6a0f7b000000
+      - 5b5118b7-701e-006d-5242-711548000000
       x-ms-version:
       - '2009-09-19'
     status:
