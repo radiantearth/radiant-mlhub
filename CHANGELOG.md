@@ -13,13 +13,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Improve http requests retry strategy. ([115](https://github.com/radiantearth/radiant-mlhub/pull/115))
-
 ### Fixed
 
 ### Deprecated
 
 ### Developer
+
+## [v0.5.1]
+
+### Changed
+
+- Improve http requests retry strategy. ([115](https://github.com/radiantearth/radiant-mlhub/pull/115))
+- Optimizing performance of Dataset.download() ([115](https://github.com/radiantearth/radiant-mlhub/pull/115))
 
 ## [v0.5.0]
 
@@ -201,7 +206,8 @@ Includes support for:
 * Fetching datasets and collections by ID
 * Downloading collection archives
 
-[Unreleased]: <https://github.com/stac-utils/pystac/compare/v0.5.0...main>
+[Unreleased]: <https://github.com/stac-utils/pystac/compare/v0.5.1...main>
+[v0.5.1]: <https://github.com/stac-utils/pystac/compare/v0.5.0...0.5.1>
 [v0.5.0]: <https://github.com/stac-utils/pystac/compare/v0.4.1...0.5.0>
 [v0.4.1]: <https://github.com/stac-utils/pystac/compare/v0.4.0...0.4.1>
 [v0.4.0]: <https://github.com/stac-utils/pystac/compare/v0.3.1...0.4.0>
