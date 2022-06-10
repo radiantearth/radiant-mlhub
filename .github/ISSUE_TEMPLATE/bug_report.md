@@ -3,7 +3,7 @@ name: Bug report
 about: Report a bug in the Python package
 title: ''
 labels: bug
-assignees: duckontheweb
+assignees: kbgg
 
 ---
 
