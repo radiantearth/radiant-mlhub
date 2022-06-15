@@ -1,0 +1,5 @@
+services:
+  mlhub-client:
+    build: .
+    volumes:
+      - .:/usr/src/app

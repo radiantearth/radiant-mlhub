@@ -1,4 +1,5 @@
 .env
+.gitconfig
 
 # Created by https://www.toptal.com/developers/gitignore/api/osx,python,windows,linux
 # Edit at https://www.toptal.com/developers/gitignore?templates=osx,python,windows,linux
@@ -8,6 +9,7 @@
 
 # VSCode
 .vscode
+.vscode-*
 
 
 ### Linux ###
@@ -222,3 +224,5 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/osx,python,windows,linux
 
 tmp/
+
+.ssh/
