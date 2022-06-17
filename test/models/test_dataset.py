@@ -211,6 +211,7 @@ class TestDataset:
         assert not asset_db.exists()
         rmtree(tmp_path, ignore_errors=True)
 
+    @pytest.mark.vcr
     def test_download_catalog_only_with_long_filenames(self, tmp_path: Path) -> None:
         ds = Dataset.fetch_by_id('dlr_fusion_competition_germany')
         ds.download(output_dir=tmp_path, catalog_only=True)

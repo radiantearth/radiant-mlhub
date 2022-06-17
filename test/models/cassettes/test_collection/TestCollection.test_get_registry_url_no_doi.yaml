@@ -9,14 +9,14 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.5.0 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+      - 'radiant_mlhub/0.5.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
         2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: GET
     uri: https://staging.api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_labels
   response:
     body:
       string: !!binary |
-        H4sIAGvoj2IC/7VU227TQBD9FctPIBJ77/bmrSQgJKAPpSqXNIo29iZZ6nit9Sa0qvLvzNpJG25C
+        H4sIANShrGIC/7VU227TQBD9FctPIBJ77/bmrSQgJKAPpSqXNIo29iZZ6nit9Sa0qvLvzNpJG25C
         IJAs2Z45c+b47IzvY1PGo9jp5VwtnSlUPS+cbdr5ja7v1ByReaUWumrjQezvGg3Qsa0qXXhja4hV
         pr5p49H0HhgqSBqvNydY1TQVcAZwutL22ee2q1pDO8iuvW/aUZq2Xq1MvUpUYxKnSqNqn2jl/Drd
         VOvtIt3htHho2qa/1Zr2KvaDo6pGOV37n8v6a0kn/M7a/8je6mr5j9n/yM54PxvE+tYHC0f3cdtA
@@ -36,11 +36,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 26 May 2022 20:51:54 GMT
+      - Fri, 17 Jun 2022 15:46:27 GMT
       Vary:
       - Accept-Encoding
       X-Azure-Ref:
-      - 0a+iPYgAAAACTgf1jWXqAT4wO4PUtkLyrREVOMzAxMDAwMTEwMDIzADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      - 01KGsYgAAAACpBOwRgXdSQoQn5KExKgVrREVOMzAxMDAwMTEwMDQ3ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:
@@ -54,12 +54,12 @@ interactions:
       Host:
       - staging.api.radiant.earth
       User-Agent:
-      - Python-urllib/3.9
+      - Python-urllib/3.10
     method: GET
     uri: https://staging.api.radiant.earth/mlhub/v1/
   response:
     body:
-      string: '{"type":"Catalog","id":"stac-fastapi","title":"Radiant MLHub API","description":"stac-fastapi","stac_version":"1.0.0","conformsTo":["https://api.stacspec.org/v1.0.0-beta.3/item-search","https://api.stacspec.org/v1.0.0-beta.3/item-search/#fields","http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core","https://api.stacspec.org/v1.0.0-beta.3/item-search/#sort","https://api.stacspec.org/v1.0.0-beta.3/ogcapi-features","https://api.stacspec.org/v1.0.0-beta.3/core","http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30","http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson","https://api.stacspec.org/v1.0.0-beta.3/item-search/#query"],"links":[{"rel":"self","type":"application/json","href":"https://staging.api.radiant.earth/mlhub/v1/"},{"rel":"root","type":"application/json","href":"https://staging.api.radiant.earth/mlhub/v1/"},{"rel":"data","type":"application/json","href":"https://staging.api.radiant.earth/mlhub/v1/collections"},{"rel":"docs","type":"application/json","title":"OpenAPI
+      string: '{"type":"Catalog","id":"stac-fastapi","title":"Radiant MLHub API","description":"stac-fastapi","stac_version":"1.0.0","conformsTo":["http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson","http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30","https://api.stacspec.org/v1.0.0-beta.3/item-search/#fields","https://api.stacspec.org/v1.0.0-beta.3/ogcapi-features","https://api.stacspec.org/v1.0.0-beta.3/item-search/#sort","https://api.stacspec.org/v1.0.0-beta.3/item-search/#query","https://api.stacspec.org/v1.0.0-beta.3/item-search","http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core","https://api.stacspec.org/v1.0.0-beta.3/core"],"links":[{"rel":"self","type":"application/json","href":"https://staging.api.radiant.earth/mlhub/v1/"},{"rel":"root","type":"application/json","href":"https://staging.api.radiant.earth/mlhub/v1/"},{"rel":"data","type":"application/json","href":"https://staging.api.radiant.earth/mlhub/v1/collections"},{"rel":"docs","type":"application/json","title":"OpenAPI
         docs","href":"https://staging.api.radiant.earth/mlhub/v1/docs"},{"rel":"conformance","type":"application/json","title":"STAC/WFS3
         conformance classes implemented by this server","href":"https://staging.api.radiant.earth/mlhub/v1/conformance"},{"rel":"search","type":"application/geo+json","title":"STAC
         search","href":"https://staging.api.radiant.earth/mlhub/v1/search","method":"GET"},{"rel":"search","type":"application/json","title":"STAC
@@ -68,8 +68,8 @@ interactions:
         Fusion Dataset for Crop Type Classification in Germany","href":"https://staging.api.radiant.earth/mlhub/v1/collections/dlr_fusion_competition_germany_test_labels"},{"rel":"child","type":"application/json","title":"FooBar","href":"https://staging.api.radiant.earth/mlhub/v1/collections/foobar_def_labels"},{"rel":"child","type":"application/json","title":"microsoft_chesapeake_landsat_leaf_off","href":"https://staging.api.radiant.earth/mlhub/v1/collections/microsoft_chesapeake_landsat_leaf_off"},{"rel":"child","type":"application/json","title":"Sample
         Dataset","href":"https://staging.api.radiant.earth/mlhub/v1/collections/ref_some_dataset_id_labels"},{"rel":"child","type":"application/json","title":"A
         Spatio-Temporal Deep Learning-Based Crop Classification Model for Satellite
-        Imagery","href":"https://staging.api.radiant.earth/mlhub/v1/collections/model-crop-detection-torchgeo-v1"},{"rel":"child","type":"application/json","title":"sn1_AOI_1_RIO","href":"https://staging.api.radiant.earth/mlhub/v1/collections/sn1_AOI_1_RIO"},{"rel":"child","type":"application/json","title":"ref_landcovernet_na_v1_source_sentinel_2","href":"https://staging.api.radiant.earth/mlhub/v1/collections/ref_landcovernet_na_v1_source_sentinel_2"},{"rel":"child","type":"application/json","title":"Open
-        Cities AI Challenge Train Tier 1 Labels","href":"https://staging.api.radiant.earth/mlhub/v1/collections/open_cities_ai_challenge_train_tier_1_labels"},{"rel":"child","type":"application/json","title":"ref_south_africa_crops_competition_v1_test_labels","href":"https://staging.api.radiant.earth/mlhub/v1/collections/ref_south_africa_crops_competition_v1_test_labels"},{"rel":"child","type":"application/json","title":"Open
+        Imagery","href":"https://staging.api.radiant.earth/mlhub/v1/collections/model-crop-detection-torchgeo-v1"},{"rel":"child","type":"application/json","title":"sn1_AOI_1_RIO","href":"https://staging.api.radiant.earth/mlhub/v1/collections/sn1_AOI_1_RIO"},{"rel":"child","type":"application/json","title":"ref_landcovernet_na_v1_source_sentinel_2","href":"https://staging.api.radiant.earth/mlhub/v1/collections/ref_landcovernet_na_v1_source_sentinel_2"},{"rel":"child","type":"application/json","title":"ref_landcovernet_na_v1_source_landsat_8","href":"https://staging.api.radiant.earth/mlhub/v1/collections/ref_landcovernet_na_v1_source_landsat_8"},{"rel":"child","type":"application/json","title":"Open
+        Cities AI Challenge Train Tier 1 Labels","href":"https://staging.api.radiant.earth/mlhub/v1/collections/open_cities_ai_challenge_train_tier_1_labels"},{"rel":"child","type":"application/json","title":"ref_landcovernet_na_v1_labels","href":"https://staging.api.radiant.earth/mlhub/v1/collections/ref_landcovernet_na_v1_labels"},{"rel":"child","type":"application/json","title":"ref_landcovernet_na_v1_source_sentinel_1","href":"https://staging.api.radiant.earth/mlhub/v1/collections/ref_landcovernet_na_v1_source_sentinel_1"},{"rel":"child","type":"application/json","title":"ref_south_africa_crops_competition_v1_test_labels","href":"https://staging.api.radiant.earth/mlhub/v1/collections/ref_south_africa_crops_competition_v1_test_labels"},{"rel":"child","type":"application/json","title":"Open
         Cities AI Challenge Train Tier 1 Source Imagery","href":"https://staging.api.radiant.earth/mlhub/v1/collections/open_cities_ai_challenge_train_tier_1_source"},{"rel":"child","type":"application/json","title":"ref_landcovernet_v1_labels","href":"https://staging.api.radiant.earth/mlhub/v1/collections/ref_landcovernet_v1_labels"},{"rel":"child","type":"application/json","title":"ref_landcovernet_v1_source","href":"https://staging.api.radiant.earth/mlhub/v1/collections/ref_landcovernet_v1_source"},{"rel":"child","type":"application/json","title":"sen12floods_s1_source","href":"https://staging.api.radiant.earth/mlhub/v1/collections/sen12floods_s1_source"},{"rel":"child","type":"application/json","title":"sn7_train_labels","href":"https://staging.api.radiant.earth/mlhub/v1/collections/sn7_train_labels"},{"rel":"child","type":"application/json","title":"A
         Fusion Dataset for Crop Type Classification in Western Cape, South Africa","href":"https://staging.api.radiant.earth/mlhub/v1/collections/ref_fusion_competition_south_africa_test_source_sentinel_1"},{"rel":"child","type":"application/json","title":"A
         crop type dataset for consistent land cover classification in Central Asia","href":"https://staging.api.radiant.earth/mlhub/v1/collections/idiv_asia_crop_type_labels"},{"rel":"child","type":"application/json","title":"Drone
@@ -121,13 +121,13 @@ interactions:
       Connection:
       - close
       Content-Length:
-      - '21172'
+      - '21742'
       Content-Type:
       - application/json
       Date:
-      - Thu, 26 May 2022 20:51:55 GMT
+      - Fri, 17 Jun 2022 15:46:28 GMT
       X-Azure-Ref:
-      - 0a+iPYgAAAABPDDGStSi0RInJdZRYcQUzREVOMzAxMDAwMTEwMDE5ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      - 01KGsYgAAAACzgiFN4F+nQaRGvK92Uw5oREVOMzAxMDAwMTEwMDMzADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:

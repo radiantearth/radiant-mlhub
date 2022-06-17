@@ -9,7 +9,7 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.5.0 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+      - 'radiant_mlhub/0.5.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
         2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: HEAD
     uri: https://staging.api.radiant.earth/mlhub/v1/archive/ref_african_crops_kenya_02_labels
@@ -20,11 +20,11 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Thu, 26 May 2022 20:51:41 GMT
+      - Fri, 17 Jun 2022 15:46:13 GMT
       Location:
       - https://radiantearth.blob.core.windows.net/mlhub/archives/ref_african_crops_kenya_02_labels.tar.gz
       X-Azure-Ref:
-      - 0XeiPYgAAAADGtRdZEjBuR6JQy0ZqFc32Q1lTMDEzMDUwNzA4MDExADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      - 0xqGsYgAAAAAjatIeSrXcTqVDBO5U6IEYQ1lTMDEzMDUwNzA4MDIzADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:
@@ -40,7 +40,7 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.5.0 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+      - 'radiant_mlhub/0.5.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
         2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: HEAD
     uri: https://radiantearth.blob.core.windows.net/mlhub/archives/ref_african_crops_kenya_02_labels.tar.gz
@@ -55,7 +55,7 @@ interactions:
       Content-Type:
       - application/x-tar
       Date:
-      - Thu, 26 May 2022 20:51:42 GMT
+      - Fri, 17 Jun 2022 15:46:14 GMT
       ETag:
       - '0x8D968C5F3B94E1C'
       Last-Modified:
@@ -67,7 +67,7 @@ interactions:
       x-ms-lease-status:
       - unlocked
       x-ms-request-id:
-      - dc200bcf-401e-001e-5042-719a4e000000
+      - e7d9b1cd-701e-0041-1461-827062000000
       x-ms-version:
       - '2009-09-19'
     status:
@@ -85,7 +85,7 @@ interactions:
       Range:
       - bytes=0-252970
       User-Agent:
-      - 'radiant_mlhub/0.5.0 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
+      - 'radiant_mlhub/0.5.1 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
         2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
     method: GET
     uri: https://radiantearth.blob.core.windows.net/mlhub/archives/ref_african_crops_kenya_02_labels.tar.gz
@@ -4539,7 +4539,7 @@ interactions:
       Content-Type:
       - application/x-tar
       Date:
-      - Thu, 26 May 2022 20:51:42 GMT
+      - Fri, 17 Jun 2022 15:46:15 GMT
       ETag:
       - '0x8D968C5F3B94E1C'
       Last-Modified:
@@ -4551,7 +4551,7 @@ interactions:
       x-ms-lease-status:
       - unlocked
       x-ms-request-id:
-      - dc200cee-401e-001e-4642-719a4e000000
+      - e7d9b2a6-701e-0041-5661-827062000000
       x-ms-version:
       - '2009-09-19'
     status:
