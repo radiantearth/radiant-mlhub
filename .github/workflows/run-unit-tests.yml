@@ -66,7 +66,7 @@ jobs:
           MLHUB_API_KEY: 'required_but_not_used'
         run: |
           pip install .
-          pytest --record-mode once --block-network
+          pytest
           flake8
           mypy radiant_mlhub
 

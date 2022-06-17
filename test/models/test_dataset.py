@@ -211,6 +211,18 @@ class TestDataset:
         assert not asset_db.exists()
         rmtree(tmp_path, ignore_errors=True)
 
+    def test_download_catalog_only_with_long_filenames(self, tmp_path: Path) -> None:
+        ds = Dataset.fetch_by_id('dlr_fusion_competition_germany')
+        ds.download(output_dir=tmp_path, catalog_only=True)
+        expect_archive_file = tmp_path / 'dlr_fusion_competition_germany.tar.gz'
+        assert expect_archive_file.exists()
+        stac_dir = tmp_path / 'dlr_fusion_competition_germany'
+        expect_catalog_file = stac_dir / 'catalog.json'
+        assert expect_catalog_file.exists()
+        asset_db = stac_dir / 'mlhub_stac_assets.db'
+        assert not asset_db.exists()
+        rmtree(tmp_path, ignore_errors=True)
+
     @pytest.mark.vcr
     def test_download_all_assets_works(self, tmp_path: Path) -> None:
         expect_assets = 2825
