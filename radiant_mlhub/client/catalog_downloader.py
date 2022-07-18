@@ -1,4 +1,5 @@
 import csv
+from multiprocessing.pool import ThreadPool
 import os
 import threading
 import tarfile
@@ -268,11 +269,10 @@ class CatalogDownloader():
                 if n % 1000 == 0:
                     self.db_conn.commit()
 
-        json_srcs = iglob(str(self.work_dir / '**/*.json'), recursive=True)
-        for json_src in json_srcs:
+        def threadpool_wrapper(json_src: str) -> None:
             p = Path(json_src)
             if p.name == 'catalog.json':
-                continue
+                return
             with open(json_src) as json_fh:
                 stac_item = json.load(json_fh)
                 stac_type = stac_item.get('type', None)
@@ -280,6 +280,11 @@ class CatalogDownloader():
                     _handle_collection(stac_item)
                 else:
                     _handle_item(stac_item)
+
+        json_srcs = iglob(str(self.work_dir / '**/*.json'), recursive=True)
+        tp = ThreadPool(processes=8)
+        result = tp.map(threadpool_wrapper, json_srcs)
+
         log.info(f'{self._fetch_unfiltered_count()} unique assets in stac catalog.')
 
     def _filter_collections_step(self) -> None:
