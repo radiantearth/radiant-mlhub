@@ -37,18 +37,21 @@ You can fetch a model by ID using :meth:`MLModel.fetch <radiant_mlhub.models.MLM
 .. code-block:: python
 
     >>> model = MLModel.fetch('model-cyclone-wind-estimation-torchgeo-v1')
-    >>> mode.assets
-    {'inferencing-checkpoint': <Asset href=https://zenodo.org/record/5773331/files/last.ckpt?download=1>,
+    >>> model.assets
+    {'inferencing-compose': <Asset href=https://raw.githubusercontent.com/RadiantMLHub/cyclone-model-torchgeo/main/inferencing.yml>,
+ 'inferencing-checkpoint': <Asset href=https://zenodo.org/record/5773331/files/last.ckpt?download=1>}
     >>> len(first_model.links)
-    7
+    8
     >>> # print only the ml-model and mlhub related links
+    >>> from pprint import pprint
     >>> pprint([ link for link in first_model.links if 'ml-model:' in link.rel or 'mlhub:' in link.rel])
-    [<Link rel=ml-model:inferencing-image target=docker://docker.io/radiantearth/cyclone-model-torchgeo:1>,
-     <Link rel=ml-model:train-data target=https://api.radiant.earth/mlhub/v1/collections/nasa_tropical_storm_competition_train_source>,
-     <Link rel=mlhub:training-dataset target=https://mlhub.earth/data/nasa_tropical_storm_competition>]
+    [<Link rel=ml-model:inferencing-image target=docker://docker.io/radiantearth/crop-detection-dl:1>,
+ <Link rel=ml-model:train-data target=https://api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_source>,
+ <Link rel=ml-model:train-data target=https://api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_labels>,
+ <Link rel=mlhub:training-dataset target=https://mlhub.earth/data/ref_african_crops_kenya_02>]
     >>> # you can access rest of properties as a dict
     >>> first_model.properties.keys()
-    dict_keys(['title', 'license', 'sci:doi', 'datetime', 'providers', 'description', 'end_datetime', 'sci:citation', 'ml-model:type', 'start_datetime', 'sci:publications', 'ml-model:architecture', 'ml-model:prediction_type', 'ml-model:learning_approach'])
+    dict_keys(['title', 'license', 'sci:doi', 'datetime', 'providers', 'description', 'end_datetime', 'sci:citation', 'ml-model:type', 'start_datetime', 'sci:publications', 'ml-model:training-os', 'ml-model:architecture', 'ml-model:prediction_type', 'ml-model:learning_approach', 'ml-model:training-processor-type'])
 
 Low-level Client
 ----------------
@@ -65,9 +68,9 @@ can use the low-level :func:`~radiant_mlhub.client.list_models` function to work
     >>> first_model.keys()
     dict_keys(['id', 'bbox', 'type', 'links', 'assets', 'geometry', 'collection', 'properties', 'stac_version', 'stac_extensions'])
     >>> first_model['id']
-    'model-cyclone-wind-estimation-torchgeo-v1'
+    'model-cv4a-crop-detection-v1'
     >>> first_model['properties'].keys()
-    dict_keys(['title', 'license', 'sci:doi', 'datetime', 'providers', 'description', 'end_datetime', 'sci:citation', 'ml-model:type', 'start_datetime', 'sci:publications', 'ml-model:architecture', 'ml-model:prediction_type', 'ml-model:learning_approach'])
+    dict_keys(['title', 'license', 'sci:doi', 'datetime', 'providers', 'description', 'end_datetime', 'sci:citation', 'ml-model:type', 'start_datetime', 'sci:publications', 'ml-model:training-os', 'ml-model:architecture', 'ml-model:prediction_type', 'ml-model:learning_approach', 'ml-model:training-processor-type'])
 
 Fetching Model Metadata
 +++++++++++++++++++++++
@@ -94,4 +97,4 @@ method. This is the recommended way of fetching a model. This method returns a :
     >>> len(model.assets)
     2
     >>> len(model.links)
-    7
+    8
