@@ -38,20 +38,20 @@ You can fetch a model by ID using :meth:`MLModel.fetch <radiant_mlhub.models.MLM
 
     >>> model = MLModel.fetch('model-cyclone-wind-estimation-torchgeo-v1')
     >>> model.assets
-    {'inferencing-compose': <Asset href=https://raw.githubusercontent.com/RadiantMLHub/cyclone-model-torchgeo/main/inferencing.yml>,
- 'inferencing-checkpoint': <Asset href=https://zenodo.org/record/5773331/files/last.ckpt?download=1>}
+    .. {'inferencing-compose': <Asset href=https://raw.githubusercontent.com/RadiantMLHub/cyclone-model-torchgeo/main/inferencing.yml>,
+    .. 'inferencing-checkpoint': <Asset href=https://zenodo.org/record/5773331/files/last.ckpt?download=1>}
     >>> len(first_model.links)
     8
     >>> # print only the ml-model and mlhub related links
     >>> from pprint import pprint
     >>> pprint([ link for link in first_model.links if 'ml-model:' in link.rel or 'mlhub:' in link.rel])
-    [<Link rel=ml-model:inferencing-image target=docker://docker.io/radiantearth/crop-detection-dl:1>,
- <Link rel=ml-model:train-data target=https://api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_source>,
- <Link rel=ml-model:train-data target=https://api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_labels>,
- <Link rel=mlhub:training-dataset target=https://mlhub.earth/data/ref_african_crops_kenya_02>]
+    .. [<Link rel=ml-model:inferencing-image target=docker://docker.io/radiantearth/crop-detection-dl:1>,
+    .. <Link rel=ml-model:train-data target=https://api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_source>,
+    .. <Link rel=ml-model:train-data target=https://api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_labels>,
+    .. <Link rel=mlhub:training-dataset target=https://mlhub.earth/data/ref_african_crops_kenya_02>]
     >>> # you can access rest of properties as a dict
     >>> first_model.properties.keys()
-    dict_keys(['title', 'license', 'sci:doi', 'datetime', 'providers', 'description', 'end_datetime', 'sci:citation', 'ml-model:type', 'start_datetime', 'sci:publications', 'ml-model:training-os', 'ml-model:architecture', 'ml-model:prediction_type', 'ml-model:learning_approach', 'ml-model:training-processor-type'])
+    .. dict_keys(['title', 'license', 'sci:doi', 'datetime', 'providers', 'description', 'end_datetime', 'sci:citation', 'ml-model:type', 'start_datetime', 'sci:publications', 'ml-model:training-os', 'ml-model:architecture', 'ml-model:prediction_type', 'ml-model:learning_approach', 'ml-model:training-processor-type'])
 
 Low-level Client
 ----------------
