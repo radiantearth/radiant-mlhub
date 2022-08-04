@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 ### Fixed
-
+- Fix bugs in readthedocs. ([145](https://github.com/radiantearth/radiant-mlhub/pull/145))
 ### Deprecated
 
 ### Developer
