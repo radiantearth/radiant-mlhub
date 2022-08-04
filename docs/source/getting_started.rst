@@ -97,7 +97,7 @@ into two types:
 
 * ``source_imagery``: Collections of source imagery associated with the dataset
 * ``labels``: Collections of labeled data associated with the dataset (these collections implement the
-  `STAC Label Extension <https://github.com/radiantearth/stac-spec/tree/master/extensions/label>`_)
+  `STAC Label Extension <https://github.com/stac-extensions/label>`_)
 
 To list all the collections associated with a dataset use the :attr:`~radiant_mlhub.models.Dataset.collections` attribute.
 

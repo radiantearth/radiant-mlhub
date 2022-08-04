@@ -5,11 +5,11 @@ A **collection** represents either a group of related labels or a group of
 related source imagery for a given time period and geographic area. All
 collections in the Radiant MLHub API are valid `STAC Collections
 <https://github.com/radiantearth/stac-spec/tree/master/collection-spec>`_. For
-instance, the ``ref_landcovernet_v1_source`` collection catalogs the source
-imagery associated with the LandCoverNet dataset, while the
-``ref_landcovernet_v1_labels`` collection catalogs the land cover labels
+instance, the ``umd_mali_crop_type_source`` collection catalogs the source
+imagery associated with the 2019 Mali CropType dataset, while the
+``umd_mali_crop_type_labels`` collection catalogs the land cover labels
 associated with this imagery. These collections are considered part of a single
-``ref_landcovernet_v1`` **dataset** (see the :ref:`Datasets` documentation for
+``umd_mali_crop_type`` **dataset** (see the :ref:`Datasets` documentation for
 details on working with datasets).
 
 .. hint::
@@ -155,13 +155,13 @@ Low-level client
 
 The Radiant MLHub ``/archive/{archive_id}`` endpoint allows you to download an
 archive of all assets associated with a given collection. You can use the
-low-level :func:`~radiant_mlhub.client.download_archive` function to download
+low-level :func:`~radiant_mlhub.client.download_collection_archive` function to download
 the archive to your local file system.
 
 .. code-block:: python
 
-    >>> from radiant_mlhub.client import download_archive
-    >>> archive_path = download_archive('sn1_AOI_1_RIO')
+    >>> from radiant_mlhub.client import download_collection_archive
+    >>> archive_path = download_collection_archive('sn1_AOI_1_RIO')
     28%|██▊       | 985.0/3496.9 [00:35<00:51, 48.31M/s]
     >>> archive_path
     PosixPath('/path/to/current/directory/sn1_AOI_1_RIO.tar.gz')
