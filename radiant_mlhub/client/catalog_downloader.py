@@ -127,13 +127,13 @@ class CatalogDownloader():
         Sets path to stac catalog .tar.gz.
         """
         c = self.config
-        out_file = c.output_dir / f'{c.dataset_id}.tar.gz'
+        out_file = c.output_dir / f'{c.dataset_id}_full_catalog' / f'{c.dataset_id}.tar.gz'
         dl = ResumableDownloader(
             session=c.mlhub_api_session,
             url=f'/catalog/{c.dataset_id}',
             out_file=out_file,
             if_exists=c.if_exists,
-            desc=f'{c.dataset_id}: fetch stac catalog',
+            desc=f'{c.dataset_id}: fetch stac catalog | out_file = {out_file}',
             disable_progress_bar=False,
         )
         dl.run()
@@ -738,7 +738,7 @@ class CatalogDownloader():
         # call each step
         for step in steps:
             step()
-
+        # test!!!!
         # inspect the error report
         self.err_report.flush()
         self.err_report.close()
