@@ -133,7 +133,7 @@ class CatalogDownloader():
             url=f'/catalog/{c.dataset_id}',
             out_file=out_file,
             if_exists=c.if_exists,
-            desc=f'{c.dataset_id}: fetch stac catalog | out_file = {out_file}',
+            desc=f'{c.dataset_id}: fetch stac catalog',
             disable_progress_bar=False,
         )
         dl.run()
@@ -146,19 +146,20 @@ class CatalogDownloader():
         In `skip` or `resume` mode, will not overwrite existing files.
         """
         c = self.config
+        out_dir = c.output_dir / f'{c.dataset_id}_full_catalog'
         msg = f'unarchive {self.catalog_file.name}'
         log.info(msg)
         with tarfile.open(self.catalog_file, 'r:gz') as archive:
             if self.config.if_exists == DownloadIfExistsOpts.overwrite:
-                archive.extractall(path=c.output_dir)
+                archive.extractall(path=out_dir)
             else:
                 members = archive.getmembers()
                 for tar_info in tqdm(members, desc=msg):
-                    if (c.output_dir / tar_info.name).exists():
+                    if (out_dir / tar_info.name).exists():
                         continue
                     else:
-                        archive.extract(tar_info, path=c.output_dir)
-        assert (self.work_dir / 'catalog.json').exists()
+                        archive.extract(tar_info, path=out_dir)
+        assert (out_dir / c.dataset_id / 'catalog.json').exists()
 
     def _create_asset_list_step(self) -> None:
         """
@@ -268,7 +269,9 @@ class CatalogDownloader():
                 if n % 1000 == 0:
                     self.db_conn.commit()
 
-        json_srcs = iglob(str(self.work_dir / '**/*.json'), recursive=True)
+        c = self.config
+        cat_dir = c.output_dir / f'{c.dataset_id}_full_catalog'
+        json_srcs = iglob(str(cat_dir / '**/*.json'), recursive=True)
         for json_src in json_srcs:
             p = Path(json_src)
             if p.name == 'catalog.json':
@@ -738,7 +741,7 @@ class CatalogDownloader():
         # call each step
         for step in steps:
             step()
-        # test!!!!
+
         # inspect the error report
         self.err_report.flush()
         self.err_report.close()
