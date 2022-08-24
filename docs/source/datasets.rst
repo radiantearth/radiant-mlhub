@@ -424,11 +424,11 @@ Appendix: Filesystem Layout of Downloads
 
 STAC archive file:
 
-    ``{output_dir}/{dataset_id}.tar.gz``
+    ``{output_dir}/{dataset_id}_full_catalog/{dataset_id}.tar.gz``
 
 Unarchived STAC catalog:
 
-    ``{output_dir}/{dataset_id}/catalog.json``
+    ``{output_dir}/{dataset_id}_full_catalog/{dataset_id}/catalog.json``
 
 Collection, Item and Asset layout:
 
