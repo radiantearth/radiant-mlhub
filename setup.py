@@ -26,12 +26,12 @@ setuptools.setup(
     },
     install_requires=[
         'click>=7.1.2,<9.0.0',
-        'pydantic~=1.9',
-        'pystac~=1.4',
-        'python-dateutil~=2.8',
-        'requests~=2.27',
-        'shapely~=1.8',
-        'tqdm~=4.64'
+        'pydantic~=1.9.2',
+        'pystac~=1.4.0',
+        'python-dateutil~=2.8.2',
+        'requests~=2.27.0',
+        'shapely~=1.8.0',
+        'tqdm~=4.64.0'
     ],
     classifiers=[
         "Programming Language :: Python",
