@@ -86,8 +86,8 @@ class CatalogDownloader():
     err_report: TextIOWrapper
     err_report_path: Path
     catalog_file: Path
-    catalog_dir: Path
     work_dir: Path
+    catalog_dir: Path
     db_conn: sqlite3.Connection
     db_cur: sqlite3.Cursor
 
@@ -98,9 +98,9 @@ class CatalogDownloader():
             if 'geometry' not in config.intersects:
                 raise ValueError('intersects must be geojson with a geometry property')
         self.config = config
-        self.catalog_dir = (config.output_dir / f'{config.dataset_id}_full_catalog')
         self.work_dir = (config.output_dir / config.dataset_id)
         self.work_dir.mkdir(exist_ok=True, parents=True)
+        self.catalog_dir = (config.output_dir / f'{config.dataset_id}_full_catalog')
         self.err_report_path = self.work_dir / 'err_report.csv'
 
     def _fetch_unfiltered_count(self) -> int:
