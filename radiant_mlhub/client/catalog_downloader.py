@@ -640,7 +640,7 @@ class CatalogDownloader():
 
         self._finalize_db()
 
-        if 'PYTEST_CURRENT_TEST' in os.environ:
+        if 'PYTEST_CURRENT_TEST' in os.environ and 'MLHUB_CI' in os.environ:
             # vcr.py does not work multithreading `requests`, so bail out here
             # and consider it a 'dry run'.
             return
