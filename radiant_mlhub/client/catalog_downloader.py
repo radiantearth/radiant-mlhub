@@ -86,7 +86,6 @@ class CatalogDownloader():
     err_report: TextIOWrapper
     err_report_path: Path
     catalog_file: Path
-    work_dir: Path
     catalog_dir: Path
     asset_dir: Path
     db_conn: sqlite3.Connection
@@ -99,8 +98,6 @@ class CatalogDownloader():
             if 'geometry' not in config.intersects:
                 raise ValueError('intersects must be geojson with a geometry property')
         self.config = config
-        self.work_dir = (config.output_dir / config.dataset_id)
-        self.work_dir.mkdir(exist_ok=True, parents=True)
         self.catalog_dir = (config.output_dir / config.dataset_id / 'stac_catalog_complete')
         self.asset_dir = (config.output_dir / config.dataset_id / 'assets')
         self.asset_dir.mkdir(exist_ok=True, parents=True)
