@@ -12,13 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 ### Changed
-
 - Changed location where the full STAC catalog is downloaded (now in its own folder in the output directory). ([149] https://github.com/radiantearth/radiant-mlhub/pull/149)
-
 ### Fixed
-
 - Fix bugs in readthedocs. ([145](https://github.com/radiantearth/radiant-mlhub/pull/145))
-
 ### Deprecated
 
 ### Developer
