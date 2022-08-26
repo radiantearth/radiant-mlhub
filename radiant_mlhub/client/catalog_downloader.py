@@ -177,7 +177,6 @@ class CatalogDownloader():
             """
             c = self.config
             ext = Path(str(urlparse(rec.asset_url).path)).suffix
-            
             base_path = self.asset_dir / rec.collection_id  # type: ignore
             asset_filename = f'{rec.asset_key}{ext}'
             if rec.item_id is None:
