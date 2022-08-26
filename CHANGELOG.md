@@ -15,12 +15,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix bugs in readthedocs. ([145](https://github.com/radiantearth/radiant-mlhub/pull/145))
-- Fix use of tilde in setup.py document ([151] (https://github.com/radiantearth/radiant-mlhub/pull/151))
-
 ### Deprecated
 
 ### Developer
+
+## [v0.5.2]
+
+### Fixed
+
+- Fix bugs in readthedocs. ([145](https://github.com/radiantearth/radiant-mlhub/pull/145))
+- Fix use of tilde in setup.py document ([151](https://github.com/radiantearth/radiant-mlhub/pull/151))
 
 ## [v0.5.1]
 
@@ -209,18 +213,19 @@ Includes support for:
 * Fetching datasets and collections by ID
 * Downloading collection archives
 
-[Unreleased]: <https://github.com/stac-utils/pystac/compare/v0.5.1...main>
-[v0.5.1]: <https://github.com/stac-utils/pystac/compare/v0.5.0...0.5.1>
-[v0.5.0]: <https://github.com/stac-utils/pystac/compare/v0.4.1...0.5.0>
-[v0.4.1]: <https://github.com/stac-utils/pystac/compare/v0.4.0...0.4.1>
-[v0.4.0]: <https://github.com/stac-utils/pystac/compare/v0.3.1...0.4.0>
-[v0.3.1]: <https://github.com/stac-utils/pystac/compare/v0.3.0...0.3.1>
-[v0.3.0]: <https://github.com/stac-utils/pystac/compare/v0.2.1...0.3.0>
-[v0.2.1]: <https://github.com/stac-utils/pystac/compare/v0.2.0...0.2.1>
-[v0.2.0]: <https://github.com/stac-utils/pystac/compare/v0.1.3...0.2.0>
-[v0.1.3]: <https://github.com/stac-utils/pystac/compare/v0.1.2...0.1.3>
-[v0.1.2]: <https://github.com/stac-utils/pystac/compare/v0.1.1...0.1.2>
-[v0.1.1]: <https://github.com/stac-utils/pystac/compare/v0.1.0...0.1.1>
-[v0.1.0]: <https://github.com/stac-utils/pystac/tree/v0.1.0>
+[Unreleased]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.2...main>
+[v0.5.2]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.1...v0.5.2>
+[v0.5.1]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.0...v0.5.1>
+[v0.5.0]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.4.1...v0.5.0>
+[v0.4.1]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.4.0...v0.4.1>
+[v0.4.0]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.3.1...v0.4.0>
+[v0.3.1]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.3.0...v0.3.1>
+[v0.3.0]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.2.1...v0.3.0>
+[v0.2.1]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.2.0...v0.2.1>
+[v0.2.0]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.1.3...v0.2.0>
+[v0.1.3]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.1.2...v0.1.3>
+[v0.1.2]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.1.1...v0.1.2>
+[v0.1.1]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.1.0...v0.1.1>
+[v0.1.0]: <https://github.com/radiantearth/radiant-mlhub/tree/v0.1.0>
 
 [VCR.py]: https://vcrpy.readthedocs.io/en/latest/usage.html

@@ -12,7 +12,7 @@ class TestCLI:
 
     def test_version(self, cli_runner: "CliRunner_Type") -> None:
         result = cli_runner.invoke(mlhub, ['--version'])
-        assert result.output.rstrip('\n') == 'mlhub, version 0.5.1'
+        assert result.output.rstrip('\n') == 'mlhub, version 0.5.2'
 
     def test_configure(self, isolated_cli_runner: "CliRunner_Type") -> None:
         new_home = Path.cwd()
