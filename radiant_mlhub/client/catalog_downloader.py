@@ -177,10 +177,8 @@ class CatalogDownloader():
             """
             c = self.config
             ext = Path(str(urlparse(rec.asset_url).path)).suffix
-            #HERE
             
             base_path = self.asset_dir / rec.collection_id  # type: ignore
-           # base_path = c.output_dir / c.dataset_id / rec.collection_id  # type: ignore
             asset_filename = f'{rec.asset_key}{ext}'
             if rec.item_id is None:
                 # this is a collection level asset
@@ -247,7 +245,6 @@ class CatalogDownloader():
                     start_datetime=common_meta.get('start_datetime', None),
                     end_datetime=common_meta.get('end_datetime', None),
                 )
-                #HERE
                 asset_save_path = _asset_save_path(rec).relative_to(self.asset_dir)
                 rec.asset_save_path = str(asset_save_path)
                 _insert_asset_rec(rec)
@@ -267,7 +264,6 @@ class CatalogDownloader():
                     asset_key=k,
                     asset_url=v['href'],
                 )
-                #HERE
                 asset_save_path = _asset_save_path(rec).relative_to(self.asset_dir)
                 rec.asset_save_path = str(asset_save_path)
                 _insert_asset_rec(rec)
@@ -652,7 +648,6 @@ class CatalogDownloader():
                 executor.submit(
                     _download_asset_worker, **dict(
                         asset_url=r.asset_url,
-                        #HERE
                         out_file=self.asset_dir / r.asset_save_path,  # type: ignore
                         if_exists=self.config.if_exists,
                     )): r for r in asset_list
@@ -675,7 +670,6 @@ class CatalogDownloader():
                     log.exception(e)
 
     def _init_db(self) -> None:
-        #HERE
         db_path = self.asset_dir / 'mlhub_stac_assets.db'
         if db_path.exists():
             db_path.unlink()
@@ -760,5 +754,4 @@ class CatalogDownloader():
         if c.catalog_only:
             log.info(f'catalog saved to {self.catalog_dir}')
         else:
-            #HERE
             log.info(f'assets saved to {self.asset_dir}')
