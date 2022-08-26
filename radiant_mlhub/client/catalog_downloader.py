@@ -175,7 +175,6 @@ class CatalogDownloader():
             Transform asset into a local save path. This filesystem layout
             is the same as the mlhub's collection archive .tar.gz files.
             """
-            c = self.config
             ext = Path(str(urlparse(rec.asset_url).path)).suffix
             base_path = self.asset_dir / rec.collection_id  # type: ignore
             asset_filename = f'{rec.asset_key}{ext}'
@@ -270,7 +269,6 @@ class CatalogDownloader():
                 if n % 1000 == 0:
                     self.db_conn.commit()
 
-        c = self.config
         json_srcs = iglob(str(self.catalog_dir / '**/*.json'), recursive=True)
         for json_src in json_srcs:
             p = Path(json_src)

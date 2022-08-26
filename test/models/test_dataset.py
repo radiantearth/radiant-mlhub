@@ -202,9 +202,9 @@ class TestDataset:
     def test_download_catalog_only(self, tmp_path: Path) -> None:
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         ds.download(output_dir=tmp_path, catalog_only=True)
-        expect_archive_file = tmp_path / 'nasa_marine_debris' /'stac_catalog_complete' / 'nasa_marine_debris.tar.gz'
+        expect_archive_file = tmp_path / 'nasa_marine_debris' / 'stac_catalog_complete' / 'nasa_marine_debris.tar.gz'
         assert expect_archive_file.exists()
-        stac_dir = tmp_path / 'nasa_marine_debris' /'stac_catalog_complete' /'nasa_marine_debris'
+        stac_dir = tmp_path / 'nasa_marine_debris' / 'stac_catalog_complete' / 'nasa_marine_debris'
         expect_catalog_file = stac_dir / 'catalog.json'
         assert expect_catalog_file.exists()
         asset_dir = tmp_path / 'nasa_marine_debris' / 'assets'
