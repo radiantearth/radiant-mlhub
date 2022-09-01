@@ -12,7 +12,7 @@ from io import TextIOWrapper
 from logging import getLogger
 from pathlib import Path
 from typing import Callable, Dict, List, Optional, Tuple, Union, Any, Set
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
 from dateutil.parser import parse as date_parser
 
 from pydantic import BaseModel
@@ -59,16 +59,16 @@ class CatalogDownloaderConfig(BaseModel):
     temporal_query: Optional[Union[datetime, Tuple[datetime, datetime]]] = None
 
 
-# class AssetRecord(BaseModel):
-#     """
-#     A stac_assets db record.
-#     """
+class AssetRecord(BaseModel):
+    """
+    A stac_assets db record.
+    """
 #     class Config:
 #         arbitrary_types_allowed = True
 #     rowid: Optional[int] = None
 #     asset_key: Optional[str] = None
-#     asset_save_path: Optional[str] = None
-#     asset_url: Optional[str] = None
+    asset_save_path: Optional[str] = None
+    asset_url: Optional[str] = None
 #     bbox_json: Optional[str] = None
 #     collection_id: Optional[str] = None
 #     common_asset: bool = False
@@ -90,6 +90,9 @@ class CatalogDownloader():
     asset_dir: Path
     # db_conn: sqlite3.Connection
     # db_cur: sqlite3.Cursor
+    selected_collections = List  
+    to_download: Dict
+    common_to_download = Dict
 
     def __init__(self, config: CatalogDownloaderConfig):
         # if config.bbox is not None and config.intersects is not None:
@@ -105,26 +108,10 @@ class CatalogDownloader():
         self.asset_dir = (config.output_dir / config.dataset_id / 'assets')
         self.asset_dir.mkdir(exist_ok=True, parents=True)
         self.err_report_path = self.asset_dir / 'err_report.csv'
-
-    # def _fetch_unfiltered_count(self) -> int:
-    #     self.db_cur.execute(
-    #         """
-    #             SELECT COUNT(DISTINCT asset_save_path)
-    #                 FROM assets WHERE filtered = 0
-    #         """
-    #     )
-    #     (total_count, ) = self.db_cur.fetchone()
-    #     return int(total_count)
-
-    # def _mark_assets_filtered(self, row_ids: Set[int]) -> None:
-    #     in_clause = ','.join([str(row_id) for row_id in row_ids])
-    #     self.db_cur.execute(
-    #         f"""
-    #             UPDATE assets
-    #                 SET filtered = 1
-    #                 WHERE rowid in ( { in_clause } )
-    #         """,
-    #     )
+        self.to_download = {}
+        self.selected_collections = []
+        self.to_download = {}
+        self.common_to_download = {}
 
     def _fetch_catalog_step(self) -> None:
         """
@@ -165,262 +152,329 @@ class CatalogDownloader():
                         archive.extract(tar_info, path=self.catalog_dir)
         assert (self.catalog_dir / self.config.dataset_id / 'catalog.json').exists()
 
-    def _create_asset_list_step(self) -> None:
-#   def _
-        """
-        Scan the stac catalog and extract asset list into tabular format.
-        Creates table in sqlite db.
-        """
-        msg = 'create stac asset list'
-        log.info(msg)
+   def _create_asset_list_step(self) -> None:
 
-        def _asset_save_path(rec: AssetRecord) -> Path:
             """
-            Transform asset into a local save path. This filesystem layout
-            is the same as the mlhub's collection archive .tar.gz files.
+            Scan the stac catalog and extract asset list into tabular format.
+            Creates table in sqlite db.
             """
+            msg = 'create stac asset list'
+            log.info(msg)
 
-            ext = Path(str(urlparse(rec.asset_url).path)).suffix
-            base_path = self.asset_dir / rec.collection_id  # type: ignore
-            asset_filename = f'{rec.asset_key}{ext}'
-            if rec.item_id is None:
-                # this is a collection level asset
-                return base_path / asset_filename
-            if rec.common_asset:
-                # common assets: save to _common dir (at the collection level) instead of in every item subdir.
-                return base_path / '_common' / asset_filename
-            return base_path / rec.item_id / asset_filename
 
-        # def _insert_asset_rec(rec: AssetRecord) -> None:
-        #     self.db_cur.execute(
-        #         """
-        #             INSERT INTO assets (
-        #                 collection_id,
-        #                 item_id,
-        #                 asset_key,
-        #                 asset_url,
-        #                 asset_save_path,
-        #                 filtered,
-        #                 common_asset,
-        #                 bbox_json,
-        #                 geometry_json,
-        #                 single_datetime,
-        #                 start_datetime,
-        #                 end_datetime
-        #             ) VALUES (
-        #                 :collection_id,
-        #                 :item_id,
-        #                 :asset_key,
-        #                 :asset_url,
-        #                 :asset_save_path,
-        #                 :filtered,
-        #                 :common_asset,
-        #                 :bbox_json,
-        #                 :geometry_json,
-        #                 :single_datetime,
-        #                 :start_datetime,
-        #                 :end_datetime
-        #             );
-        #         """,
-        #         rec.dict()
-        #     )
 
-        def _handle_item(stac_item: JsonDict) -> None:
-            item_id = stac_item['id']
-            assets = stac_item['assets']
-            props = stac_item['properties']
-            common_meta = props.get('common_metadata', dict())
-            bbox = stac_item.get('bbox', None)
-            geometry = stac_item.get('geometry', None)
-            if geometry and not bbox:
-                raise RuntimeError(f'item {item_id} has no bbox, but has geometry')
-            n = 0
-            for k, v in assets.items():
-                rec = AssetRecord(
-                    collection_id=stac_item['collection'],
-                    item_id=item_id,
-                    asset_key=k,
-                    common_asset=k in COMMON_ASSET_NAMES,
-                    asset_url=v['href'],
-                    bbox_json=json.dumps(bbox) if bbox else None,
-                    geometry_json=json.dumps(geometry) if geometry else None,
-                    single_datetime=props.get('datetime', None),
-                    start_datetime=common_meta.get('start_datetime', None),
-                    end_datetime=common_meta.get('end_datetime', None),
-                )
-                asset_save_path = _asset_save_path(rec).relative_to(self.asset_dir)
-                rec.asset_save_path = str(asset_save_path)
-                _insert_asset_rec(rec)
-                n += 1
-                if n % 1000 == 0:
-                    self.db_conn.commit()
+            def _asset_save_path(rec: AssetRecord) -> Path:
+                """
+                Transform asset into a local save path. This filesystem layout
+                is the same as the mlhub's collection archive .tar.gz files.
+                """
 
-        def _handle_collection(stac_collection: JsonDict) -> None:
-            collection_id = stac_collection['id']
-            assets = stac_collection.get('assets', None)
-            if assets is None:
-                return
-            n = 0
-            for k, v in assets.items():
-                rec = AssetRecord(
-                    collection_id=collection_id,
-                    asset_key=k,
-                    asset_url=v['href'],
-                )
-                asset_save_path = _asset_save_path(rec).relative_to(self.asset_dir)
-                rec.asset_save_path = str(asset_save_path)
-                _insert_asset_rec(rec)
-                n += 1
-                if n % 1000 == 0:
-                    self.db_conn.commit()
+                ext = Path(str(urlparse(rec.asset_url).path)).suffix
+                base_path = self.asset_dir / rec.collection_id  # type: ignore
+                asset_filename = f'{rec.asset_key}{ext}'
+                if rec.item_id is None:
+                    # this is a collection level asset
+                    return base_path / asset_filename
+                if rec.common_asset:
+                    # common assets: save to _common dir (at the collection level) instead of in every item subdir.
+                    return base_path / '_common' / asset_filename
+                return base_path / rec.item_id / asset_filename
 
-        json_srcs = iglob(str(self.catalog_dir / '**/*.json'), recursive=True)
-        for json_src in json_srcs:
-            p = Path(json_src)
-            if p.name == 'catalog.json':
-                continue
-            with open(json_src) as json_fh:
-                stac_item = json.load(json_fh)
-                stac_type = stac_item.get('type', None)
-                if p.name == 'collection.json' or stac_type == 'Collection':
-                    _handle_collection(stac_item)
-                else:
-                    _handle_item(stac_item)
-        log.info(f'{self._fetch_unfiltered_count()} unique assets in stac catalog.')
-
-    def _filter_collections_step(self) -> None:
-        """
-        Iterate through the filters and mark entries in the assets table as `filtered`.
-        Filter is an allow-list. Only matching collection_ids and optionally, asset keys,
-        will be included.
-        """
-        if self.config.collection_filter is None:
-            return
-
-        desc = 'filter by collection ids and asset keys'
-        log.info(desc)
-
-        total_asset_ct = self._fetch_unfiltered_count()
-        self.db_cur.execute(
-            """
-                SELECT rowid, collection_id, asset_key
-                    FROM assets
-                    WHERE filtered = 0 AND item_id IS NOT NULL
-            """
-        )
-        progress = tqdm(total=total_asset_ct, desc=desc)
-        progress_value = 0
-        row_ids_to_filter = set()
-        while True:
-            rows = self.db_cur.fetchmany()
-            if not rows:
-                progress.update(total_asset_ct)
-                break
-
-            progress_value += len(rows)
-            progress.update(progress_value)
-
-            for row_tuple in rows:
-                (row_id, collection_id, asset_key) = row_tuple
-                filtered = True
-                if collection_id in f:
-                    # collection_id is a key in the filter (allow list)
-                    filter_asset_keys = f[collection_id]
-                    if not filter_asset_keys:
-                        # no asset keys, so include because of collection id
-                        filtered = False
-                    else:
-                        # check each asset key
-                        if asset_key in filter_asset_keys:
-                            # include asset because it's key appears in filter (allow list)
-                            filtered = False
-                if filtered:
-                    row_ids_to_filter.add(row_id)
-
-        self._mark_assets_filtered(row_ids_to_filter)
-
-        total_asset_ct = self._fetch_unfiltered_count()
-        if total_asset_ct == 0:
-            raise RuntimeError(
-                f'after filtering collections_ids and asset keys, zero assets to download. filter: {filter}'
-            )
-        log.info(f'{total_asset_ct} assets after collection filter.')
-
-    def _filter_intersects_step(self) -> None:
-        """
-        Filter items by geojson vs. bounding box intersection.
-        Marks items in the assets table as `filtered` if they do not intersect.
-        """
-
-        if self.config.intersects is None:
-            return
-
-        desc = 'filter by intersects'
-        log.info(desc)
-
-        # Determine if a bbox or a GeoJSON was passed in by the user
-        bbox_var = isinstance(self.config.intersects, list)
-        geojson_var = isinstance(self.config.intersects, dict)
-        # if intersect is a GeoJSON
-        if geojson_var == True and bbox_var == False: 
-            intersects_shape_query = shape(self.config.intersects['geometry'])
-
-                # cache the spatial join test, which belong to items, not to the
-                # asset. the results are ordered by item_id, and since we're within
-                # db_cur.fetchmany(), here we maintain a cache with bounded size.
-                item_intersects_cache: Dict[str, bool] = dict()
-
-                for row_tuple in rows:
-                    (row_id, item_id, bbox_json) = row_tuple
-                    if not bbox_json:
-                        log.warning(f'item missing bbox: {item_id}')
-                        continue
-                    hit = item_intersects_cache.get(item_id, None)
-                    if hit is None:
-                        bbox = json.loads(bbox_json)
-                        item_bbox_polygon = box(*bbox)
-                        hit = intersects_shape_query.intersects(item_bbox_polygon)
-                        item_intersects_cache[item_id] = hit
-                    if not hit:
-                        row_ids_to_filter.add(row_id)
-
-            self._mark_assets_filtered(row_ids_to_filter)
-
-           # total_asset_ct = self._fetch_unfiltered_count()
-            # if total_asset_ct == 0:
-            #     raise RuntimeError(
-            #         f'after filtering by intersects, zero assets to download. filter: {filter}'
+            # def _insert_asset_rec(rec: AssetRecord) -> None:
+            #     self.db_cur.execute(
+            #         """
+            #             INSERT INTO assets (
+            #                 collection_id,
+            #                 item_id,
+            #                 asset_key,
+            #                 asset_url,
+            #                 asset_save_path,
+            #                 filtered,
+            #                 common_asset,
+            #                 bbox_json,
+            #                 geometry_json,
+            #                 single_datetime,
+            #                 start_datetime,
+            #                 end_datetime
+            #             ) VALUES (
+            #                 :collection_id,
+            #                 :item_id,
+            #                 :asset_key,
+            #                 :asset_url,
+            #                 :asset_save_path,
+            #                 :filtered,
+            #                 :common_asset,
+            #                 :bbox_json,
+            #                 :geometry_json,
+            #                 :single_datetime,
+            #                 :start_datetime,
+            #                 :end_datetime
+            #             );
+            #         """,
+            #         rec.dict()
             #     )
-           # log.info(f'{total_asset_ct} assets after intersects filter.')
-        # if intersect is a bbox 
-            desc = 'filter by bounding box'
-            if self.config.bbox is None:
+
+            def _handle_item(stac_item: JsonDict) -> None:
+                item_id = stac_item['id']
+                assets = stac_item['assets']
+                props = stac_item['properties']
+                common_meta = props.get('common_metadata', dict())
+                bbox = stac_item.get('bbox', None)
+                geometry = stac_item.get('geometry', None)
+                if geometry and not bbox:
+                    raise RuntimeError(f'item {item_id} has no bbox, but has geometry')
+                n = 0
+                for k, v in assets.items():
+                    rec = AssetRecord(
+                        collection_id=stac_item['collection'],
+                        item_id=item_id,
+                        asset_key=k,
+                        common_asset=k in COMMON_ASSET_NAMES,
+                        asset_url=v['href'],
+                        bbox_json=json.dumps(bbox) if bbox else None,
+                        geometry_json=json.dumps(geometry) if geometry else None,
+                        single_datetime=props.get('datetime', None),
+                        start_datetime=common_meta.get('start_datetime', None),
+                        end_datetime=common_meta.get('end_datetime', None),
+                    )
+                    asset_save_path = _asset_save_path(rec).relative_to(self.asset_dir)
+                    rec.asset_save_path = str(asset_save_path)
+                    _insert_asset_rec(rec)
+                    n += 1
+                    if n % 1000 == 0:
+                        self.db_conn.commit()
+
+            def _handle_collection(stac_collection: JsonDict) -> None:
+                collection_id = stac_collection['id']
+                assets = stac_collection.get('assets', None)
+                if assets is None:
+                    return
+                n = 0
+                for k, v in assets.items():
+                    rec = AssetRecord(
+                        collection_id=collection_id,
+                        asset_key=k,
+                        asset_url=v['href'],
+                    )
+                    asset_save_path = _asset_save_path(rec).relative_to(self.asset_dir)
+                    rec.asset_save_path = str(asset_save_path)
+                    _insert_asset_rec(rec)
+                    n += 1
+                    if n % 1000 == 0:
+                        self.db_conn.commit()
+
+            json_srcs = iglob(str(self.catalog_dir / '**/*.json'), recursive=True)
+            for json_src in json_srcs:
+                p = Path(json_src)
+                if p.name == 'catalog.json':
+                    continue
+                with open(json_src) as json_fh:
+                    stac_item = json.load(json_fh)
+                    stac_type = stac_item.get('type', None)
+                    if p.name == 'collection.json' or stac_type == 'Collection':
+                        _handle_collection(stac_item)
+                    else:
+                        _handle_item(stac_item)
+            log.info(f'{self._fetch_unfiltered_count()} unique assets in stac catalog.')
+
+    def _apply_filters(self) -> None:
+
+        def _filter_collections_step(self) -> None:
+            """
+            Iterate through the filters and mark entries in the assets table as `filtered`.
+            Filter is an allow-list. Only matching collection_ids and optionally, asset keys,
+            will be included.
+            """
+            selected_collections = []
+            
+            if self.config.collection_filter is None:
+                directory = self.catalog_dir / self.config.dataset_id
+                for sub_directory in os.listdir(directory):
+                    if os.path.isdir(os.path.join(directory, sub_directory)):
+                        selected_collections.append(sub_directory)
                 return
-            bbox_polygon_query = box(*self.config.bbox)
+
+            desc = 'filter by collection ids and asset keys'
             log.info(desc)
 
+            if self.config.collection_filter:
+                for collection_id, assets in self.config.collection_filter.items(): 
+                    selected_collections.append(collection_id) 
+            
+            return(selected_collections)
+
+        self.config.selected_collections = _filter_collections_step(self)
+
+        def _collection_level_filters_step(self) -> None:
+    #   def _
+            # meesh
+            # for all the json files (assets)
+            # open the json file and pull out needed info from it
+        for collection_id in self.config.selected_collections:
+            collection_fname = f'{self.config.dataset_id}/{collection_id}/collection.json'
+            with open(collection_fname, 'r') as f:
+                collection = json.load(f)
+                for link in collection.get('links', []):
+                    if link['rel'] == 'item':
+                        item_fname = urljoin(collection_fname, link['href'])
+                        with open(item_fname, 'r') as f:
+                            stac = json.load(f)
+                        # send to temporal filter 
+                        # send to intersect filter                      
+
+                        
+                        for asset_key, asset in stac['assets'].items():
+                            if asset_key in assets:
+                                to_download.append(asset['href'])
+     
+        def _filter_intersects_step(self) -> None:
+            """
+            Filter items by geojson vs. bounding box intersection.
+            Marks items in the assets table as `filtered` if they do not intersect.
+            """
+
+            if self.config.intersects is None:
+                return
+
+            desc = 'filter by intersects'
+            log.info(desc)
+
+            # Determine if a bbox or a GeoJSON was passed in by the user
+            bbox_var = isinstance(self.config.intersects, list)
+            geojson_var = isinstance(self.config.intersects, dict)
+            # if intersect is a GeoJSON
+            if geojson_var == True and bbox_var == False: 
+                intersects_shape_query = shape(self.config.intersects['geometry'])
+
+                    # cache the spatial join test, which belong to items, not to the
+                    # asset. the results are ordered by item_id, and since we're within
+                    # db_cur.fetchmany(), here we maintain a cache with bounded size.
+                    item_intersects_cache: Dict[str, bool] = dict()
+
+                    for row_tuple in rows:
+                        (row_id, item_id, bbox_json) = row_tuple
+                        if not bbox_json:
+                            log.warning(f'item missing bbox: {item_id}')
+                            continue
+                        hit = item_intersects_cache.get(item_id, None)
+                        if hit is None:
+                            bbox = json.loads(bbox_json)
+                            item_bbox_polygon = box(*bbox)
+                            hit = intersects_shape_query.intersects(item_bbox_polygon)
+                            item_intersects_cache[item_id] = hit
+                        if not hit:
+                            row_ids_to_filter.add(row_id)
+
+            # if intersect is a bbox
+            if bbox_var == True and geojson_var == False:  
+                bbox_polygon_query = box(*self.config.intersects)
+                    # cache the bboxs, which belong to items, not to the asset. the
+                    # results are ordered by item_id, and since we're within
+                    # db_cur.fetchmany(), this is a cache with bounded size.
+                    item_bbox_cache: Dict[str, bool] = dict()
+
+                    for row_tuple in rows:
+                        (row_id, item_id, bbox_json) = row_tuple
+                        if not bbox_json:
+                            log.warning(f'item missing bbox: {item_id}')
+                            continue
+                        hit = item_bbox_cache.get(item_id, None)
+                        if hit is None:
+                            bbox = json.loads(bbox_json)
+                            item_bbox_polygon = box(*bbox)
+                            hit = bbox_polygon_query.intersects(item_bbox_polygon)
+                            item_bbox_cache[item_id] = hit
+                        if not hit:
+                            row_ids_to_filter.add(row_id)
+                                        geom = shape(stac['geometry'])
+                            
+            to_download.append()
+
+        def _filter_temporal_step(self) -> None:
+            """
+            Filter items by temporal query. Marks items in the assets table as
+            `filtered` if they do not fall in the temporal range or single day.
+            """
+
+            def one_to_one_check(d1: datetime, d2: datetime) -> bool:
+                """
+                Compare day for each.
+                """
+                return d1.day == d2.day
+
+            def one_to_range_check(d1: datetime, d2: Tuple[datetime, datetime]) -> bool:
+                """
+                Compare single datetime with date range.
+                """
+                (d2_start, d2_end) = d2
+                return d1 >= d2_start and d1 <= d2_end
+
+            def range_to_range_check(d1: Tuple[datetime, datetime], d2: Tuple[datetime, datetime]) -> bool:
+                """
+                Compare two date ranges.
+                """
+                (d1_start, d1_end) = d1
+                (d2_start, d2_end) = d2
+                if d1_start >= d2_start and d1_start <= d2_end:
+                    return True
+                if d1_end >= d2_start and d1_start <= d2_end:
+                    return True
+                return False
+
+            q = self.config.temporal_query
+            if q is None:
+                return
+            desc = 'filter by temporal query'
+            log.info(desc)
+            total_asset_ct = self._fetch_unfiltered_count()
+            self.db_cur.execute(
+                """
+                    SELECT rowid, item_id, single_datetime, start_datetime, end_datetime
+                        FROM assets
+                        WHERE filtered = 0 and item_id IS NOT NULL
+                """
+            )
             progress = tqdm(total=total_asset_ct, desc=desc)
+            progress_value = 0
+            row_ids_to_filter = set()
+            while True:
+                rows = self.db_cur.fetchmany()
+                if not rows:
+                    progress.update(total_asset_ct)
+                    break
 
                 progress_value += len(rows)
                 progress.update(progress_value)
 
-                # cache the bboxs, which belong to items, not to the asset. the
-                # results are ordered by item_id, and since we're within
-                # db_cur.fetchmany(), this is a cache with bounded size.
-                item_bbox_cache: Dict[str, bool] = dict()
-
                 for row_tuple in rows:
-                    (row_id, item_id, bbox_json) = row_tuple
-                    if not bbox_json:
-                        log.warning(f'item missing bbox: {item_id}')
-                        continue
-                    hit = item_bbox_cache.get(item_id, None)
-                    if hit is None:
-                        bbox = json.loads(bbox_json)
-                        item_bbox_polygon = box(*bbox)
-                        hit = bbox_polygon_query.intersects(item_bbox_polygon)
-                        item_bbox_cache[item_id] = hit
-                    if not hit:
+                    (row_id, item_id, single_datetime, start_datetime, end_datetime) = row_tuple
+                    filtered = False
+                    # inspect the stac item for datetime properties
+                    if single_datetime:
+                        # item has single date property
+                        if isinstance(q, tuple):
+                            filtered = not one_to_range_check(
+                                date_parser(single_datetime),
+                                q
+                            )
+                        else:
+                            filtered = not one_to_one_check(
+                                date_parser(single_datetime),
+                                q
+                            )
+                    else:
+                        # item has date range properties
+                        start = date_parser(start_datetime)
+                        end = date_parser(end_datetime)
+                        if not start or not end:
+                            # cannot process date range, just skip forward and log a warning
+                            log.warn(f'cannot compare to missing date range for: {item_id}')
+                            next
+                        if isinstance(q, tuple):
+                            filtered = not range_to_range_check((start, end), q)
+                        else:
+                            filtered = not one_to_range_check(q, (start, end))
+                    if filtered:
                         row_ids_to_filter.add(row_id)
 
             self._mark_assets_filtered(row_ids_to_filter)
@@ -428,105 +482,9 @@ class CatalogDownloader():
             total_asset_ct = self._fetch_unfiltered_count()
             if total_asset_ct == 0:
                 raise RuntimeError(
-                    f'after filtering by bounding box, zero assets to download. filter: {filter}'
+                f'after filtering by temporal query, zero assets to download. filter: {filter}'
                 )
-            log.info(f'{total_asset_ct} assets after bounding box filter.')
-
-    def _filter_temporal_step(self) -> None:
-        """
-        Filter items by temporal query. Marks items in the assets table as
-        `filtered` if they do not fall in the temporal range or single day.
-        """
-
-        def one_to_one_check(d1: datetime, d2: datetime) -> bool:
-            """
-            Compare day for each.
-            """
-            return d1.day == d2.day
-
-        def one_to_range_check(d1: datetime, d2: Tuple[datetime, datetime]) -> bool:
-            """
-            Compare single datetime with date range.
-            """
-            (d2_start, d2_end) = d2
-            return d1 >= d2_start and d1 <= d2_end
-
-        def range_to_range_check(d1: Tuple[datetime, datetime], d2: Tuple[datetime, datetime]) -> bool:
-            """
-            Compare two date ranges.
-            """
-            (d1_start, d1_end) = d1
-            (d2_start, d2_end) = d2
-            if d1_start >= d2_start and d1_start <= d2_end:
-                return True
-            if d1_end >= d2_start and d1_start <= d2_end:
-                return True
-            return False
-
-        q = self.config.temporal_query
-        if q is None:
-            return
-        desc = 'filter by temporal query'
-        log.info(desc)
-        total_asset_ct = self._fetch_unfiltered_count()
-        self.db_cur.execute(
-            """
-                SELECT rowid, item_id, single_datetime, start_datetime, end_datetime
-                    FROM assets
-                    WHERE filtered = 0 and item_id IS NOT NULL
-            """
-        )
-        progress = tqdm(total=total_asset_ct, desc=desc)
-        progress_value = 0
-        row_ids_to_filter = set()
-        while True:
-            rows = self.db_cur.fetchmany()
-            if not rows:
-                progress.update(total_asset_ct)
-                break
-
-            progress_value += len(rows)
-            progress.update(progress_value)
-
-            for row_tuple in rows:
-                (row_id, item_id, single_datetime, start_datetime, end_datetime) = row_tuple
-                filtered = False
-                # inspect the stac item for datetime properties
-                if single_datetime:
-                    # item has single date property
-                    if isinstance(q, tuple):
-                        filtered = not one_to_range_check(
-                            date_parser(single_datetime),
-                            q
-                        )
-                    else:
-                        filtered = not one_to_one_check(
-                            date_parser(single_datetime),
-                            q
-                        )
-                else:
-                    # item has date range properties
-                    start = date_parser(start_datetime)
-                    end = date_parser(end_datetime)
-                    if not start or not end:
-                        # cannot process date range, just skip forward and log a warning
-                        log.warn(f'cannot compare to missing date range for: {item_id}')
-                        next
-                    if isinstance(q, tuple):
-                        filtered = not range_to_range_check((start, end), q)
-                    else:
-                        filtered = not one_to_range_check(q, (start, end))
-                if filtered:
-                    row_ids_to_filter.add(row_id)
-
-        self._mark_assets_filtered(row_ids_to_filter)
-
-        total_asset_ct = self._fetch_unfiltered_count()
-        if total_asset_ct == 0:
-            raise RuntimeError(
-              f'after filtering by temporal query, zero assets to download. filter: {filter}'
-            )
-        log.info(f'{total_asset_ct} assets after temporal filter.')
+            log.info(f'{total_asset_ct} assets after temporal filter.')
 
     def _asset_download_step(self) -> None:
         """
@@ -681,6 +639,8 @@ class CatalogDownloader():
 
             steps.append(self._create_asset_list_step)
 
+            # i am thinking of removing these as an if statement cuz we already check this in the function and we need to still
+            # get to the function to assign stuff to those that arent getting filtered
             # conditional step for collection/item key filter
             if c.collection_filter:
                 steps.append(self._filter_collections_step)
@@ -688,10 +648,6 @@ class CatalogDownloader():
             # conditional step for temporal filter
             if c.temporal_query:
                 steps.append(self._filter_temporal_step)
-
-            # # conditional step for bounding box spatial filter
-            # if c.bbox:
-            #     steps.append(self._filter_bbox_step)
 
             # conditional step for spatial filter
             if c.intersects:
