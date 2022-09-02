@@ -161,8 +161,6 @@ class CatalogDownloader():
             msg = 'create stac asset list'
             log.info(msg)
 
-
-
             def _asset_save_path(rec: AssetRecord) -> Path:
                 """
                 Transform asset into a local save path. This filesystem layout
@@ -215,6 +213,8 @@ class CatalogDownloader():
             #     )
 
             def _handle_item(stac_item: JsonDict) -> None:
+                # this is just populating all the info of the assets into a db. we want to modify so we are collecting info after item passes tests
+                # and really only need the asset save path and url 
                 item_id = stac_item['id']
                 assets = stac_item['assets']
                 props = stac_item['properties']
@@ -262,7 +262,9 @@ class CatalogDownloader():
                     n += 1
                     if n % 1000 == 0:
                         self.db_conn.commit()
-
+#for all the json strings inthe entire stac catalog, look at them all and act appropriately
+# id rather go, look at all the collections. first, evaluate the collection. then, 
+# if the collection passes everything, then look at the inidivual assets
             json_srcs = iglob(str(self.catalog_dir / '**/*.json'), recursive=True)
             for json_src in json_srcs:
                 p = Path(json_src)
@@ -285,7 +287,7 @@ class CatalogDownloader():
             Filter is an allow-list. Only matching collection_ids and optionally, asset keys,
             will be included.
             """
-            selected_collections = []
+            selected_collections = dict()
             
             if self.config.collection_filter is None:
                 directory = self.catalog_dir / self.config.dataset_id
@@ -314,6 +316,19 @@ class CatalogDownloader():
             collection_fname = f'{self.config.dataset_id}/{collection_id}/collection.json'
             with open(collection_fname, 'r') as f:
                 collection = json.load(f)
+                extents = collection.get('extent')
+                spatial_ex = extents.get('spatial')
+                temporal_ex = extents.get('temporal')
+                for property in collection.get('extent', []):
+                    if property['spatial']:
+                        # Filter on collection level for geometry
+                        collection_geom = property['spatial', 'bbox']
+                    if property['temporal']:
+                        # Filter on collection level for datetime    
+                        collection_datetime = property['temporal', 'interval']
+
+
+
                 for link in collection.get('links', []):
                     if link['rel'] == 'item':
                         item_fname = urljoin(collection_fname, link['href'])
@@ -321,11 +336,10 @@ class CatalogDownloader():
                             stac = json.load(f)
                         # send to temporal filter 
                         # send to intersect filter                      
-
-                        
                         for asset_key, asset in stac['assets'].items():
                             if asset_key in assets:
                                 to_download.append(asset['href'])
+                
      
         def _filter_intersects_step(self) -> None:
             """
