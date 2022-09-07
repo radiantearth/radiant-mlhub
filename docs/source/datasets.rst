@@ -419,32 +419,32 @@ Error reporting
 Any unrecoverable download errors will be logged to ``{output_dir}/{dataset_id}/err_report.csv``
 and a Python exception will be raised.
 
-Appendix: Filesystem Layout of Downloads
+Appendix: Default Filesystem Layout of Downloads
 ----------------------------------------
 
 STAC archive file:
 
-    ``{output_dir}/{dataset_id}/stac_catalog_complete/{dataset_id}.tar.gz``
+    ``{output_dir}/{dataset_id}.tar.gz``
 
 Unarchived STAC catalog:
 
-    ``{output_dir}/{dataset_id}/stac_catalog_complete/{dataset_id}/catalog.json``
+    ``{output_dir}//{dataset_id}/catalog.json``
 
 Collection, Item and Asset layout:
 
-    ``{output_dir}/{dataset_id}/assets/{collection_id}/{item_id}/{asset_key}.{ext}``
+    ``{output_dir}/{dataset_id}/{collection_id}/{item_id}/{asset_key}.{ext}``
 
 Common Assets, ex: documentation.pdf are saved into a _common directory instead of duplicating them for many items:
 
-    ``{output_dir}/{dataset_id}/assets/_common/{asset_key}.{ext}``
+    ``{output_dir}/{dataset_id}/_common/{asset_key}.{ext}``
 
 Asset Database:
 
-    ``{output_dir}/{dataset_id}/assets/mlhub_stac_assets.db``
+    ``{output_dir}/{dataset_id}/mlhub_stac_assets.db``
 
 Error Report:
 
-    ``{output_dir}/{dataset_id}/assets/err_report.csv``
+    ``{output_dir}/{dataset_id}/err_report.csv``
 
 .. hint::
     The ``mlhub_stac_assets.db`` file is an artifact which may be safely deleted to free up disk space.

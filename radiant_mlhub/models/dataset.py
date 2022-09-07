@@ -9,6 +9,7 @@ from datetime import datetime
 
 from enum import Enum
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Union, Tuple
+from typing_extensions import assert_type
 
 from ..session import get_session
 
@@ -261,6 +262,7 @@ class Dataset:
             self,
             output_dir: Union[Path, str] = Path.cwd(),
             *,
+            asset_output_dir: Union[Path, str] = None,
             catalog_only: bool = False,
             if_exists: DownloadIfExistsOpts = DownloadIfExistsOpts.resume,
             api_key: Optional[str] = None,
@@ -278,14 +280,19 @@ class Dataset:
         Parameters
         ----------
         output_dir: str or pathlib.Path
-            The directory into which the archives will be written. Defaults to
-            current working directory.
+            The directory into which the STAC catalog will be written. If no asset_output_dir is specified,
+            the assets will also be saved to the output_dir. Defaults to current working directory.
+
+        asset_output_dir: Otional[str, pathlib.Path]
+            The directory into which the archives will be written. If not defined by the user, the 
+            assets are saved to their respective asset level STAC catalog directories in the output_dir, 
+            which is in the current working directory by default. 
 
         catalog_only: bool
             If True, the STAC catalog will be downloaded and unarchived, but no
             assets wll be downloaded. Defaults to False.
 
-        if_exists : str, optional
+        if_exists : Optional[str]
             Allowed values: `skip`, `overwrite`, or `resume` (default).
 
         bbox: Optional[List[float]]
@@ -340,10 +347,19 @@ class Dataset:
         if output_path.exists() and not output_path.is_dir():
             raise IOError('output_dir is not directory.')
 
+        if asset_output_dir:       
+            assert asset_output_dir
+            asset_output_path = Path(asset_output_dir)
+            if asset_output_path.exists() and not asset_output_path.is_dir():
+                raise IOError('asset_output_dir is not directory.')
+        if asset_output_dir is None:
+            asset_output_path = Path(output_dir)
+
         # get the python client's default http session which has api key and other mlhub-related things
         mlhub_api_session = get_session(api_key=api_key, profile=profile)
 
         output_path.mkdir(exist_ok=True, parents=True)
+        asset_output_path.mkdir(exist_ok=True, parents=True)
         config = CatalogDownloaderConfig(
             catalog_only=catalog_only,
             api_key=api_key,
@@ -353,6 +369,7 @@ class Dataset:
             if_exists=if_exists,
             intersects=intersects,
             output_dir=output_path,
+            asset_output_dir=asset_output_path,
             profile=profile,
             mlhub_api_session=mlhub_api_session,
             temporal_query=datetime,

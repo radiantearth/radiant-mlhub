@@ -9,11 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added an optional asset_output_dir parameter so that the assets can be downloaded into a separate directory from the STAC Catalog if the user specifies and selects a seperate asset output directory. ([149](https://github.com/radiantearth/radiant-mlhub/pull/149))
+
 ### Removed
 
 ### Changed
-
-- Change the file set up so that the assets and the full STAC catalog downloaded into two separate subdirectories in the output directory. ([149](https://github.com/radiantearth/radiant-mlhub/pull/149))
 
 ### Fixed
 

@@ -53,6 +53,7 @@ class CatalogDownloaderConfig(BaseModel):
     if_exists: DownloadIfExistsOpts = DownloadIfExistsOpts.resume
     intersects: Optional[GeoJSON] = None
     output_dir: Path
+    asset_output_dir: Path = None
     profile: Optional[str] = None
     mlhub_api_session: Session
     """Requests session for mlhub api calls."""
@@ -86,7 +87,7 @@ class CatalogDownloader():
     err_report: TextIOWrapper
     err_report_path: Path
     catalog_file: Path
-    catalog_dir: Path
+    work_dir: Path
     asset_dir: Path
     db_conn: sqlite3.Connection
     db_cur: sqlite3.Cursor
@@ -98,9 +99,14 @@ class CatalogDownloader():
             if 'geometry' not in config.intersects:
                 raise ValueError('intersects must be geojson with a geometry property')
         self.config = config
-        self.catalog_dir = (config.output_dir / config.dataset_id / 'stac_catalog_complete')
-        self.asset_dir = (config.output_dir / config.dataset_id / 'assets')
-        self.asset_dir.mkdir(exist_ok=True, parents=True)
+        self.work_dir = (config.output_dir / config.dataset_id)
+        if config.asset_output_dir: 
+            self.asset_dir = (config.asset_output_dir / config.dataset_id)
+            self.asset_dir.mkdir(exist_ok=True, parents=True)
+        else:
+            self.asset_dir = self.work_dir           
+        self.work_dir.mkdir(exist_ok=True, parents=True)
+        
         self.err_report_path = self.asset_dir / 'err_report.csv'
 
     def _fetch_unfiltered_count(self) -> int:
@@ -129,7 +135,7 @@ class CatalogDownloader():
         Sets path to stac catalog .tar.gz.
         """
         c = self.config
-        out_file = self.catalog_dir / f'{c.dataset_id}.tar.gz'
+        out_file = c.output_dir / f'{c.dataset_id}.tar.gz'
         dl = ResumableDownloader(
             session=c.mlhub_api_session,
             url=f'/catalog/{c.dataset_id}',
@@ -152,15 +158,16 @@ class CatalogDownloader():
         log.info(msg)
         with tarfile.open(self.catalog_file, 'r:gz') as archive:
             if self.config.if_exists == DownloadIfExistsOpts.overwrite:
-                archive.extractall(path=self.catalog_dir)
+                archive.extractall(path=c.output_dir)
             else:
                 members = archive.getmembers()
                 for tar_info in tqdm(members, desc=msg):
-                    if (self.catalog_dir / tar_info.name).exists():
+                    if (c.output_dir / tar_info.name).exists():
                         continue
                     else:
-                        archive.extract(tar_info, path=self.catalog_dir)
-        assert (self.catalog_dir / c.dataset_id / 'catalog.json').exists()
+                        archive.extract(tar_info, path=c.output_dir)
+       # assert (self.work_dir / c.dataset_id / 'catalog.json').exists()
+        assert (self.work_dir / 'catalog.json').exists() 
 
     def _create_asset_list_step(self) -> None:
         """
@@ -269,7 +276,7 @@ class CatalogDownloader():
                 if n % 1000 == 0:
                     self.db_conn.commit()
 
-        json_srcs = iglob(str(self.catalog_dir / '**/*.json'), recursive=True)
+        json_srcs = iglob(str(self.work_dir / '**/*.json'), recursive=True)
         for json_src in json_srcs:
             p = Path(json_src)
             if p.name == 'catalog.json':
@@ -749,6 +756,6 @@ class CatalogDownloader():
             raise IOError(msg)
 
         if c.catalog_only:
-            log.info(f'catalog saved to {self.catalog_dir}')
+            log.info(f'catalog saved to {self.work_dir}')
         else:
             log.info(f'assets saved to {self.asset_dir}')
