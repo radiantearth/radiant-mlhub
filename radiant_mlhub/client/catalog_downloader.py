@@ -11,7 +11,6 @@ from datetime import datetime
 from io import TextIOWrapper
 from logging import getLogger
 from pathlib import Path
-from tokenize import single_quoted
 from typing import Callable, Dict, List, Optional, Tuple, Union, Any, Set
 from urllib.parse import urlparse
 from dateutil.parser import parse as date_parser
@@ -224,7 +223,6 @@ class CatalogDownloader():
             item_id = stac_item['id']
             assets = stac_item['assets']
             props = stac_item['properties']
-            #common_meta = props.get('common_metadata', dict())
             datetime = props.get('datetime')
             bbox = stac_item.get('bbox', None)
             geometry = stac_item.get('geometry', None)

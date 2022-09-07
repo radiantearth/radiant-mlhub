@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Remove the outdated reference to a common_metadata asset level STAC catalog property and modify variable assignment to properly collect the start_datetime and end_datetime properties from each asset. ([155](https://github.com/radiantearth/radiant-mlhub/pull/155))
+
 ### Changed
 
 ### Fixed
