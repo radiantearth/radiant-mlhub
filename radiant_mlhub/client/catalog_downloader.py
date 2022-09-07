@@ -11,6 +11,7 @@ from datetime import datetime
 from io import TextIOWrapper
 from logging import getLogger
 from pathlib import Path
+from tokenize import single_quoted
 from typing import Callable, Dict, List, Optional, Tuple, Union, Any, Set
 from urllib.parse import urlparse
 from dateutil.parser import parse as date_parser
@@ -223,12 +224,26 @@ class CatalogDownloader():
             item_id = stac_item['id']
             assets = stac_item['assets']
             props = stac_item['properties']
-            common_meta = props.get('common_metadata', dict())
+            #common_meta = props.get('common_metadata', dict())
+            datetime = props.get('datetime')
             bbox = stac_item.get('bbox', None)
             geometry = stac_item.get('geometry', None)
             if geometry and not bbox:
                 raise RuntimeError(f'item {item_id} has no bbox, but has geometry')
             n = 0
+
+            # Get datetime information
+            if datetime is not None:
+                single_datetime = datetime
+                start_datetime = None
+                end_datetime = None
+            if datetime is None:
+                single_datetime = datetime
+                if props.get('start_datetime') is not None:
+                    start_datetime = props.get('start_datetime')
+                if props.get('end_datetime') is not None:
+                    end_datetime = props.get('end_datetime')
+
             for k, v in assets.items():
                 rec = AssetRecord(
                     collection_id=stac_item['collection'],
@@ -238,9 +253,9 @@ class CatalogDownloader():
                     asset_url=v['href'],
                     bbox_json=json.dumps(bbox) if bbox else None,
                     geometry_json=json.dumps(geometry) if geometry else None,
-                    single_datetime=props.get('datetime', None),
-                    start_datetime=common_meta.get('start_datetime', None),
-                    end_datetime=common_meta.get('end_datetime', None),
+                    single_datetime=single_datetime,
+                    start_datetime=start_datetime,
+                    end_datetime=end_datetime,
                 )
                 asset_save_path = _asset_save_path(rec).relative_to(self.work_dir)
                 rec.asset_save_path = str(asset_save_path)
