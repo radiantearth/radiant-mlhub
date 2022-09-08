@@ -262,7 +262,7 @@ class Dataset:
             self,
             output_dir: Union[Path, str] = Path.cwd(),
             *,
-            asset_output_dir: Union[Path, str] = None,
+            asset_output_dir: Optional[Union[Path, str]] = None,
             catalog_only: bool = False,
             if_exists: DownloadIfExistsOpts = DownloadIfExistsOpts.resume,
             api_key: Optional[str] = None,

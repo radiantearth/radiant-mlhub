@@ -53,7 +53,7 @@ class CatalogDownloaderConfig(BaseModel):
     if_exists: DownloadIfExistsOpts = DownloadIfExistsOpts.resume
     intersects: Optional[GeoJSON] = None
     output_dir: Path
-    asset_output_dir: Path = None
+    asset_output_dir: Optional[Path] = None
     profile: Optional[str] = None
     mlhub_api_session: Session
     """Requests session for mlhub api calls."""
