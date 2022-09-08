@@ -428,7 +428,7 @@ STAC archive file:
 
 Unarchived STAC catalog:
 
-    ``{output_dir}//{dataset_id}/catalog.json``
+    ``{output_dir}/{dataset_id}/catalog.json``
 
 Collection, Item and Asset layout:
 

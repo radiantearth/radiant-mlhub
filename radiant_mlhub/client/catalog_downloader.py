@@ -106,7 +106,6 @@ class CatalogDownloader():
         else:
             self.asset_dir = self.work_dir           
         self.work_dir.mkdir(exist_ok=True, parents=True)
-        
         self.err_report_path = self.asset_dir / 'err_report.csv'
 
     def _fetch_unfiltered_count(self) -> int:
@@ -166,7 +165,6 @@ class CatalogDownloader():
                         continue
                     else:
                         archive.extract(tar_info, path=c.output_dir)
-       # assert (self.work_dir / c.dataset_id / 'catalog.json').exists()
         assert (self.work_dir / 'catalog.json').exists() 
 
     def _create_asset_list_step(self) -> None:

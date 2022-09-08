@@ -216,8 +216,24 @@ class TestDataset:
         expect_assets = 2825
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         ds.download(output_dir=tmp_path)
-        asset_dir = tmp_path / 'nasa_marine_debris' 
+        asset_dir = tmp_path / 'nasa_marine_debris'
         asset_db = asset_dir / 'mlhub_stac_assets.db'
+        assert asset_db.exists()
+        n = self.asset_database_record_count(asset_db)
+        assert n == expect_assets
+        rmtree(tmp_path, ignore_errors=True)
+
+    @pytest.mark.vcr
+    def test_asset_output_dir_works(self, tmp_path: Path) -> None:
+        expect_assets = 2825
+        asset_output_dir = tmp_path / 'assets'
+        asset_output_dir.mkdir(exist_ok=True, parents=True)
+        stac_output_dir = tmp_path / 'stac_catalog'
+        stac_output_dir.mkdir(exist_ok=True, parents=True)
+        ds = Dataset.fetch_by_id('nasa_marine_debris')
+        ds.download(output_dir=stac_output_dir, asset_output_dir=asset_output_dir)
+        db_location = asset_output_dir / 'nasa_marine_debris'
+        asset_db = db_location / 'mlhub_stac_assets.db'
         assert asset_db.exists()
         n = self.asset_database_record_count(asset_db)
         assert n == expect_assets
@@ -246,7 +262,7 @@ class TestDataset:
             output_dir=tmp_path,
             datetime=parse("2018-12-15T00:00:00Z"),
         )
-        asset_dir = tmp_path / 'nasa_marine_debris' 
+        asset_dir = tmp_path / 'nasa_marine_debris'
         asset_db = asset_dir / 'mlhub_stac_assets.db'
         assert asset_db.exists()
         n = self.asset_database_record_count(asset_db)
@@ -261,7 +277,7 @@ class TestDataset:
             output_dir=tmp_path,
             datetime=(parse("2018-01-01T00:00:00Z"), parse("2018-02-28T00:00:00Z")),
         )
-        asset_dir = tmp_path / 'nasa_marine_debris' 
+        asset_dir = tmp_path / 'nasa_marine_debris'
         asset_db = asset_dir / 'mlhub_stac_assets.db'
         assert asset_db.exists()
         n = self.asset_database_record_count(asset_db)
@@ -276,7 +292,7 @@ class TestDataset:
             output_dir=tmp_path,
             bbox=[-87.5610, 5.9137, -87.5555, 15.9191],
         )
-        asset_dir = tmp_path / 'nasa_marine_debris' 
+        asset_dir = tmp_path / 'nasa_marine_debris'
         asset_db = asset_dir / 'mlhub_stac_assets.db'
         assert asset_db.exists()
         n = self.asset_database_record_count(asset_db)
@@ -324,7 +340,7 @@ class TestDataset:
             output_dir=tmp_path,
             intersects=nasa_marine_debris_aoi,
         )
-        asset_dir = tmp_path / 'nasa_marine_debris' 
+        asset_dir = tmp_path / 'nasa_marine_debris'
         asset_db = asset_dir / 'mlhub_stac_assets.db'
         assert asset_db.exists()
         n = self.asset_database_record_count(asset_db)
