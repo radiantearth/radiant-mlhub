@@ -247,7 +247,7 @@ class TestDataset:
             output_dir=tmp_path,
             collection_filter=dict(nasa_marine_debris_labels=['labels'])
         )
-        asset_dir = tmp_path / 'nasa_marine_debris' 
+        asset_dir = tmp_path / 'nasa_marine_debris'
         asset_db = asset_dir / 'mlhub_stac_assets.db'
         assert asset_db.exists()
         n = self.asset_database_record_count(asset_db)

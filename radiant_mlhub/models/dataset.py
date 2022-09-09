@@ -9,7 +9,6 @@ from datetime import datetime
 
 from enum import Enum
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Union, Tuple
-from typing_extensions import assert_type
 
 from ..session import get_session
 
@@ -284,9 +283,9 @@ class Dataset:
             the assets will also be saved to the output_dir. Defaults to current working directory.
 
         asset_output_dir: Otional[str, pathlib.Path]
-            The directory into which the archives will be written. If not defined by the user, the 
-            assets are saved to their respective asset level STAC catalog directories in the output_dir, 
-            which is in the current working directory by default. 
+            The directory into which the archives will be written. If not defined by the user, the
+            assets are saved to their respective asset level STAC catalog directories in the output_dir,
+            which is in the current working directory by default.
 
         catalog_only: bool
             If True, the STAC catalog will be downloaded and unarchived, but no
@@ -347,7 +346,7 @@ class Dataset:
         if output_path.exists() and not output_path.is_dir():
             raise IOError('output_dir is not directory.')
 
-        if asset_output_dir:       
+        if asset_output_dir:
             assert asset_output_dir
             asset_output_path = Path(asset_output_dir)
             if asset_output_path.exists() and not asset_output_path.is_dir():

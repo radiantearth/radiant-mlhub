@@ -100,11 +100,11 @@ class CatalogDownloader():
                 raise ValueError('intersects must be geojson with a geometry property')
         self.config = config
         self.work_dir = (config.output_dir / config.dataset_id)
-        if config.asset_output_dir: 
+        if config.asset_output_dir:
             self.asset_dir = (config.asset_output_dir / config.dataset_id)
             self.asset_dir.mkdir(exist_ok=True, parents=True)
         else:
-            self.asset_dir = self.work_dir           
+            self.asset_dir = self.work_dir
         self.work_dir.mkdir(exist_ok=True, parents=True)
         self.err_report_path = self.asset_dir / 'err_report.csv'
 
@@ -165,7 +165,7 @@ class CatalogDownloader():
                         continue
                     else:
                         archive.extract(tar_info, path=c.output_dir)
-        assert (self.work_dir / 'catalog.json').exists() 
+        assert (self.work_dir / 'catalog.json').exists()
 
     def _create_asset_list_step(self) -> None:
         """
