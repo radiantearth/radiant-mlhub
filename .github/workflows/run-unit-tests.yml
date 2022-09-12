@@ -64,6 +64,7 @@ jobs:
           # some unit tests require an API_KEY env var, however it will not be used
           # because VCR.py responses were already recorded.
           MLHUB_API_KEY: 'required_but_not_used'
+          MLHUB_CI: 'true'
         run: |
           pip install .
           pytest --record-mode once --block-network

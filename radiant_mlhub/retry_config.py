@@ -11,7 +11,7 @@ def config() -> Optional[Retry]:
 
     `0.2 * (2 ** (10 - 1)) = 102.4 seconds`
     """
-    if 'PYTEST_CURRENT_TEST' in os.environ:
+    if 'PYTEST_CURRENT_TEST' in os.environ and 'MLHUB_CI' in os.environ:
         return None
 
     return Retry(
