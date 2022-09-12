@@ -9,14 +9,14 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.5.0 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
-        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.5.2 (Darwin Kernel Version 21.6.0: Wed Aug 10 14:25:27 PDT
+        2022; root:xnu-8020.141.5~2/RELEASE_X86_64)'
     method: GET
     uri: https://staging.api.radiant.earth/mlhub/v1/collections/ref_african_crops_kenya_02_labels
   response:
     body:
       string: !!binary |
-        H4sIAG/oj2IC/7VU227TQBD9FctPIBJ77/bmrSQgJKAPpSqXNIo29iZZ6nit9Sa0qvLvzNpJG25C
+        H4sIAOyFH2MC/7VU227TQBD9FctPIBJ77/bmrSQgJKAPpSqXNIo29iZZ6nit9Sa0qvLvzNpJG25C
         IJAs2Z45c+b47IzvY1PGo9jp5VwtnSlUPS+cbdr5ja7v1ByReaUWumrjQezvGg3Qsa0qXXhja4hV
         pr5p49H0HhgqSBqvNydY1TQVcAZwutL22ee2q1pDO8iuvW/aUZq2Xq1MvUpUYxKnSqNqn2jl/Drd
         VOvtIt3htHho2qa/1Zr2KvaDo6pGOV37n8v6a0kn/M7a/8je6mr5j9n/yM54PxvE+tYHC0f3cdtA
@@ -36,11 +36,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 26 May 2022 20:51:58 GMT
+      - Mon, 12 Sep 2022 19:18:03 GMT
       Vary:
       - Accept-Encoding
       X-Azure-Ref:
-      - 0b+iPYgAAAAA0I7rxbFlpQqy2rTLadebGREVOMzAxMDAwMTEwMDIzADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      - 07IUfYwAAAAA/YSQdYu8UQYyay4VOv1BWREVOMzAxMDAwMTA5MDQ5ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:
@@ -56,8 +56,8 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.5.0 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
-        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.5.2 (Darwin Kernel Version 21.6.0: Wed Aug 10 14:25:27 PDT
+        2022; root:xnu-8020.141.5~2/RELEASE_X86_64)'
     method: HEAD
     uri: https://staging.api.radiant.earth/mlhub/v1/archive/ref_african_crops_kenya_02_labels
   response:
@@ -67,11 +67,11 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Thu, 26 May 2022 20:51:59 GMT
+      - Mon, 12 Sep 2022 19:18:04 GMT
       Location:
       - https://radiantearth.blob.core.windows.net/mlhub/archives/ref_african_crops_kenya_02_labels.tar.gz
       X-Azure-Ref:
-      - 0b+iPYgAAAAAWNDLI2f0WT66X1QH6f2QVREVOMzAxMDAwMTA5MDA5ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      - 07IUfYwAAAAD5F0Z88zUTTZbPQkiewjUEREVOMzAxMDAwMTEwMDI3ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:
@@ -87,14 +87,16 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.5.0 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
-        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.5.2 (Darwin Kernel Version 21.6.0: Wed Aug 10 14:25:27 PDT
+        2022; root:xnu-8020.141.5~2/RELEASE_X86_64)'
     method: HEAD
     uri: https://radiantearth.blob.core.windows.net/mlhub/archives/ref_african_crops_kenya_02_labels.tar.gz
   response:
     body:
       string: ''
     headers:
+      Access-Control-Allow-Origin:
+      - '*'
       Content-Length:
       - '252970'
       Content-MD5:
@@ -102,7 +104,7 @@ interactions:
       Content-Type:
       - application/x-tar
       Date:
-      - Thu, 26 May 2022 20:52:00 GMT
+      - Mon, 12 Sep 2022 19:18:05 GMT
       ETag:
       - '0x8D968C5F3B94E1C'
       Last-Modified:
@@ -114,7 +116,7 @@ interactions:
       x-ms-lease-status:
       - unlocked
       x-ms-request-id:
-      - 5b51184c-701e-006d-7c42-711548000000
+      - 46c5c49f-301e-0045-67dc-c6dc6a000000
       x-ms-version:
       - '2009-09-19'
     status:
@@ -132,8 +134,8 @@ interactions:
       Range:
       - bytes=0-252970
       User-Agent:
-      - 'radiant_mlhub/0.5.0 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
-        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.5.2 (Darwin Kernel Version 21.6.0: Wed Aug 10 14:25:27 PDT
+        2022; root:xnu-8020.141.5~2/RELEASE_X86_64)'
     method: GET
     uri: https://radiantearth.blob.core.windows.net/mlhub/archives/ref_african_crops_kenya_02_labels.tar.gz
   response:
@@ -4579,6 +4581,8 @@ interactions:
         9NIeZNu82yrzJv5zVla31Ql7QS94d57VaS+6W8fejfc+S+vrsrlif3/vf2sAAAAAAMAP7R/q7b6p
         AEhMBw==
     headers:
+      Access-Control-Allow-Origin:
+      - '*'
       Content-Length:
       - '252970'
       Content-Range:
@@ -4586,7 +4590,7 @@ interactions:
       Content-Type:
       - application/x-tar
       Date:
-      - Thu, 26 May 2022 20:52:00 GMT
+      - Mon, 12 Sep 2022 19:18:05 GMT
       ETag:
       - '0x8D968C5F3B94E1C'
       Last-Modified:
@@ -4598,7 +4602,7 @@ interactions:
       x-ms-lease-status:
       - unlocked
       x-ms-request-id:
-      - 5b5118b7-701e-006d-5242-711548000000
+      - 46c5c52e-301e-0045-52dc-c6dc6a000000
       x-ms-version:
       - '2009-09-19'
     status:

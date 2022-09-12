@@ -89,7 +89,7 @@ class TestDataset:
         dataset = Dataset.fetch('bigearthnet_v1')
         assert isinstance(dataset, Dataset)
         assert dataset.id == 'bigearthnet_v1'
-        assert dataset.registry_url == 'https://mlhub.earth/bigearthnet_v1'
+        assert dataset.registry_url == 'https://mlhub.earth/data/bigearthnet_v1'
         assert dataset.doi == '10.14279/depositonce-10149'
         assert dataset.citation == "G. Sumbul, M. Charfuelan, B. Demir, V. Markl, " \
             "\"[BigEarthNet: A Large-Scale Benchmark Archive for Remote Sensing Image " \

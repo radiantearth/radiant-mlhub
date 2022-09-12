@@ -9,8 +9,8 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.5.0 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
-        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.5.2 (Darwin Kernel Version 21.6.0: Wed Aug 10 14:25:27 PDT
+        2022; root:xnu-8020.141.5~2/RELEASE_X86_64)'
     method: HEAD
     uri: https://staging.api.radiant.earth/mlhub/v1/archive/ref_african_crops_kenya_02_labels
   response:
@@ -20,11 +20,11 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Thu, 26 May 2022 20:51:44 GMT
+      - Mon, 12 Sep 2022 19:17:51 GMT
       Location:
       - https://radiantearth.blob.core.windows.net/mlhub/archives/ref_african_crops_kenya_02_labels.tar.gz
       X-Azure-Ref:
-      - 0YeiPYgAAAAAlOXDjaIR/SIYJhq5tplKRQ1lTMDEzMDUwNzA3MDM5ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      - 034UfYwAAAABd7fGK8nKOT7TOnU4Zc97LREVOMzAxMDAwMTEwMDM1ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:
@@ -40,14 +40,16 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.5.0 (Darwin Kernel Version 21.5.0: Tue Apr 26 21:08:22 PDT
-        2022; root:xnu-8020.121.3~4/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.5.2 (Darwin Kernel Version 21.6.0: Wed Aug 10 14:25:27 PDT
+        2022; root:xnu-8020.141.5~2/RELEASE_X86_64)'
     method: HEAD
     uri: https://radiantearth.blob.core.windows.net/mlhub/archives/ref_african_crops_kenya_02_labels.tar.gz
   response:
     body:
       string: ''
     headers:
+      Access-Control-Allow-Origin:
+      - '*'
       Content-Length:
       - '252970'
       Content-MD5:
@@ -55,7 +57,7 @@ interactions:
       Content-Type:
       - application/x-tar
       Date:
-      - Thu, 26 May 2022 20:51:45 GMT
+      - Mon, 12 Sep 2022 19:17:52 GMT
       ETag:
       - '0x8D968C5F3B94E1C'
       Last-Modified:
@@ -67,7 +69,7 @@ interactions:
       x-ms-lease-status:
       - unlocked
       x-ms-request-id:
-      - eecb702b-901e-001b-4c42-711d44000000
+      - 84389475-101e-0047-51dc-c68a6e000000
       x-ms-version:
       - '2009-09-19'
     status:

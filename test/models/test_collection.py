@@ -81,7 +81,7 @@ class TestCollection:
     @pytest.mark.vcr
     def test_get_archive_size(self) -> None:
         collection = Collection.fetch('bigearthnet_v1_labels')
-        assert collection.archive_size == 173029030
+        assert collection.archive_size == 169265765
 
 
 class TestCollectionAuthenticatedEndpoints:
