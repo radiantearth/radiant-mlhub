@@ -53,6 +53,7 @@ class CatalogDownloaderConfig(BaseModel):
     if_exists: DownloadIfExistsOpts = DownloadIfExistsOpts.resume
     intersects: Optional[GeoJSON] = None
     output_dir: Path
+    asset_output_dir: Optional[Path] = None
     profile: Optional[str] = None
     mlhub_api_session: Session
     """Requests session for mlhub api calls."""
@@ -87,6 +88,7 @@ class CatalogDownloader():
     err_report_path: Path
     catalog_file: Path
     work_dir: Path
+    asset_dir: Path
     db_conn: sqlite3.Connection
     db_cur: sqlite3.Cursor
 
@@ -98,8 +100,13 @@ class CatalogDownloader():
                 raise ValueError('intersects must be geojson with a geometry property')
         self.config = config
         self.work_dir = (config.output_dir / config.dataset_id)
+        if config.asset_output_dir:
+            self.asset_dir = (config.asset_output_dir / config.dataset_id)
+            self.asset_dir.mkdir(exist_ok=True, parents=True)
+        else:
+            self.asset_dir = self.work_dir
         self.work_dir.mkdir(exist_ok=True, parents=True)
-        self.err_report_path = self.work_dir / 'err_report.csv'
+        self.err_report_path = self.asset_dir / 'err_report.csv'
 
     def _fetch_unfiltered_count(self) -> int:
         self.db_cur.execute(
@@ -173,9 +180,8 @@ class CatalogDownloader():
             Transform asset into a local save path. This filesystem layout
             is the same as the mlhub's collection archive .tar.gz files.
             """
-            c = self.config
             ext = Path(str(urlparse(rec.asset_url).path)).suffix
-            base_path = c.output_dir / c.dataset_id / rec.collection_id  # type: ignore
+            base_path = self.asset_dir / rec.collection_id  # type: ignore
             asset_filename = f'{rec.asset_key}{ext}'
             if rec.item_id is None:
                 # this is a collection level asset
@@ -242,7 +248,7 @@ class CatalogDownloader():
                     start_datetime=common_meta.get('start_datetime', None),
                     end_datetime=common_meta.get('end_datetime', None),
                 )
-                asset_save_path = _asset_save_path(rec).relative_to(self.work_dir)
+                asset_save_path = _asset_save_path(rec).relative_to(self.asset_dir)
                 rec.asset_save_path = str(asset_save_path)
                 _insert_asset_rec(rec)
                 n += 1
@@ -261,7 +267,7 @@ class CatalogDownloader():
                     asset_key=k,
                     asset_url=v['href'],
                 )
-                asset_save_path = _asset_save_path(rec).relative_to(self.work_dir)
+                asset_save_path = _asset_save_path(rec).relative_to(self.asset_dir)
                 rec.asset_save_path = str(asset_save_path)
                 _insert_asset_rec(rec)
                 n += 1
@@ -644,7 +650,7 @@ class CatalogDownloader():
                 executor.submit(
                     _download_asset_worker, **dict(
                         asset_url=r.asset_url,
-                        out_file=self.work_dir / r.asset_save_path,  # type: ignore
+                        out_file=self.asset_dir / r.asset_save_path,  # type: ignore
                         if_exists=self.config.if_exists,
                     )): r for r in asset_list
             }
@@ -666,7 +672,7 @@ class CatalogDownloader():
                     log.exception(e)
 
     def _init_db(self) -> None:
-        db_path = self.work_dir / 'mlhub_stac_assets.db'
+        db_path = self.asset_dir / 'mlhub_stac_assets.db'
         if db_path.exists():
             db_path.unlink()
         self.db_conn = sqlite3.connect(
@@ -750,4 +756,4 @@ class CatalogDownloader():
         if c.catalog_only:
             log.info(f'catalog saved to {self.work_dir}')
         else:
-            log.info(f'assets saved to {self.work_dir}')
+            log.info(f'assets saved to {self.asset_dir}')

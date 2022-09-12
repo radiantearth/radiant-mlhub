@@ -419,7 +419,7 @@ Error reporting
 Any unrecoverable download errors will be logged to ``{output_dir}/{dataset_id}/err_report.csv``
 and a Python exception will be raised.
 
-Appendix: Filesystem Layout of Downloads
+Appendix: Default Filesystem Layout of Downloads
 ----------------------------------------
 
 STAC archive file:
