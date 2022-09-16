@@ -336,8 +336,8 @@ Filter by Temporal Range
 ------------------------
 
 To download only STAC assets within a temporal range, use ``datetime`` parameter
-to specify a datetime range (tuple of ``datetime`` objects), or a single day (single
-``datetime`` object).
+to specify a datetime range (tuple of ``datetime`` objects), or a single ``datetime``
+ object).
 
 .. code-block:: python
 
