@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fix datetime comparisons in dataset downloader. ([162](https://github.com/radiantearth/radiant-mlhub/pull/162))
+
 ### Deprecated
 
 ### Developer
