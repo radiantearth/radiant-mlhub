@@ -256,7 +256,7 @@ class TestDataset:
 
     @pytest.mark.vcr
     def test_download_with_1_datetime_filter_works(self, tmp_path: Path) -> None:
-        expect_assets = 81
+        expect_assets = 9
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         ds.download(
             output_dir=tmp_path,
@@ -271,7 +271,7 @@ class TestDataset:
 
     @pytest.mark.vcr
     def test_download_with_2_datetime_filter_works(self, tmp_path: Path) -> None:
-        expect_assets = 325  # FIXME: this should be more assets than the 1 datetime filter
+        expect_assets = 325
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         ds.download(
             output_dir=tmp_path,
