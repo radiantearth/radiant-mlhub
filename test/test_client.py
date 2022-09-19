@@ -521,10 +521,11 @@ class TestDatetimeUtils:
         assert one_to_range_check(dt_1, dt_range) is True
 
     def test_range_to_range_check(self):
+
         # non-overlapping case
         d = self.example_date_from_stac_spec
-        range1_start = d - timedelta(weeks=8)
-        range1_end = d - timedelta(weeks=9)
+        range1_start = d - timedelta(weeks=2)
+        range1_end = d - timedelta(weeks=1)
         dt_range1 = (range1_start, range1_end)
         range2_start = d + timedelta(weeks=8)
         range2_end = d + timedelta(weeks=9)
