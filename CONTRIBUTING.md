@@ -147,7 +147,7 @@ using the following steps:
 version to be released (e.g. `v1.42.99`). This library uses [Semantic
 Versioning](https://semver.org/).
 
-2) [Run `tbump`](https://github.com/TankerHQ/tbump#usage) to bump the package
+2) [Run `tbump`](https://github.com/TankerHQ/tbump) to bump the package
 to the desired version:
 
    ```shell
@@ -156,22 +156,21 @@ to the desired version:
    tbump --no-push --no-tag 1.42.99
    ```
 
-3) Commit changes to the CHANGELOG.md including the new version, and the
-compare links at the bottom.
+3) Commit changes to the CHANGELOG.md including the new version, and not
+forgetting the comparison links at the bottom.
 
-4) Test and make any final changes on the `release/*` branch
+4) Test and make any final changes on the `release/*` branch, e.g.
+`release/v1.42.99`.
 
 5) Put in a PR against `main`. This will trigger the CI to run unit tests and
 to publish a test package to [TestPyPi](https://test.pypi.org/). Preview the
 release there, making any changes as needed in the PR.
 
-6) Approve and merge into `main`
+6) Once the PR has been approved, merge into `main`.
 
-   Once the PR has been approved, merge into `main`.
-
-7) Create a [Git Tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging). It is
-recommended to use an *annotated* git tag, which must be done via the Git
-command line client, not the GitHub UI.
+7) Create a [Git Tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging) at the
+head of main branch. It is recommended to use an *annotated* git tag, which
+must be done via the Git command line client, not the GitHub UI.
 
    ```bash
    # example using v1.42.99
@@ -192,10 +191,11 @@ points to remember:
 
    * There is a fork of the feedstock in the [radiantearth GithHub
    org](https://github.com/radiantearth/radiant-mlhub-feedstock), which should
-   be kept up to date with the upstream repo. However for publishing releases,
-   it's actually recommended to use a personal fork of the feedstock (for
-   obscure reasons having to do with GitHub permissions, it's all documented in
-   the Conda Forge docs).
+   be kept up to date with the upstream repo, for archival purposes. However
+   for publishing releases, it's strongly recommended to use a personal fork of
+   the feedstock repo. `conda-smithy` can be used via the GitHub CI runner, but
+   this works only with personal forks, not in organizational forks, because of
+   GitHub permissions issues, according to Conda Forge docs.
 
    * In the feedstock recipe, there is a [SHA256
    checksum](https://github.com/conda-forge/radiant-mlhub-feedstock/blob/main/recipe/meta.yaml#L8-L10),
@@ -207,5 +207,12 @@ points to remember:
    conda package, in `recipe/meta.yaml`. (Yet another place where the
    radiant-mlhub Python dependencies have to be updated, and kept up to date).
 
-10) Finally, test out the new published version by installing it using both
-`pip` and `conda`.
+   * Conda Forge may take several hours to update file assets upon release
+   (unknown why it's so much slower than PyPi).
+
+10) Test out the new published release by installing it using both `pip` and
+`conda`.
+
+11) Update any and all external MLHub documentation, notebooks, or example code
+which is pointing to older releases. Ideally semantic versioning can be used to
+lessen the burden of updating example code or requirements files.

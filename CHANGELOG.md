@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update ADR and CONTRIBUTING docs ([164])(https://github.com/radiantearth/radiant-mlhub/pull/164))
+
 ### Fixed
 
 - Fix datetime comparisons in dataset downloader. ([162](https://github.com/radiantearth/radiant-mlhub/pull/162))
