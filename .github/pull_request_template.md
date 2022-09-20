@@ -1,15 +1,15 @@
 ## Proposed Changes
 
-* 
+* ...
 
-## Checklist
+## Checklist for Submitter
 
-- [ ] I have updated/added any relevant documentation
-- [ ] I have updated any unit tests affected by these changes and/or added unit tests to cover any 
-  additions.
-- [ ] Added changes to the [CHANGELOG](https://github.com/radiantearth/radiant-mlhub/blob/dev/CHANGELOG.md) (*or* a 
-  CHANGELOG entry is not required)
+* [ ] Updated/added any relevant documentation.
+* [ ] Added changes/fixes to the [Changelog](/CHANGELOG.md).
+* [ ] Updated any unit tests affected by these changes and/or added unit tests to cover any
+  additions, or this is N/A.
+* [ ] Added changes to the [Architecture Decision Records (ADR)](/docs/adr), or this is N/A.
 
-## Related Issue(s)
+## Related Issues
 
 *Please link to any issues that this PR relates to.*
