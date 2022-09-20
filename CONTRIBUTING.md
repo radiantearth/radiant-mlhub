@@ -97,7 +97,7 @@ any of the cassettes. All user-specific download links are also sanitized
 before being recorded to a cassette.
 
 The default record mode is `--record-mode=once` which means when you run
-`pytest` and new tests which are marked as VCR.py tests will automatically get
+`pytest` any new tests which are marked as VCR.py tests will automatically get
 recorded as new cassettes. New cassettes should be then be committed in Git.
 
 To re-record a cassette use:
@@ -185,8 +185,7 @@ to use the new release. See the README in that repo for instructions on how to
 update the recipe. There are some gotchas with the Conda Forge publishing. Some
 points to remember:
 
-   * There is a fork of the feedstock in the [radiantearth GithHub
-   org](https://github.com/radiantearth/radiant-mlhub-feedstock), which should
+   * There is a fork of the feedstock in the [radiantearth GitHub org](https://github.com/radiantearth/radiant-mlhub-feedstock), which should
    be kept up to date with the upstream repo, for archival purposes. However
    for publishing releases, it's strongly recommended to use a personal fork of
    the feedstock repo. `conda-smithy` can be used via the GitHub CI runner, but
@@ -196,7 +195,7 @@ points to remember:
    * In the feedstock recipe, there is a [SHA256
    checksum](https://github.com/conda-forge/radiant-mlhub-feedstock/blob/main/recipe/meta.yaml#L8-L10),
    which must be copied from PyPi after the package has been published: To
-   see it, browse to: https://pypi.org/project/radiant-mlhub/ | Download
+   see it, browse to: [https://pypi.org/project/radiant-mlhub/](https://pypi.org/project/radiant-mlhub/) | Download
    Files | Source Distribution | view hashes
 
    * The feedstock recipe has it's own copy of the package dependencies for the
