@@ -38,15 +38,11 @@ and ensure that we are not already doing work on similar features.
 All branches should originate from the `main` branch and all PRs should be made
 against the `main` branch.
 
-New PRs will use our PR template, which includes the following checklist:
-
-* Unit tests have been added/updated to cover changes
-* Documentation has been added/updated
-* An entry has been added to the [CHANGELOG](./CHANGELOG.md) (if necessary)
+New PRs will use our [PR template](https://github.com/radiantearth/radiant-mlhub/blob/main/.github/pull_request_template.md), which you should follow and fill in.
 
 ## Architecture Decision Records (ADR)
 
-This library uses Architecture Decision Records (ADR). See [docs/adr](docs/adr/0001-record-architecture-decisions.md).
+This library uses Architecture Decision Records (ADR). See [docs/adr](./docs/adr/0001-record-architecture-decisions.md).
 
 ## Development Environment
 
