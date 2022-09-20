@@ -1,13 +1,18 @@
 import os
 import pathlib
 import re
-from urllib.parse import urljoin, parse_qs, urlsplit
+from datetime import datetime, timedelta, timezone
 from typing import TYPE_CHECKING
+from urllib.parse import parse_qs, urljoin, urlsplit
 
 import pytest
-
 import radiant_mlhub.client
-from radiant_mlhub.exceptions import EntityDoesNotExist, MLHubException, AuthenticationError
+from dateutil.parser import parse as date_parser
+from radiant_mlhub.client.datetime_utils import (one_to_one_check,
+                                                 one_to_range_check,
+                                                 range_to_range_check)
+from radiant_mlhub.exceptions import (AuthenticationError, EntityDoesNotExist,
+                                      MLHubException)
 from radiant_mlhub.session import ANONYMOUS_PROFILE
 
 if TYPE_CHECKING:
@@ -474,3 +479,75 @@ class TestAnonymousClient:
     def test_list_ml_models_anonymously_works(self) -> None:
         ml_models = radiant_mlhub.client.list_models(profile=ANONYMOUS_PROFILE)
         assert len(ml_models) > 0
+
+
+class TestDatetimeUtils:
+
+    example_date_from_stac_spec = date_parser('2020-12-11T22:38:32.125000Z')
+
+    def test_one_to_one_check(self):
+
+        # not-identical case
+        dt_1 = self.example_date_from_stac_spec
+        dt_2 = datetime.now(timezone.utc)
+        assert one_to_one_check(dt_1, dt_2) is False
+
+        # identical case
+        dt_1 = self.example_date_from_stac_spec
+        dt_2 = self.example_date_from_stac_spec
+        assert one_to_one_check(dt_1, dt_2) is True
+
+    def test_one_to_range_check(self):
+
+        # non-overlapping case
+        dt_1 = datetime.now(timezone.utc)
+        range_start = dt_1 + timedelta(weeks=1)
+        range_end = dt_1 + timedelta(weeks=2)
+        dt_range = (range_start, range_end)
+        assert one_to_range_check(dt_1, dt_range) is False
+
+        # overlapping case
+        dt_1 = self.example_date_from_stac_spec + timedelta(weeks=1)
+        range_start = self.example_date_from_stac_spec
+        range_end = self.example_date_from_stac_spec + timedelta(weeks=2)
+        dt_range = (range_start, range_end)
+        assert one_to_range_check(dt_1, dt_range) is True
+
+        # check boundary case (date happens to equal end date of range)
+        dt_1 = datetime.now(timezone.utc)
+        range_start = self.example_date_from_stac_spec
+        range_end = dt_1
+        dt_range = (range_start, range_end)
+        assert one_to_range_check(dt_1, dt_range) is True
+
+    def test_range_to_range_check(self):
+
+        # non-overlapping case
+        d = self.example_date_from_stac_spec
+        range1_start = d - timedelta(weeks=2)
+        range1_end = d - timedelta(weeks=1)
+        dt_range1 = (range1_start, range1_end)
+        range2_start = d + timedelta(weeks=8)
+        range2_end = d + timedelta(weeks=9)
+        dt_range2 = (range2_start, range2_end)
+        assert range_to_range_check(dt_range1, dt_range2) is False
+
+        # overlapping case
+        d = self.example_date_from_stac_spec
+        range1_start = d + timedelta(weeks=8)
+        range1_end = d + timedelta(weeks=9)
+        dt_range1 = (range1_start, range1_end)
+        range2_start = d + timedelta(weeks=7)
+        range2_end = d + timedelta(weeks=10)
+        dt_range2 = (range2_start, range2_end)
+        assert range_to_range_check(dt_range1, dt_range2) is True
+
+        # check boundary case (start of range happens to equal end of other range)
+        d = self.example_date_from_stac_spec
+        range1_start = d + timedelta(weeks=8)
+        range1_end = d + timedelta(weeks=9)
+        dt_range1 = (range1_start, range1_end)
+        range2_start = d + timedelta(weeks=9)
+        range2_end = d + timedelta(weeks=10)
+        dt_range2 = (range2_start, range2_end)
+        assert range_to_range_check(dt_range1, dt_range2) is True

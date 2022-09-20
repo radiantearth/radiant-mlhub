@@ -22,6 +22,8 @@ from tqdm import tqdm
 from ..if_exists import DownloadIfExistsOpts
 from ..session import Session
 from .resumable_downloader import ResumableDownloader
+from . import datetime_utils
+
 
 log = getLogger(__name__)
 
@@ -229,7 +231,6 @@ class CatalogDownloader():
             item_id = stac_item['id']
             assets = stac_item['assets']
             props = stac_item['properties']
-            common_meta = props.get('common_metadata', dict())
             bbox = stac_item.get('bbox', None)
             geometry = stac_item.get('geometry', None)
             if geometry and not bbox:
@@ -245,8 +246,8 @@ class CatalogDownloader():
                     bbox_json=json.dumps(bbox) if bbox else None,
                     geometry_json=json.dumps(geometry) if geometry else None,
                     single_datetime=props.get('datetime', None),
-                    start_datetime=common_meta.get('start_datetime', None),
-                    end_datetime=common_meta.get('end_datetime', None),
+                    start_datetime=props.get('start_datetime', None),
+                    end_datetime=props.get('end_datetime', None),
                 )
                 asset_save_path = _asset_save_path(rec).relative_to(self.asset_dir)
                 rec.asset_save_path = str(asset_save_path)
@@ -479,31 +480,6 @@ class CatalogDownloader():
         `filtered` if they do not fall in the temporal range or single day.
         """
 
-        def one_to_one_check(d1: datetime, d2: datetime) -> bool:
-            """
-            Compare day for each.
-            """
-            return d1.day == d2.day
-
-        def one_to_range_check(d1: datetime, d2: Tuple[datetime, datetime]) -> bool:
-            """
-            Compare single datetime with date range.
-            """
-            (d2_start, d2_end) = d2
-            return d1 >= d2_start and d1 <= d2_end
-
-        def range_to_range_check(d1: Tuple[datetime, datetime], d2: Tuple[datetime, datetime]) -> bool:
-            """
-            Compare two date ranges.
-            """
-            (d1_start, d1_end) = d1
-            (d2_start, d2_end) = d2
-            if d1_start >= d2_start and d1_start <= d2_end:
-                return True
-            if d1_end >= d2_start and d1_start <= d2_end:
-                return True
-            return False
-
         q = self.config.temporal_query
         if q is None:
             return
@@ -536,12 +512,12 @@ class CatalogDownloader():
                 if single_datetime:
                     # item has single date property
                     if isinstance(q, tuple):
-                        filtered = not one_to_range_check(
+                        filtered = not datetime_utils.one_to_range_check(
                             date_parser(single_datetime),
                             q
                         )
                     else:
-                        filtered = not one_to_one_check(
+                        filtered = not datetime_utils.one_to_one_check(
                             date_parser(single_datetime),
                             q
                         )
@@ -554,9 +530,9 @@ class CatalogDownloader():
                         log.warn(f'cannot compare to missing date range for: {item_id}')
                         next
                     if isinstance(q, tuple):
-                        filtered = not range_to_range_check((start, end), q)
+                        filtered = not datetime_utils.range_to_range_check((start, end), q)
                     else:
-                        filtered = not one_to_range_check(q, (start, end))
+                        filtered = not datetime_utils.one_to_range_check(q, (start, end))
                 if filtered:
                     row_ids_to_filter.add(row_id)
 
