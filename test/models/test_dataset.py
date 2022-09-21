@@ -7,8 +7,12 @@ from urllib.parse import parse_qs, urljoin, urlsplit
 import sqlite3
 
 import pytest
+from pytest import MonkeyPatch
 from dateutil.parser import parse
 from radiant_mlhub.models import Dataset
+from radiant_mlhub.client.catalog_downloader import AssetRecord, CatalogDownloader
+from datetime import datetime, timedelta, timetdelta 
+
 
 if TYPE_CHECKING:
     from pathlib import Path as Path_Type
@@ -254,9 +258,17 @@ class TestDataset:
         assert n == expect_assets
         rmtree(tmp_path, ignore_errors=True)
 
+####################
+
+# SINGLE FILTERS 
+#1
+# single to single
     @pytest.mark.vcr
-    def test_download_with_1_datetime_filter_works(self, tmp_path: Path) -> None:
+    # test single to single (single_datetime field)
+    #def test_single_datetime_filter_to_single_datetime_datset
+    def test_1_datetime_filter_to_single_datetime_field(self, tmp_path: Path) -> None:
         expect_assets = 9
+
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         ds.download(
             output_dir=tmp_path,
@@ -269,13 +281,56 @@ class TestDataset:
         assert n == expect_assets
         rmtree(tmp_path, ignore_errors=True)
 
+#2
+# singe to range
+    #test for single datetime when dataset has datetime range (and uses start_datetime and end_dateteime) 
+    #agrifield net 
     @pytest.mark.vcr
-    def test_download_with_2_datetime_filter_works(self, tmp_path: Path) -> None:
-        expect_assets = 325
+    def test_1_datetime_filter_to_start_and_end_datetime_fields(self, tmp_path: Path) -> None:
+        expect_assets = 17643
+        ds = Dataset.fetch_by_id('ref_agrifieldnet_competition_v1')
+        ds.download(
+            output_dir=tmp_path,
+            datetime=parse("2022-02-28T00:00:00Z"),
+        )
+        asset_dir = tmp_path / 'ref_agrifieldnet_competition_v1'
+        asset_db = asset_dir / 'mlhub_stac_assets.db'
+        assert asset_db.exists()
+        n = self.asset_database_record_count(asset_db)
+        assert n == expect_assets
+        rmtree(tmp_path, ignore_errors=True)
+#RANGE FILTERS 
+
+#3
+# range to single (where range in single_datetime field)
+    @pytest.mark.vcr
+    def test_1_datetime_filter_to_start_and_end_datetime_fields(self, tmp_path: Path) -> None:
+        expect_assets = 17643
+        ds = Dataset.fetch_by_id('ref_agrifieldnet_competition_v1')
+        ds.download(
+            output_dir=tmp_path,
+            datetime=parse("2022-02-28T00:00:00Z"),
+        )
+        asset_dir = tmp_path / 'ref_agrifieldnet_competition_v1'
+        asset_db = asset_dir / 'mlhub_stac_assets.db'
+        assert asset_db.exists()
+        n = self.asset_database_record_count(asset_db)
+        assert n == expect_assets
+        rmtree(tmp_path, ignore_errors=True)
+
+
+### RANGE FILTERS 
+
+#3
+# range to single (where range in single_datetime field)
+    @pytest.mark.vcr
+    # range to range in single datetime column (when range is in single_dateteime) 
+    def test_2_datetime_filter_to_single_datetime_field(self, tmp_path: Path) -> None:
+        expect_assets = 325  
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         ds.download(
             output_dir=tmp_path,
-            datetime=(parse("2018-01-01T00:00:00Z"), parse("2018-02-28T00:00:00Z")),
+            datetime=(parse("2016-01-01T00:00:00Z"), parse("2016-12-31T00:00:00Z")),
         )
         asset_dir = tmp_path / 'nasa_marine_debris'
         asset_db = asset_dir / 'mlhub_stac_assets.db'
@@ -284,6 +339,44 @@ class TestDataset:
         assert n == expect_assets
         rmtree(tmp_path, ignore_errors=True)
 
+
+#4
+# range to range (start_datetime and end_datetime)
+
+# MonkeyPatch dataset
+    def modify_dataset(MonkeyPatch):
+        single_datetime = AssetRecord.single_datetime
+        start_datetime = AssetRecord.start_datetime
+        end_datetime = AssetRecord.end_datetime
+
+        start_datetime = single_datetime
+        MonkeyPatch.setattr(start_datetime, lambda: single_datetime)
+        MonkeyPatch.setattr(single_datetime, lambda: None)
+        MonkeyPatch.setattr(end_datetime, lambda: start_datetime + timedelta(days=7))
+
+
+    @pytest.mark.vcr
+    def test_2_datetime_filer_to_start_and_end_datetime_fields(self, tmp_path: Path) -> None:
+        expect_assets = 325  
+        ds = Dataset.fetch_by_id('nasa_marine_debris')
+        ds.download(
+            output_dir=tmp_path,
+            datetime=(parse("2016-01-01T00:00:00Z"), parse("2016-12-31T00:00:00Z")),
+        )
+        asset_dir = tmp_path / 'nasa_marine_debris'
+        asset_db = asset_dir / 'mlhub_stac_assets.db'
+        assert asset_db.exists()
+        n = self.asset_database_record_count(asset_db)
+        assert n == expect_assets
+        rmtree(tmp_path, ignore_errors=True)
+
+        m = MonkeyPatch()
+        try:
+            yield m 
+        finally:
+            m.undo
+
+#############
     @pytest.mark.vcr
     def test_download_with_bbox_filter_works(self, tmp_path: Path) -> None:
         expect_assets = 9
