@@ -10,8 +10,7 @@ import pytest
 from pytest import MonkeyPatch
 from dateutil.parser import parse
 from radiant_mlhub.models import Dataset
-from radiant_mlhub.client.catalog_downloader import AssetRecord, CatalogDownloader
-from datetime import datetime
+from radiant_mlhub.client.catalog_downloader import AssetRecord
 from datetime import timedelta as timedelta
 
 
@@ -264,9 +263,8 @@ class TestDataset:
 # SINGLE FILTERS 
 #1
 # single to single
+# test single to single (single_datetime field)
     @pytest.mark.vcr
-    # test single to single (single_datetime field)
-    #def test_single_datetime_filter_to_single_datetime_datset
     def test_1_datetime_filter_to_single_datetime_field(self, tmp_path: Path) -> None:
         expect_assets = 9
 
@@ -300,25 +298,6 @@ class TestDataset:
         n = self.asset_database_record_count(asset_db)
         assert n == expect_assets
         rmtree(tmp_path, ignore_errors=True)
-#RANGE FILTERS 
-
-#3
-# range to single (where range in single_datetime field)
-    @pytest.mark.vcr
-    def test_1_datetime_filter_to_start_and_end_datetime_fields(self, tmp_path: Path) -> None:
-        expect_assets = 17643
-        ds = Dataset.fetch_by_id('ref_agrifieldnet_competition_v1')
-        ds.download(
-            output_dir=tmp_path,
-            datetime=parse("2022-02-28T00:00:00Z"),
-        )
-        asset_dir = tmp_path / 'ref_agrifieldnet_competition_v1'
-        asset_db = asset_dir / 'mlhub_stac_assets.db'
-        assert asset_db.exists()
-        n = self.asset_database_record_count(asset_db)
-        assert n == expect_assets
-        rmtree(tmp_path, ignore_errors=True)
-
 
 ### RANGE FILTERS 
 
