@@ -11,7 +11,8 @@ from pytest import MonkeyPatch
 from dateutil.parser import parse
 from radiant_mlhub.models import Dataset
 from radiant_mlhub.client.catalog_downloader import AssetRecord, CatalogDownloader
-from datetime import datetime, timedelta, timetdelta 
+from datetime import datetime
+from datetime import timedelta as timedelta
 
 
 if TYPE_CHECKING:
