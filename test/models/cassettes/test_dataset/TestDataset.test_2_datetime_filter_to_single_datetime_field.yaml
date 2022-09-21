@@ -1,0 +1,94 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - 'radiant_mlhub/0.5.2 (Darwin Kernel Version 21.3.0: Wed Jan  5 21:37:58 PST
+        2022; root:xnu-8019.80.24~20/RELEASE_ARM64_T6000)'
+    method: GET
+    uri: https://staging.api.radiant.earth/mlhub/v1/datasets/nasa_marine_debris
+  response:
+    body:
+      string: !!binary |
+        H4sIANX4KmMC/61W72/bNhD9Vwh9GBpMlvwzif1pabK1AeK2WIINQ1IYlHiWuFKiRlJ23aL/+x4p
+        OXa6pvuwGQFik7y7x3fv7vg5kiJaRDW3fFVxI2taCcqMtFEcZZn+GC0+R7nWRsiaO7LR4h6fyTSZ
+        TYbD8Xw8P4tnyfT0fHI6OZu9j5/uTObJaHh+NhtNZnPsDc7PEyyPRvPRdPT9zed9Hu3gE0du1xDw
+        L1vl5DutdoWuoy9xlEvHncT3RXRb8jJmF0nM7kpdcRuzG3z/gS25/UC7mC0T9mI8HI9O2EO0DAyw
+        q8AAu+KOW3JsrQ17m/1JucOOwz84ZrJm7xSvydlcN8SuK16Q2T1EMfuNjPUnRskwZr9yIXnt2PLm
+        dZsl7B4+iV3kOVlL4j0rnWvsIk2Flok2RToaJpPpfDRKjahdMjen9KFAJnKtVBfXZ+DzczlbWd2a
+        nKKOFn806lZWsoMXgTElc6qtJ+3+8nLw8o/Bm8vBNBm+f7HHkhsCdxvKdVUhYMDVG9k02w3qPMX5
+        9AQ8P49E8YyUPUbSr/y/COAtHNZmleva8dx1gu2/RpxbKGf6U8vLhEQbPR73wd9c3F6w6+W7i8u7
+        Q2zixpUCmU/8rZJCb1KywqayauDyJGad2eXt1cW/G+VW8MbbXNGGlG4qghRuCZl/NBWHHYuNcFdv
+        0YnrcG673SZNWEtAS2A/QkRacSHIJ8FreDAaDsbnd6OzxXS2QIWdjaeT4fTH4XAxHEb9+UoLuZbf
+        NRmfHkzI5kY2fS091L8ojdTUBevSzbp0M/xxViidccUaiLUNNdIYnSmq2LaUeckUcWGZ08yVxJS2
+        lun13g2vBXNkDFlnJHxkEig3vpDcLmE33BTE7Ja78tioj80N7JXVrOYbWYSyh4eSf+Kmi6dz4jXb
+        +JJTNkEbINZa8o5+9nljOrNkNsGQ+SQGNNgBTbkHI2tHSsmC6pyAMi9r+VdLluXwamiju9vKTxRu
+        Jh5bBAKsv00XNi0PTtEN+toMURu+6bxs+c5DfyQVdSAhW+/K7qwDqb4reaEb0O2XgzngQEj+p3fC
+        87ytWsX3aL7KWd0xY5OH+q7Eguj7HbxaaV2gOoD7BuldSj3149kpy3bhXyM/gmHv2Ho2PKKu6o+O
+        Z7qthQeI4QLHW4kEFKQLwxucwU2Ppk2Xqx7ClmCtM8eBQrC10VXfgG9DA9bQqDffs9lFLLkXpm1A
+        AfYgrz5Z/kK8gT4/4jwSsWMTViFxBjGva5B3oCP+6ubH7DymV4fxEBLrie8UZ1uz5pBMB8WrBVxo
+        nxtoEg6RwErjUrnikKaFfiuPBFVucRcMKq4KTjGkYgqcaKuYbbUWcSBWI455olKIAuhvoQCDn9a1
+        Qu5pg9xFEEyQ92GaBE8brqQIGknY76VU5BmruEIlE2YHWmkRiiWIu5eIIUjN+p4VlnMNyFBhp5RX
+        Ja+7InpliHLcoNLW7V0cVZv1FBkviLDzEpq/tsipCBp6rWvRGt6r4GkSDkWGduYFFto6Lsl7X4YU
+        bfzgzbEfrt7ariyOhR5Sgl2P4B580qHfFhAmJrbvtb7hD7o5kT6dcsubExSPb5Maleap8phWYOID
+        uuXeleneAGFIJBnqGV4NJVtZC721CSScVgrBUj88Bl2EQRchfeI4acQ6BJPw/sxToWkzjErevxXq
+        Vqk4MlRAsRj/B0whYBIgpZ6O9JsvQIu4LdzAAxc7P815EYb5k2z4qIenkDej4hGzH/hOOhVeaf/1
+        eeURaK3sCrX7j1u61jdITIJu4cvfyBezx9sKAAA=
+    headers:
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1340'
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 21 Sep 2022 11:43:16 GMT
+      Vary:
+      - Accept-Encoding
+      X-Azure-Ref:
+      - 01fgqYwAAAACVj06iP+W8S7806kk0qua5TU5aMjIxMDYwNjE0MDQ1ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      X-Cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - 'radiant_mlhub/0.5.2 (Darwin Kernel Version 21.3.0: Wed Jan  5 21:37:58 PST
+        2022; root:xnu-8019.80.24~20/RELEASE_ARM64_T6000)'
+      x-ms-version:
+      - '2021-06-08'
+    method: GET
+    uri: https://staging.api.radiant.earth/mlhub/v1/catalog/nasa_marine_debris
+  response:
+    body:
+      string: '{"detail":"Could not identify user from API key or Authentication header."}'
+    headers:
+      Content-Length:
+      - '75'
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 21 Sep 2022 11:43:17 GMT
+      X-Azure-Ref:
+      - 01fgqYwAAAAAikdr9qAfmQo55j3PmMNAgTU5aMjIxMDYwNjEyMDExADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      X-Cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 401
+      message: Unauthorized
+version: 1
