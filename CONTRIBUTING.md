@@ -198,9 +198,10 @@ points to remember:
    see it, browse to: [https://pypi.org/project/radiant-mlhub/](https://pypi.org/project/radiant-mlhub/) | Download
    Files | Source Distribution | view hashes
 
-   * The feedstock recipe has it's own copy of the package dependencies for the
-   conda package, in `recipe/meta.yaml`. (Yet another place where the
-   radiant-mlhub Python dependencies have to be updated, and kept up to date).
+   * The [feedstock](https://github.com/conda-forge/radiant-mlhub-feedstoc)
+   recipe has it's own copy of the package dependencies for the conda package,
+   in `recipe/meta.yaml`. (Yet another place where the radiant-mlhub Python
+   dependencies have to be updated, and kept up to date).
 
    * Conda Forge may take several hours to update file assets upon release
    (unknown why it's so much slower than PyPi).

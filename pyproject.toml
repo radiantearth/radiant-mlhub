@@ -70,7 +70,3 @@ src = "test/test_cli.py"
 [[tool.tbump.file]]
 src = "binder/requirements.txt"
 search = "radiant-mlhub=={current_version}"
-
-[[tool.tbump.file]]
-src = "recipe/meta.yaml"
-search = "set version = \"{current_version}\""
