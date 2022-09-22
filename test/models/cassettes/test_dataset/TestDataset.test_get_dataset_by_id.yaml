@@ -9,14 +9,14 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.5.2 (Darwin Kernel Version 21.6.0: Wed Aug 10 14:25:27 PDT
-        2022; root:xnu-8020.141.5~2/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.5.2 (Darwin Kernel Version 21.3.0: Wed Jan  5 21:37:58 PST
+        2022; root:xnu-8019.80.24~20/RELEASE_ARM64_T6000)'
     method: GET
     uri: https://staging.api.radiant.earth/mlhub/v1/datasets/ref_african_crops_kenya_02
   response:
     body:
       string: !!binary |
-        H4sIAPCFH2MC/81X+2/bRhL+VwYEClio+BQly+6hqB99BJcaQWKkLZxAWJIrcusll9hdSlGC/u83
+        H4sIAI98LGMC/81X+2/bRhL+VwYEClio+BQly+6hqB99BJcaQWKkLZxAWJIrcusll9hdSlGC/u83
         syQlOXHs/HA4nGHTJHd2Ht98Mzv85InCO/c0X6/YWoucNatcq9as7nmzY6so8aZelqkP3vknL1dK
         F6Jhlhvv/A5/ZmmQRLMkSudpMo2CeHEaJfHy9P30sZXZbHk675eiJIkWy/nsmaU0jefpfB4vDktn
         6Wxx+vTSabyI0sUimR/cOEuWUfL8UpTMFrN+abZM0+TsbBk/vYRupMtFujzbL6FYOnty5WmU3Ar+
@@ -57,11 +57,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 12 Sep 2022 19:18:08 GMT
+      - Thu, 22 Sep 2022 15:17:35 GMT
       Vary:
       - Accept-Encoding
       X-Azure-Ref:
-      - 08IUfYwAAAAC9Lef2CTcvQbE4sHVBsqoEREVOMzAxMDAwMTEwMDI1ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      - 0j3wsYwAAAAADlNT8UBwiTJkSy/4R7O3KTU5aMjIxMDYwNjE0MDI1ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:

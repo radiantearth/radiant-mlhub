@@ -9,14 +9,14 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.5.2 (Darwin Kernel Version 21.6.0: Wed Aug 10 14:25:27 PDT
-        2022; root:xnu-8020.141.5~2/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.5.2 (Darwin Kernel Version 21.3.0: Wed Jan  5 21:37:58 PST
+        2022; root:xnu-8019.80.24~20/RELEASE_ARM64_T6000)'
     method: GET
     uri: https://staging.api.radiant.earth/mlhub/v1/datasets/nasa_marine_debris
   response:
     body:
       string: !!binary |
-        H4sIAO6FH2MC/61W72/bNhD9Vwh9GBpMlvwzif1pabK1AeK2WIINQ1IYlHiWuFKiRlJ23aL/+x4p
+        H4sIAI58LGMC/61W72/bNhD9Vwh9GBpMlvwzif1pabK1AeK2WIINQ1IYlHiWuFKiRlJ23aL/+x4p
         OXa6pvuwGQFik7y7x3fv7vg5kiJaRDW3fFVxI2taCcqMtFEcZZn+GC0+R7nWRsiaO7LR4h6fyTSZ
         TYbD8Xw8P4tnyfT0fHI6OZu9j5/uTObJaHh+NhtNZnPsDc7PEyyPRvPRdPT9zed9Hu3gE0du1xDw
         L1vl5DutdoWuoy9xlEvHncT3RXRb8jJmF0nM7kpdcRuzG3z/gS25/UC7mC0T9mI8HI9O2EO0DAyw
@@ -48,11 +48,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 12 Sep 2022 19:18:06 GMT
+      - Thu, 22 Sep 2022 15:17:33 GMT
       Vary:
       - Accept-Encoding
       X-Azure-Ref:
-      - 07oUfYwAAAABSAEYVr7OyTKMxutjGuTY3REVOMzAxMDAwMTA5MDA5ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      - 0jnwsYwAAAABeWOmv9D61To+at3eK7jawTU5aMjIxMDYwNjEzMDUxADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:

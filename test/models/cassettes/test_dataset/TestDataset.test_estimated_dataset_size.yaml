@@ -9,14 +9,14 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.5.2 (Darwin Kernel Version 21.6.0: Wed Aug 10 14:25:27 PDT
-        2022; root:xnu-8020.141.5~2/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.5.2 (Darwin Kernel Version 21.3.0: Wed Jan  5 21:37:58 PST
+        2022; root:xnu-8019.80.24~20/RELEASE_ARM64_T6000)'
     method: GET
     uri: https://staging.api.radiant.earth/mlhub/v1/datasets/nasa_marine_debris
   response:
     body:
       string: !!binary |
-        H4sIAPGFH2MC/61W72/bNhD9Vwh9GBpMlvwzif1pabK1AeK2WIINQ1IYlHiWuFKiRlJ23aL/+x4p
+        H4sIAJB8LGMC/61W72/bNhD9Vwh9GBpMlvwzif1pabK1AeK2WIINQ1IYlHiWuFKiRlJ23aL/+x4p
         OXa6pvuwGQFik7y7x3fv7vg5kiJaRDW3fFVxI2taCcqMtFEcZZn+GC0+R7nWRsiaO7LR4h6fyTSZ
         TYbD8Xw8P4tnyfT0fHI6OZu9j5/uTObJaHh+NhtNZnPsDc7PEyyPRvPRdPT9zed9Hu3gE0du1xDw
         L1vl5DutdoWuoy9xlEvHncT3RXRb8jJmF0nM7kpdcRuzG3z/gS25/UC7mC0T9mI8HI9O2EO0DAyw
@@ -48,11 +48,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 12 Sep 2022 19:18:08 GMT
+      - Thu, 22 Sep 2022 15:17:36 GMT
       Vary:
       - Accept-Encoding
       X-Azure-Ref:
-      - 08YUfYwAAAAClRujh9HpeQ4eh1ck9y6MhREVOMzAxMDAwMTA5MDIxADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      - 0kHwsYwAAAADAGVhH1qpXTIT0h+2rB/55TU5aMjIxMDYwNjExMDI1ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:
@@ -68,8 +68,8 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - 'radiant_mlhub/0.5.2 (Darwin Kernel Version 21.6.0: Wed Aug 10 14:25:27 PDT
-        2022; root:xnu-8020.141.5~2/RELEASE_X86_64)'
+      - 'radiant_mlhub/0.5.2 (Darwin Kernel Version 21.3.0: Wed Jan  5 21:37:58 PST
+        2022; root:xnu-8019.80.24~20/RELEASE_ARM64_T6000)'
     method: GET
     uri: https://staging.api.radiant.earth/mlhub/v1/catalog/nasa_marine_debris/info
   response:
@@ -81,9 +81,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 12 Sep 2022 19:18:09 GMT
+      - Thu, 22 Sep 2022 15:17:36 GMT
       X-Azure-Ref:
-      - 08oUfYwAAAACrAZ5h0BXsSbxFrxxl669gREVOMzAxMDAwMTEwMDMxADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
+      - 0kHwsYwAAAAC3cVE401+oTKmKna2MYs3XTU5aMjIxMDYwNjEzMDQ5ADA4NDExNmYwLTJmMDMtNDk3Yi05ZTIxLTczZTY0NTRjMDY3MA==
       X-Cache:
       - CONFIG_NOCACHE
     status:

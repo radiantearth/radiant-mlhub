@@ -257,13 +257,7 @@ class TestDataset:
         n = self.asset_database_record_count(asset_db)
         assert n == expect_assets
         rmtree(tmp_path, ignore_errors=True)
-
-####################
-
-# SINGLE FILTERS 
-#1
-# single to single
-# test single to single (single_datetime field)
+        
     @pytest.mark.vcr
     def test_1_datetime_filter_to_single_datetime_field(self, tmp_path: Path) -> None:
         expect_assets = 9
@@ -280,10 +274,6 @@ class TestDataset:
         assert n == expect_assets
         rmtree(tmp_path, ignore_errors=True)
 
-#2
-# singe to range
-    #test for single datetime when dataset has datetime range (and uses start_datetime and end_dateteime) 
-    #agrifield net 
     @pytest.mark.vcr
     def test_1_datetime_filter_to_start_and_end_datetime_fields(self, tmp_path: Path) -> None:
         expect_assets = 17643
@@ -299,13 +289,9 @@ class TestDataset:
         assert n == expect_assets
         rmtree(tmp_path, ignore_errors=True)
 
-### RANGE FILTERS 
-
-#3
-# range to single (where range in single_datetime field)
     @pytest.mark.vcr
     # range to range in single datetime column (when range is in single_dateteime) 
-    def test_2_datetime_filter_to_single_datetime_field(self, tmp_path: Path) -> None:
+    def test_2_datetime_filters_to_single_datetime_field(self, tmp_path: Path) -> None:
         expect_assets = 325  
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         ds.download(
@@ -319,11 +305,7 @@ class TestDataset:
         assert n == expect_assets
         rmtree(tmp_path, ignore_errors=True)
 
-
-#4
-# range to range (start_datetime and end_datetime)
-
-# MonkeyPatch dataset
+# Creating MonkeyPatch dataset
     def modify_dataset(MonkeyPatch):
         single_datetime = AssetRecord.single_datetime
         start_datetime = AssetRecord.start_datetime
@@ -334,9 +316,8 @@ class TestDataset:
         MonkeyPatch.setattr(single_datetime, lambda: None)
         MonkeyPatch.setattr(end_datetime, lambda: start_datetime + timedelta(days=7))
 
-
     @pytest.mark.vcr
-    def test_2_datetime_filer_to_start_and_end_datetime_fields(self, tmp_path: Path) -> None:
+    def test_2_datetime_filters_to_start_and_end_datetime_fields(self, tmp_path: Path) -> None:
         expect_assets = 325  
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         ds.download(
@@ -356,7 +337,6 @@ class TestDataset:
         finally:
             m.undo
 
-#############
     @pytest.mark.vcr
     def test_download_with_bbox_filter_works(self, tmp_path: Path) -> None:
         expect_assets = 9
