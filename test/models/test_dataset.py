@@ -257,7 +257,7 @@ class TestDataset:
         n = self.asset_database_record_count(asset_db)
         assert n == expect_assets
         rmtree(tmp_path, ignore_errors=True)
-        
+
     @pytest.mark.vcr
     def test_1_datetime_filter_to_single_datetime_field(self, tmp_path: Path) -> None:
         expect_assets = 9
@@ -290,9 +290,8 @@ class TestDataset:
         rmtree(tmp_path, ignore_errors=True)
 
     @pytest.mark.vcr
-    # range to range in single datetime column (when range is in single_dateteime) 
     def test_2_datetime_filters_to_single_datetime_field(self, tmp_path: Path) -> None:
-        expect_assets = 325  
+        expect_assets = 325
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         ds.download(
             output_dir=tmp_path,
@@ -318,7 +317,7 @@ class TestDataset:
 
     @pytest.mark.vcr
     def test_2_datetime_filters_to_start_and_end_datetime_fields(self, tmp_path: Path) -> None:
-        expect_assets = 325  
+        expect_assets = 325
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         ds.download(
             output_dir=tmp_path,
@@ -333,7 +332,7 @@ class TestDataset:
 
         m = MonkeyPatch()
         try:
-            yield m 
+            yield m
         finally:
             m.undo
 
