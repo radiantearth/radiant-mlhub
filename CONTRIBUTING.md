@@ -20,9 +20,10 @@ whether the issue pertains to the API or the Python client, please start by
 emailing [support@radiant.earth](mailto:support@radiant.earth) and we will help
 to assess the scope of the issue.
 
-Issues in this repository follow one of 2 templates: bug reports or feature
-requests. For more general questions or troubleshooting that does not fall into
-one of these two categories, please email us at
+Issues in this repository should follow the [issue templates for bug reports or
+feature requests](https://github.com/radiantearth/radiant-mlhub/tree/main/.github/ISSUE_TEMPLATE).
+For more general questions or troubleshooting that does not fall into one of
+these two categories, please email us at
 [support@radiant.earth](mailto:support@radiant.earth). When creating a new
 issue, please follow the appropriate template as closely as possible and
 provide as much detail as you can.
@@ -36,7 +37,8 @@ and the rest of our user community, give input on the design for any changes
 and ensure that we are not already doing work on similar features.
 
 All branches should originate from the `main` branch and all PRs should be made
-against the `main` branch.
+against the `main` branch. Please prefix your branch name with `fix/` for
+bug fixes, `add/` for new features, or `update/`, or `change/` for other PRs.
 
 New PRs will use our [PR template](https://github.com/radiantearth/radiant-mlhub/blob/main/.github/pull_request_template.md), which you should follow and fill in.
 
@@ -198,7 +200,7 @@ points to remember:
    see it, browse to: [https://pypi.org/project/radiant-mlhub/](https://pypi.org/project/radiant-mlhub/) | Download
    Files | Source Distribution | view hashes
 
-   * The [feedstock](https://github.com/conda-forge/radiant-mlhub-feedstoc)
+   * The [feedstock](https://github.com/conda-forge/radiant-mlhub-feedstock)
    recipe has it's own copy of the package dependencies for the conda package,
    in `recipe/meta.yaml`. (Yet another place where the radiant-mlhub Python
    dependencies have to be updated, and kept up to date).
