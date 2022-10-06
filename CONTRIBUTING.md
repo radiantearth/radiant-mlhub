@@ -38,7 +38,7 @@ and ensure that we are not already doing work on similar features.
 
 All branches should originate from the `main` branch and all PRs should be made
 against the `main` branch. Please prefix your branch name with `fix/` for
-bug fixes, `add/` for new features, or `update/`, or `change/` for other PRs.
+bug fixes, `add/` for new features,`update/` for updating existing features, or `change/` for other PRs.
 
 New PRs will use our [PR template](https://github.com/radiantearth/radiant-mlhub/blob/main/.github/pull_request_template.md), which you should follow and fill in.
 
