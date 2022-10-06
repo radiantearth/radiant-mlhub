@@ -1,6 +1,7 @@
 import json
 import re
 from pathlib import Path
+import shutil
 from shutil import rmtree
 from typing import TYPE_CHECKING, Iterator, cast
 from urllib.parse import parse_qs, urljoin, urlsplit
@@ -10,6 +11,7 @@ import pytest
 from pytest import MonkeyPatch
 from dateutil.parser import parse
 from radiant_mlhub.models import Dataset
+from radiant_mlhub.if_exists import DownloadIfExistsOpts
 from radiant_mlhub.client.catalog_downloader import AssetRecord
 from datetime import timedelta as timedelta
 
@@ -35,6 +37,21 @@ class TestDataset:
         else:
             pytest.fail('pytest fixture TestDataset.stac_mock_json is misconfigured.')
         with response_path.open(encoding='utf-8') as src:
+            return src.read()
+
+    @pytest.fixture(autouse=False)
+    def mock_tar_gz(self, request) -> str:
+        """
+        Reads a mocked api response from data/**/*.tar.gz files.
+        """
+        dataset_mark = request.node.get_closest_marker('dataset_id')
+        mock_data_dir = Path(__file__).parent.parent / 'data'
+        if dataset_mark is not None:
+            (dataset_id, ) = dataset_mark.args
+            response_path = mock_data_dir / 'datasets' / f'{dataset_id}.tar.gz'
+        else:
+            pytest.fail('pytest fixture TestDataset.mock_tar_gz is misconfigured.')
+        with open(response_path, "rb") as src:
             return src.read()
 
     @pytest.mark.vcr
@@ -202,6 +219,44 @@ class TestDataset:
         db_conn.close()
         return n
 
+    # WIP timedate mock test    
+    @pytest.mark.dataset_id('su_sar_moisture_content_main')
+    def test_2_datetime_filters_to_start_and_end_datetime_fields(
+            self,
+            requests_mock: "Mocker_Type",
+            root_url: str,
+            mock_tar_gz: str,
+            tmp_path: Path,
+            ) -> None:
+        """
+        Uses stac_mock_tar_gz fixture to use mock dataset.
+        """
+        dataset_doi = '10.1016/j.rse.2020.111797'
+        # the below "stac_location" is where the doi lives in the uncompressed version of this tar.gz
+        # this is the part i am most confused at
+        # stac_location = "datasets/su_sar_moisture_content_main/su_sar_moisture_content/collection.json"
+        doi_endpoint = urljoin(root_url, f"datasets/doi/{dataset_doi}")
+        requests_mock.get(doi_endpoint, text=mock_tar_gz)
+
+        expect_assets = 5
+        ds = Dataset.fetch(dataset_doi)
+
+        # this is from when i tried just copying the modified tar.gz into the tmp location
+        # temp_tar_gz = tmp_path / f"{dataset_id}.tar.gz"
+        # shutil.copyfile(tar_gz, temp_tar_gz)
+
+        ds.download(
+            output_dir=tmp_path,
+            #if_exists=DownloadIfExistsOpts.skip,
+            datetime=(parse("2016-01-01T00:00:00Z"), parse("2016-12-31T00:00:00Z"))
+        )
+        asset_dir = tmp_path / 'su_sar_moisture_content_main'
+        asset_db = asset_dir / 'mlhub_stac_assets.db'
+        assert asset_db.exists()
+        n = self.asset_database_record_count(asset_db)
+        assert n == expect_assets
+        rmtree(tmp_path, ignore_errors=True)
+
     @pytest.mark.vcr
     def test_download_catalog_only(self, tmp_path: Path) -> None:
         ds = Dataset.fetch_by_id('nasa_marine_debris')
@@ -280,8 +335,7 @@ class TestDataset:
         ds = Dataset.fetch_by_id('ref_agrifieldnet_competition_v1')
         ds.download(
             output_dir=tmp_path,
-            datetime=parse("2022-02-28T00:00:00Z"),
-        )
+            datetime=parse("2022-02-28T00:00:00Z"))
         asset_dir = tmp_path / 'ref_agrifieldnet_competition_v1'
         asset_db = asset_dir / 'mlhub_stac_assets.db'
         assert asset_db.exists()
@@ -304,37 +358,37 @@ class TestDataset:
         assert n == expect_assets
         rmtree(tmp_path, ignore_errors=True)
 
-# Creating MonkeyPatch dataset
-    def modify_dataset(MonkeyPatch):
-        single_datetime = AssetRecord.single_datetime
-        start_datetime = AssetRecord.start_datetime
-        end_datetime = AssetRecord.end_datetime
+    # Creating MonkeyPatch dataset
+    @pytest.fixture(scope="class")
+    def monkeypatch_for_class(request):
+        request.cls.monkeypatch = MonkeyPatch()
 
-        start_datetime = single_datetime
-        MonkeyPatch.setattr(start_datetime, lambda: single_datetime)
-        MonkeyPatch.setattr(single_datetime, lambda: None)
-        MonkeyPatch.setattr(end_datetime, lambda: start_datetime + timedelta(days=7))
+    @pytest.mark.usefixtures("monkeypatch_for_class")
+    class MyTest(AssetRecord):
+        def modify_dataset(self):
+            # single_datetime = AssetRecord.single_datetime
+            # start_datetime = AssetRecord.start_datetime
+            # end_datetime = AssetRecord.end_datetime
 
-    @pytest.mark.vcr
-    def test_2_datetime_filters_to_start_and_end_datetime_fields(self, tmp_path: Path) -> None:
-        expect_assets = 325
-        ds = Dataset.fetch_by_id('nasa_marine_debris')
-        ds.download(
-            output_dir=tmp_path,
-            datetime=(parse("2016-01-01T00:00:00Z"), parse("2016-12-31T00:00:00Z")),
-        )
-        asset_dir = tmp_path / 'nasa_marine_debris'
-        asset_db = asset_dir / 'mlhub_stac_assets.db'
-        assert asset_db.exists()
-        n = self.asset_database_record_count(asset_db)
-        assert n == expect_assets
-        rmtree(tmp_path, ignore_errors=True)
+            #start_datetime = self.single_datetime
+            self.monkeypatch.setattr(self.start_datetime, lambda: self.single_datetime)
+            self.monkeypatch.setattr(self.single_datetime, lambda: None)
+            self.monkeypatch.setattr(self.end_datetime, lambda: self.start_datetime + timedelta(days=7))
 
-        m = MonkeyPatch()
-        try:
-            yield m
-        finally:
-            m.undo
+        @pytest.mark.vcr
+        def test_2_datetime_filters_to_start_and_end_datetime_fields(self, tmp_path: Path) -> None:
+            expect_assets = 325
+            ds = Dataset.fetch_by_id('nasa_marine_debris')
+            ds.download(
+                output_dir=tmp_path,
+                datetime=(parse("2016-01-01T00:00:00Z"), parse("2016-12-31T00:00:00Z")),
+            )
+            asset_dir = tmp_path / 'nasa_marine_debris'
+            asset_db = asset_dir / 'mlhub_stac_assets.db'
+            assert asset_db.exists()
+            n = self.asset_database_record_count(asset_db)
+            assert n == expect_assets
+            rmtree(tmp_path, ignore_errors=True)
 
     @pytest.mark.vcr
     def test_download_with_bbox_filter_works(self, tmp_path: Path) -> None:
