@@ -228,15 +228,15 @@ class TestDataset:
             tmp_path: Path,
             ) -> None:
         """
-        Uses stac_mock_tar_gz fixture to use mock dataset's stac catalog to have
-        different datatimes than the real dataset.
+        Uses mock_tar_gz fixture to make the dataset's stac catalog have
+        different stac item datetimes than the real dataset.
         """
         dataset_id = 'su_sar_moisture_content_main'
-        datetime_range = (parse("2016-01-01T00:00:00Z"), parse("2016-12-31T00:00:00Z"))
+        datetime_range = (parse('2016-01-01T00:00:00Z'), parse('2016-12-31T00:00:00Z'))
         expect_assets = 11
 
         with RequestsMocker(real_http=True) as mocker:
-            # setup mocker use test fixture, but only for the dataset's stac catalog .tar.gz
+            # setup mocker use the test fixture for the dataset's stac catalog .tar.gz
             stac_catalog_endpoint = urljoin(root_url, f'catalog/{dataset_id}')
             mocker.get(
                 stac_catalog_endpoint,
@@ -245,12 +245,9 @@ class TestDataset:
                 headers={'accept-ranges': 'bytes', 'content-length': str(len(mock_tar_gz))},
             )
             ds = Dataset.fetch(dataset_id)
-            ds.download(
-                output_dir=tmp_path,
-                datetime=datetime_range,
-            )
+            ds.download(output_dir=tmp_path, datetime=datetime_range)
 
-        asset_dir = tmp_path / 'su_sar_moisture_content_main'
+        asset_dir = tmp_path / dataset_id
         asset_db = asset_dir / 'mlhub_stac_assets.db'
         assert asset_db.exists()
         n = self.asset_database_record_count(asset_db)
