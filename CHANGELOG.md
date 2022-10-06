@@ -9,11 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added an optional asset_output_dir parameter so that the assets can be downloaded into a separate directory from the STAC Catalog if the user specifies and selects a seperate asset output directory. ([149](https://github.com/radiantearth/radiant-mlhub/pull/149))
+- Added an optional asset_output_dir parameter so that the assets can be downloaded into a separate directory from the STAC Catalog if the user specifies and selects a separate asset output directory. ([149](https://github.com/radiantearth/radiant-mlhub/pull/149))
 
 ### Removed
 
 ### Changed
+
+- Update ADR and CONTRIBUTING docs ([164](https://github.com/radiantearth/radiant-mlhub/pull/164))
 
 ### Fixed
 
@@ -79,7 +81,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `client.list_models` and `client.get_model_by_id` to discover ML Models by ID or by listing. ([#71](https://github.com/radiantearth/radiant-mlhub/pull/71))
-- `MLModel.list` and `MLModel.fetch` methods analagous to new client methods described
+- `MLModel.list` and `MLModel.fetch` methods analogous to new client methods described
   above. ([#71](https://github.com/radiantearth/radiant-mlhub/pull/71))
 
 ### Developer
@@ -103,7 +105,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   filtering by datasets tags or free text search, respectively ([#60](https://github.com/radiantearth/radiant-mlhub/pull/60))
 - `client.get_dataset_by_id` and `client.get_dataset_by_doi` methods to look up datasets by ID or
   DOI, respectively ([#58](https://github.com/radiantearth/radiant-mlhub/pull/58))
-- `Dataset.fetch_by_id` and `Dataset.fetch_by_doi` methods analagous to new client methods described
+- `Dataset.fetch_by_id` and `Dataset.fetch_by_doi` methods analogous to new client methods described
   above ([#58](https://github.com/radiantearth/radiant-mlhub/pull/58))
 - `py.typed` file included in package ([#62](https://github.com/radiantearth/radiant-mlhub/pull/62))
 
