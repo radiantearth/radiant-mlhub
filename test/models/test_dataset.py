@@ -1,7 +1,6 @@
 import json
 import re
 from pathlib import Path
-import shutil
 from shutil import rmtree
 from typing import TYPE_CHECKING, Iterator, cast
 from urllib.parse import parse_qs, urljoin, urlsplit
@@ -11,9 +10,9 @@ import pytest
 from pytest import MonkeyPatch
 from dateutil.parser import parse
 from radiant_mlhub.models import Dataset
-from radiant_mlhub.if_exists import DownloadIfExistsOpts
 from radiant_mlhub.client.catalog_downloader import AssetRecord
 from datetime import timedelta as timedelta
+from requests_mock import Mocker as RequestsMocker
 
 
 if TYPE_CHECKING:
@@ -219,37 +218,38 @@ class TestDataset:
         db_conn.close()
         return n
 
-    # WIP timedate mock test    
+    # WIP timedate mock test
+    @pytest.mark.vcr
     @pytest.mark.dataset_id('su_sar_moisture_content_main')
     def test_2_datetime_filters_to_start_and_end_datetime_fields(
             self,
-            requests_mock: "Mocker_Type",
             root_url: str,
-            mock_tar_gz: str,
+            mock_tar_gz: bytes,
             tmp_path: Path,
             ) -> None:
         """
-        Uses stac_mock_tar_gz fixture to use mock dataset.
+        Uses stac_mock_tar_gz fixture to use mock dataset's stac catalog to have
+        different datatimes than the real dataset.
         """
-        dataset_doi = '10.1016/j.rse.2020.111797'
-        # the below "stac_location" is where the doi lives in the uncompressed version of this tar.gz
-        # this is the part i am most confused at
-        # stac_location = "datasets/su_sar_moisture_content_main/su_sar_moisture_content/collection.json"
-        doi_endpoint = urljoin(root_url, f"datasets/doi/{dataset_doi}")
-        requests_mock.get(doi_endpoint, text=mock_tar_gz)
+        dataset_id = 'su_sar_moisture_content_main'
+        datetime_range = (parse("2016-01-01T00:00:00Z"), parse("2016-12-31T00:00:00Z"))
+        expect_assets = 11
 
-        expect_assets = 5
-        ds = Dataset.fetch(dataset_doi)
+        with RequestsMocker(real_http=True) as mocker:
+            # setup mocker use test fixture, but only for the dataset's stac catalog .tar.gz
+            stac_catalog_endpoint = urljoin(root_url, f'catalog/{dataset_id}')
+            mocker.get(
+                stac_catalog_endpoint,
+                status_code=200,
+                content=mock_tar_gz,
+                headers={'accept-ranges': 'bytes', 'content-length': str(len(mock_tar_gz))},
+            )
+            ds = Dataset.fetch(dataset_id)
+            ds.download(
+                output_dir=tmp_path,
+                datetime=datetime_range,
+            )
 
-        # this is from when i tried just copying the modified tar.gz into the tmp location
-        # temp_tar_gz = tmp_path / f"{dataset_id}.tar.gz"
-        # shutil.copyfile(tar_gz, temp_tar_gz)
-
-        ds.download(
-            output_dir=tmp_path,
-            #if_exists=DownloadIfExistsOpts.skip,
-            datetime=(parse("2016-01-01T00:00:00Z"), parse("2016-12-31T00:00:00Z"))
-        )
         asset_dir = tmp_path / 'su_sar_moisture_content_main'
         asset_db = asset_dir / 'mlhub_stac_assets.db'
         assert asset_db.exists()
