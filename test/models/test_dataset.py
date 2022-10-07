@@ -7,13 +7,9 @@ from urllib.parse import parse_qs, urljoin, urlsplit
 import sqlite3
 
 import pytest
-from pytest import MonkeyPatch
 from dateutil.parser import parse
 from radiant_mlhub.models import Dataset
-from radiant_mlhub.client.catalog_downloader import AssetRecord
-from datetime import timedelta as timedelta
 from requests_mock import Mocker as RequestsMocker
-
 
 if TYPE_CHECKING:
     from pathlib import Path as Path_Type
@@ -354,38 +350,6 @@ class TestDataset:
         n = self.asset_database_record_count(asset_db)
         assert n == expect_assets
         rmtree(tmp_path, ignore_errors=True)
-
-    # Creating MonkeyPatch dataset
-    @pytest.fixture(scope="class")
-    def monkeypatch_for_class(request):
-        request.cls.monkeypatch = MonkeyPatch()
-
-    @pytest.mark.usefixtures("monkeypatch_for_class")
-    class MyTest(AssetRecord):
-        def modify_dataset(self):
-            # single_datetime = AssetRecord.single_datetime
-            # start_datetime = AssetRecord.start_datetime
-            # end_datetime = AssetRecord.end_datetime
-
-            #start_datetime = self.single_datetime
-            self.monkeypatch.setattr(self.start_datetime, lambda: self.single_datetime)
-            self.monkeypatch.setattr(self.single_datetime, lambda: None)
-            self.monkeypatch.setattr(self.end_datetime, lambda: self.start_datetime + timedelta(days=7))
-
-        @pytest.mark.vcr
-        def test_2_datetime_filters_to_start_and_end_datetime_fields(self, tmp_path: Path) -> None:
-            expect_assets = 325
-            ds = Dataset.fetch_by_id('nasa_marine_debris')
-            ds.download(
-                output_dir=tmp_path,
-                datetime=(parse("2016-01-01T00:00:00Z"), parse("2016-12-31T00:00:00Z")),
-            )
-            asset_dir = tmp_path / 'nasa_marine_debris'
-            asset_db = asset_dir / 'mlhub_stac_assets.db'
-            assert asset_db.exists()
-            n = self.asset_database_record_count(asset_db)
-            assert n == expect_assets
-            rmtree(tmp_path, ignore_errors=True)
 
     @pytest.mark.vcr
     def test_download_with_bbox_filter_works(self, tmp_path: Path) -> None:
