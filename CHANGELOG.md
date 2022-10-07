@@ -9,9 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add an optional asset_output_dir parameter so that the assets can be downloaded into a separate directory from the STAC Catalog if the user specifies and selects a seperate asset output directory. ([149](https://github.com/radiantearth/radiant-mlhub/pull/149))
-
-- Add datetime filter test to account for datasets that have start_datetime and end_datetime properties. ([165](https://github.com/radiantearth/radiant-mlhub/pull/165))
+- Added an optional asset_output_dir parameter so that the assets can be downloaded into a separate directory from the STAC Catalog if the user specifies and selects a separate asset output directory. ([149](https://github.com/radiantearth/radiant-mlhub/pull/149))
 
 - Add datetime filter test to account for datasets that have start_datetime and end_datetime properties. ([165](https://github.com/radiantearth/radiant-mlhub/pull/165))
 
