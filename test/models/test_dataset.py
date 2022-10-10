@@ -9,6 +9,7 @@ import sqlite3
 import pytest
 from dateutil.parser import parse
 from radiant_mlhub.models import Dataset
+from requests_mock import Mocker as RequestsMocker
 
 if TYPE_CHECKING:
     from pathlib import Path as Path_Type
@@ -220,7 +221,6 @@ class TestDataset:
             root_url: str,
             mock_tar_gz: bytes,
             tmp_path: Path,
-            requests_mock: "Mocker_Type",
             ) -> None:
         """
         Uses mock_tar_gz fixture to make the dataset's stac catalog have
@@ -230,16 +230,17 @@ class TestDataset:
         datetime_range = (parse('2016-01-01T00:00:00Z'), parse('2016-12-31T00:00:00Z'))
         expect_assets = 11
 
-        # setup mocker use the test fixture for the dataset's stac catalog .tar.gz
-        stac_catalog_endpoint = urljoin(root_url, f'catalog/{dataset_id}')
-        requests_mock.get(
-            stac_catalog_endpoint,
-            status_code=200,
-            headers={'accept-ranges': 'bytes', 'content-length': str(len(mock_tar_gz))},
-            content=mock_tar_gz,
-        )
-        ds = Dataset.fetch(dataset_id)
-        ds.download(output_dir=tmp_path, datetime=datetime_range)
+        with RequestsMocker(real_http=True) as mocker:
+            # setup mocker use the test fixture for the dataset's stac catalog .tar.gz
+            stac_catalog_endpoint = urljoin(root_url, f'catalog/{dataset_id}')
+            mocker.get(
+                stac_catalog_endpoint,
+                status_code=200,
+                headers={'accept-ranges': 'bytes', 'content-length': str(len(mock_tar_gz))},
+                content=mock_tar_gz,
+            )
+            ds = Dataset.fetch(dataset_id)
+            ds.download(output_dir=tmp_path, datetime=datetime_range)
 
         asset_dir = tmp_path / dataset_id
         asset_db = asset_dir / 'mlhub_stac_assets.db'
@@ -336,32 +337,6 @@ class TestDataset:
 
     @pytest.mark.vcr
     def test_2_datetime_filters_to_single_datetime_field(self, tmp_path: Path) -> None:
-        expect_assets = 325
-        ds = Dataset.fetch_by_id('nasa_marine_debris')
-        ds.download(
-            output_dir=tmp_path,
-            datetime=(parse("2016-01-01T00:00:00Z"), parse("2016-12-31T00:00:00Z")),
-        )
-        asset_dir = tmp_path / 'nasa_marine_debris'
-        asset_db = asset_dir / 'mlhub_stac_assets.db'
-        assert asset_db.exists()
-        n = self.asset_database_record_count(asset_db)
-        assert n == expect_assets
-        rmtree(tmp_path, ignore_errors=True)
-
-# Creating MonkeyPatch dataset
-    def modify_dataset(MonkeyPatch):
-        single_datetime = AssetRecord.single_datetime
-        start_datetime = AssetRecord.start_datetime
-        end_datetime = AssetRecord.end_datetime
-
-        start_datetime = single_datetime
-        MonkeyPatch.setattr(start_datetime, lambda: single_datetime)
-        MonkeyPatch.setattr(single_datetime, lambda: None)
-        MonkeyPatch.setattr(end_datetime, lambda: start_datetime + timedelta(days=7))
-
-    @pytest.mark.vcr
-    def test_2_datetime_filters_to_start_and_end_datetime_fields(self, tmp_path: Path) -> None:
         expect_assets = 325
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         ds.download(
