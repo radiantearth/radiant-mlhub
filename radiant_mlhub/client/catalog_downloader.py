@@ -607,8 +607,8 @@ class CatalogDownloader():
                     asset_rec = AssetRecord(
                         asset_save_path=asset_save_path,
                         asset_url=asset_url,
-                        collection_id=collection_id,  # TODO yank?
-                        item_id=item_id,  # TODO: yank?
+                        collection_id=collection_id,
+                        item_id=item_id,
                         asset_key=asset_key,
                     )
                     asset_list.append(asset_rec)

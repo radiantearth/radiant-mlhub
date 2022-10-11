@@ -33,6 +33,21 @@ class TestDataset:
         with response_path.open(encoding='utf-8') as src:
             return src.read()
 
+    @pytest.fixture(autouse=False)
+    def mock_tar_gz(self, request) -> str:
+        """
+        Reads a mocked api response from data/**/*.tar.gz files.
+        """
+        dataset_mark = request.node.get_closest_marker('dataset_id')
+        mock_data_dir = Path(__file__).parent.parent / 'data'
+        if dataset_mark is not None:
+            (dataset_id, ) = dataset_mark.args
+            response_path = mock_data_dir / 'datasets' / f'{dataset_id}.tar.gz'
+        else:
+            pytest.fail('pytest fixture TestDataset.mock_tar_gz is misconfigured.')
+        with open(response_path, "rb") as src:
+            return src.read()
+
     @pytest.mark.vcr
     def test_dunder_str_method(self) -> None:
         dataset_id = 'nasa_marine_debris'
@@ -198,6 +213,49 @@ class TestDataset:
         db_conn.close()
         return n
 
+    @pytest.mark.dataset_id('su_sar_moisture_content_main')
+    def test_2_datetime_filters_to_start_and_end_datetime_fields(
+            self,
+            root_url: str,
+            requests_mock: "Mocker_Type",
+            stac_mock_json: str,
+            mock_tar_gz: bytes,
+            tmp_path: Path,
+            ) -> None:
+        """
+        Uses mock_tar_gz fixture to make the dataset's stac catalog have
+        different stac item datetimes than the real dataset.
+        """
+        dataset_id = 'su_sar_moisture_content_main'
+        datetime_range = (parse('2016-01-01T00:00:00Z'), parse('2016-12-31T00:00:00Z'))
+        expect_assets = 11
+
+        # setup mocker to use test fixture file for the dataset's json
+        dataset_endpoint = urljoin(root_url, f'datasets/{dataset_id}')
+        requests_mock.get(
+            dataset_endpoint,
+            status_code=200,
+            text=stac_mock_json,
+        )
+        ds = Dataset.fetch(dataset_id)
+
+        # setup mocker use test fixture for the dataset's stac catalog .tar.gz
+        stac_catalog_endpoint = urljoin(root_url, f'catalog/{dataset_id}')
+        requests_mock.get(
+            stac_catalog_endpoint,
+            status_code=200,
+            headers={'accept-ranges': 'bytes', 'content-length': str(len(mock_tar_gz))},
+            content=mock_tar_gz,
+        )
+        ds.download(output_dir=tmp_path, datetime=datetime_range)
+
+        asset_dir = tmp_path / dataset_id
+        asset_db = asset_dir / 'mlhub_stac_assets.db'
+        assert asset_db.exists()
+        n = self.asset_database_record_count(asset_db)
+        assert n == expect_assets
+        rmtree(tmp_path, ignore_errors=True)
+
     @pytest.mark.vcr
     def test_download_catalog_only(self, tmp_path: Path) -> None:
         ds = Dataset.fetch_by_id('nasa_marine_debris')
@@ -255,8 +313,9 @@ class TestDataset:
         rmtree(tmp_path, ignore_errors=True)
 
     @pytest.mark.vcr
-    def test_download_with_1_datetime_filter_works(self, tmp_path: Path) -> None:
+    def test_1_datetime_filter_to_single_datetime_field(self, tmp_path: Path) -> None:
         expect_assets = 9
+
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         ds.download(
             output_dir=tmp_path,
@@ -269,13 +328,55 @@ class TestDataset:
         assert n == expect_assets
         rmtree(tmp_path, ignore_errors=True)
 
+    @pytest.mark.dataset_id('su_sar_moisture_content_main')
+    def test_1_datetime_filter_to_start_and_end_datetime_fields(
+        self,
+        root_url: str,
+        requests_mock: "Mocker_Type",
+        stac_mock_json: str,
+        mock_tar_gz: bytes,
+        tmp_path: Path,
+    ) -> None:
+        """
+        Uses mock_tar_gz fixture to make the dataset's stac catalog have
+        different stac item datetimes than the real dataset.
+        """
+        dataset_id = 'su_sar_moisture_content_main'
+        expect_assets = 3
+        datetime = parse('2015-07-31T00:00:00Z')
+        # setup mocker to use test fixture file for the dataset's json
+        dataset_endpoint = urljoin(root_url, f'datasets/{dataset_id}')
+        requests_mock.get(
+            dataset_endpoint,
+            status_code=200,
+            text=stac_mock_json,
+        )
+        ds = Dataset.fetch(dataset_id)
+
+        # setup mocker use test fixture for the dataset's stac catalog .tar.gz
+        stac_catalog_endpoint = urljoin(root_url, f'catalog/{dataset_id}')
+        requests_mock.get(
+            stac_catalog_endpoint,
+            status_code=200,
+            headers={'accept-ranges': 'bytes', 'content-length': str(len(mock_tar_gz))},
+            content=mock_tar_gz,
+        )
+        ds.download(output_dir=tmp_path, datetime=datetime)
+
+        asset_dir = tmp_path / dataset_id
+        asset_db = asset_dir / 'mlhub_stac_assets.db'
+        assert asset_db.exists()
+        n = self.asset_database_record_count(asset_db)
+        assert n == expect_assets
+        rmtree(tmp_path, ignore_errors=True)
+
     @pytest.mark.vcr
-    def test_download_with_2_datetime_filter_works(self, tmp_path: Path) -> None:
+    def test_2_datetime_filters_to_single_datetime_field(self, tmp_path: Path) -> None:
         expect_assets = 325
         ds = Dataset.fetch_by_id('nasa_marine_debris')
         ds.download(
             output_dir=tmp_path,
-            datetime=(parse("2018-01-01T00:00:00Z"), parse("2018-02-28T00:00:00Z")),
+            datetime=(parse("2016-01-01T00:00:00Z"), parse("2016-12-31T00:00:00Z")),
         )
         asset_dir = tmp_path / 'nasa_marine_debris'
         asset_db = asset_dir / 'mlhub_stac_assets.db'
