@@ -27,7 +27,7 @@ setuptools.setup(
     install_requires=[
         'click>=7.1.2,<9.0.0',
         'pydantic~=1.9.2',
-        'pystac~=1.4.0',
+        'pystac>=1.4,<1.7',
         'python-dateutil~=2.8.2',
         'requests~=2.27.0',
         'shapely~=1.8.0',
