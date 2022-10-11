@@ -328,14 +328,42 @@ class TestDataset:
         assert n == expect_assets
         rmtree(tmp_path, ignore_errors=True)
 
-    @pytest.mark.vcr
-    def test_1_datetime_filter_to_start_and_end_datetime_fields(self, tmp_path: Path) -> None:
-        expect_assets = 17643
-        ds = Dataset.fetch_by_id('ref_agrifieldnet_competition_v1')
-        ds.download(
-            output_dir=tmp_path,
-            datetime=parse("2022-02-28T00:00:00Z"))
-        asset_dir = tmp_path / 'ref_agrifieldnet_competition_v1'
+    @pytest.mark.dataset_id('su_sar_moisture_content_main')
+    def test_1_datetime_filter_to_start_and_end_datetime_fields(
+        self,
+        root_url: str,
+        requests_mock: "Mocker_Type",
+        stac_mock_json: str,
+        mock_tar_gz: bytes,
+        tmp_path: Path,
+    ) -> None:
+        """
+        Uses mock_tar_gz fixture to make the dataset's stac catalog have
+        different stac item datetimes than the real dataset.
+        """
+        dataset_id = 'su_sar_moisture_content_main'
+        expect_assets = 3
+        datetime = parse('2015-07-31T00:00:00Z')
+        # setup mocker to use test fixture file for the dataset's json
+        dataset_endpoint = urljoin(root_url, f'datasets/{dataset_id}')
+        requests_mock.get(
+            dataset_endpoint,
+            status_code=200,
+            text=stac_mock_json,
+        )
+        ds = Dataset.fetch(dataset_id)
+
+        # setup mocker use test fixture for the dataset's stac catalog .tar.gz
+        stac_catalog_endpoint = urljoin(root_url, f'catalog/{dataset_id}')
+        requests_mock.get(
+            stac_catalog_endpoint,
+            status_code=200,
+            headers={'accept-ranges': 'bytes', 'content-length': str(len(mock_tar_gz))},
+            content=mock_tar_gz,
+        )
+        ds.download(output_dir=tmp_path, datetime=datetime)
+
+        asset_dir = tmp_path / dataset_id
         asset_db = asset_dir / 'mlhub_stac_assets.db'
         assert asset_db.exists()
         n = self.asset_database_record_count(asset_db)
