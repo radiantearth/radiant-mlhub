@@ -1,6 +1,6 @@
 flake8==5.0.4
 isort==5.10.1
-mypy==0.960
+mypy==0.982
 pytest-click==1.1.0
 pytest-recording==0.12.1
 pytest==7.1.2
