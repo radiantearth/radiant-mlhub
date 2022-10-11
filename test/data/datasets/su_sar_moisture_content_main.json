@@ -1,0 +1,71 @@
+{
+  "id": "su_sar_moisture_content_main",
+  "bbox": {
+    "coordinates": [
+      [
+        [
+          [
+            -123.5313889,
+            28.3
+          ],
+          [
+            -123.5313889,
+            48.41361111
+          ],
+          [
+            -93.82277778,
+            48.41361111
+          ],
+          [
+            -93.82277778,
+            28.3
+          ],
+          [
+            -123.5313889,
+            28.3
+          ]
+        ]
+      ]
+    ],
+    "type": "MultiPolygon"
+  },
+  "citation": "Rao, K., Williams, A.P., Fortin, J. & Konings, A.G. (2020). SAR-enhanced mapping of live fuel moisture content. Remote Sens. Environ., 245.",
+  "collections": [
+    {
+      "id": "su_sar_moisture_content",
+      "types": [
+        "labels"
+      ],
+      "license": "[CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)"
+    }
+  ],
+  "creator_contact": {
+    "contact": "kkrao.j@gmail.com",
+    "creator": "[Stanford University](https://www.stanford.edu/)"
+  },
+  "date_added": "2020-08-13T00:00:00+00:00",
+  "date_modified": "2020-08-13T00:00:00+00:00",
+  "description": "This data contains manually collected live fuel moisture measurements in the western United States and remotely-sensed variables. Live fuel moisture represents the mass of water in live vegetation elements like leaves, needles, and twigs divided by its oven-dried mass. It is represented in percentages. Higher the live fuel moisture, wetter the vegetation elements, and vice versa. Live fuel moisture measurements were collected by the United States Forest Service and are available from the [National Fuel Moisture Database](https://www.wfas.net/index.php/national-fuel-moisture-database-moisture-drought-103). Each row of the data corresponds to one unique ground measurement of live fuel moisture (column named \"percent(t)\") matched with various remotely-sensed observables that may be used to predict live fuel moisture. The live fuel moisture is sampled for representative species within a 5-acre plot (or 20,000 m2) centered at the location described by the columns \"latitude\" and \"longitude\" on the day described by the column \"date\". All other columns represent remotely-sensed observables from satellites (e.g., Sentinel-1 and Landsat-8) or maps (e.g., soil texture). Temporally varying remotely-sensed observables are interpolated to 15-day periods and are provided for the date closest to the day of ground-measurement as well as for 6 fortnights preceding the day of live fuel moisture measurement. The time series of satellite data may allow for greater predictability of live fuel moisture.",
+  "documentation_link": "https://radiantearth.blob.core.windows.net/mlhub/su-sar-moisture-content/documentation.pdf",
+  "doi": "10.1016/j.rse.2020.111797",
+  "publications": [
+    {
+      "url": "https://dx.doi.org/10.1016/j.rse.2020.111797",
+      "title": "SAR-enhanced mapping of live fuel moisture content",
+      "author_name": "Krishna Rao",
+      "author_url": "https://www.linkedin.com/in/kkraoj/"
+    }
+  ],
+  "registry": "https://mlhub.earth/data/su_sar_moisture_content_main",
+  "status": "ready",
+  "tags": [
+    "sentinel-1",
+    "landsat 8",
+    "sar",
+    "live fuel moisture",
+    "wildfire"
+  ],
+  "title": "Western USA Live Fuel Moisture",
+  "tools_applications": null,
+  "tutorials": null
+}

@@ -214,11 +214,12 @@ class TestDataset:
         db_conn.close()
         return n
 
-    @pytest.mark.vcr
     @pytest.mark.dataset_id('su_sar_moisture_content_main')
     def test_2_datetime_filters_to_start_and_end_datetime_fields(
             self,
             root_url: str,
+            requests_mock: "Mocker_Type",
+            stac_mock_json: str,
             mock_tar_gz: bytes,
             tmp_path: Path,
             ) -> None:
@@ -230,17 +231,24 @@ class TestDataset:
         datetime_range = (parse('2016-01-01T00:00:00Z'), parse('2016-12-31T00:00:00Z'))
         expect_assets = 11
 
-        with RequestsMocker(real_http=True) as mocker:
-            # setup mocker use the test fixture for the dataset's stac catalog .tar.gz
-            stac_catalog_endpoint = urljoin(root_url, f'catalog/{dataset_id}')
-            mocker.get(
-                stac_catalog_endpoint,
-                status_code=200,
-                headers={'accept-ranges': 'bytes', 'content-length': str(len(mock_tar_gz))},
-                content=mock_tar_gz,
-            )
-            ds = Dataset.fetch(dataset_id)
-            ds.download(output_dir=tmp_path, datetime=datetime_range)
+        # setup mocker to use test fixture file for the dataset's json
+        dataset_endpoint = urljoin(root_url, f'datasets/{dataset_id}')
+        requests_mock.get(
+            dataset_endpoint,
+            status_code=200,
+            text=stac_mock_json,
+        )
+        ds = Dataset.fetch(dataset_id)
+
+        # setup mocker use test fixture for the dataset's stac catalog .tar.gz
+        stac_catalog_endpoint = urljoin(root_url, f'catalog/{dataset_id}')
+        requests_mock.get(
+            stac_catalog_endpoint,
+            status_code=200,
+            headers={'accept-ranges': 'bytes', 'content-length': str(len(mock_tar_gz))},
+            content=mock_tar_gz,
+        )
+        ds.download(output_dir=tmp_path, datetime=datetime_range)
 
         asset_dir = tmp_path / dataset_id
         asset_db = asset_dir / 'mlhub_stac_assets.db'
