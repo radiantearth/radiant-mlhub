@@ -9,7 +9,6 @@ import sqlite3
 import pytest
 from dateutil.parser import parse
 from radiant_mlhub.models import Dataset
-from requests_mock import Mocker as RequestsMocker
 
 if TYPE_CHECKING:
     from pathlib import Path as Path_Type
