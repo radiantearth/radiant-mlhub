@@ -9,11 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Removed
+
+### Changed
+
+### Fixed
+
+### Deprecated
+
+### Developer
+
+## [v0.5.3]
+
+### Added
+
 - Added an optional asset_output_dir parameter so that the assets can be downloaded into a separate directory from the STAC Catalog if the user specifies and selects a separate asset output directory. ([149](https://github.com/radiantearth/radiant-mlhub/pull/149))
 
 - Add datetime filter test to account for datasets that have start_datetime and end_datetime properties. ([165](https://github.com/radiantearth/radiant-mlhub/pull/165))
-
-### Removed
 
 ### Changed
 
@@ -22,10 +34,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix datetime comparisons in dataset downloader. ([162](https://github.com/radiantearth/radiant-mlhub/pull/162))
-
-### Deprecated
-
-### Developer
 
 ## [v0.5.2]
 
@@ -221,14 +229,16 @@ Includes support for:
 * Fetching datasets and collections by ID
 * Downloading collection archives
 
-[Unreleased]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.2...main>
+[Unreleased]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.3...main>
+[v0.5.3]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.2...v0.5.3>
 [v0.5.2]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.1...v0.5.2>
 [v0.5.1]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.0...v0.5.1>
 [v0.5.0]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.4.1...v0.5.0>
 [v0.4.1]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.4.0...v0.4.1>
 [v0.4.0]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.3.1...v0.4.0>
 [v0.3.1]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.3.0...v0.3.1>
-[v0.3.0]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.2.1...v0.3.0>
+[v0.3.0]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.2.2...v0.3.0>
+[v0.2.2]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.2.1...v0.2.2>
 [v0.2.1]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.2.0...v0.2.1>
 [v0.2.0]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.1.3...v0.2.0>
 [v0.1.3]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.1.2...v0.1.3>
