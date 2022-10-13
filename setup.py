@@ -31,7 +31,8 @@ setuptools.setup(
         'python-dateutil~=2.8.2',
         'requests~=2.27.0',
         'shapely~=1.8.0',
-        'tqdm~=4.64.0'
+        'tqdm~=4.64.0',
+        'urllib3~=1.26.11'
     ],
     classifiers=[
         "Programming Language :: Python",
