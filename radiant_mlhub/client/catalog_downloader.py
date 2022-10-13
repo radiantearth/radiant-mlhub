@@ -4,6 +4,7 @@ import threading
 import tarfile
 import sqlite3
 import json
+import logging
 from glob import iglob
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -11,7 +12,7 @@ from datetime import datetime
 from io import TextIOWrapper
 from logging import getLogger
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Tuple, Union, Any, Set
+from typing import Callable, Dict, List, Optional, Tuple, Union, Any, Set, TypedDict
 from urllib.parse import urlparse
 from dateutil.parser import parse as date_parser
 
@@ -23,7 +24,6 @@ from ..if_exists import DownloadIfExistsOpts
 from ..session import Session
 from .resumable_downloader import ResumableDownloader
 from . import datetime_utils
-
 
 log = getLogger(__name__)
 
@@ -62,25 +62,23 @@ class CatalogDownloaderConfig(BaseModel):
     temporal_query: Optional[Union[datetime, Tuple[datetime, datetime]]] = None
 
 
-class AssetRecord(BaseModel):
+class AssetRecord(TypedDict):
     """
     A stac_assets db record.
     """
-    class Config:
-        arbitrary_types_allowed = True
-    rowid: Optional[int] = None
-    asset_key: Optional[str] = None
-    asset_save_path: Optional[str] = None
-    asset_url: Optional[str] = None
-    bbox_json: Optional[str] = None
-    collection_id: Optional[str] = None
-    common_asset: bool = False
-    single_datetime: Optional[datetime] = None
-    start_datetime: Optional[datetime] = None
-    end_datetime: Optional[datetime] = None
-    filtered: bool = False
-    geometry_json: Optional[str] = None
-    item_id: Optional[str] = None
+    rowid: Optional[int]
+    asset_key: Optional[str]
+    asset_save_path: Optional[str]
+    asset_url: str
+    bbox_json: Optional[str]
+    collection_id: Optional[str]
+    common_asset: bool
+    single_datetime: Optional[datetime]
+    start_datetime: Optional[datetime]
+    end_datetime: Optional[datetime]
+    filtered: bool
+    geometry_json: Optional[str]
+    item_id: Optional[str]
 
 
 class CatalogDownloader():
@@ -109,6 +107,8 @@ class CatalogDownloader():
             self.asset_dir = self.work_dir
         self.work_dir.mkdir(exist_ok=True, parents=True)
         self.err_report_path = self.asset_dir / 'err_report.csv'
+
+        logging.basicConfig(level=logging.INFO)
 
     def _fetch_unfiltered_count(self) -> int:
         self.db_cur.execute(
@@ -156,7 +156,7 @@ class CatalogDownloader():
         """
         c = self.config
         msg = f'unarchive {self.catalog_file.name}'
-        log.info(msg)
+        log.info(f'{msg} ...')
         with tarfile.open(self.catalog_file, 'r:gz') as archive:
             if self.config.if_exists == DownloadIfExistsOpts.overwrite:
                 archive.extractall(path=c.output_dir)
@@ -174,7 +174,7 @@ class CatalogDownloader():
         Scan the stac catalog and extract asset list into tabular format.
         Creates table in sqlite db.
         """
-        msg = 'create stac asset list'
+        msg = 'create stac asset list (please wait) ...'
         log.info(msg)
 
         def _asset_save_path(rec: AssetRecord) -> Path:
@@ -182,16 +182,37 @@ class CatalogDownloader():
             Transform asset into a local save path. This filesystem layout
             is the same as the mlhub's collection archive .tar.gz files.
             """
-            ext = Path(str(urlparse(rec.asset_url).path)).suffix
-            base_path = self.asset_dir / rec.collection_id  # type: ignore
-            asset_filename = f'{rec.asset_key}{ext}'
-            if rec.item_id is None:
+            url = rec['asset_url']
+            # optimization to prevent calling urlparse
+            if '.tif' in url:
+                ext = 'tif'
+            elif '.tiff' in url:
+                ext = 'tiff'
+            elif '.json' in url:
+                ext = 'json'
+            elif '.pdf' in url:
+                ext = 'pdf'
+            elif '.png' in url:
+                ext = 'png'
+            elif '.jpg' in url:
+                ext = 'jpg'
+            elif '.jpeg' in url:
+                ext = 'jpeg'
+            elif '.csv' in url:
+                ext = 'csv'
+            else:
+                print(f'unknown ext {url}')
+                # parse the url and extract the path -> file sufix
+                ext = Path(str(urlparse(rec['asset_url']).path)).suffix
+            base_path = self.asset_dir / rec['collection_id']  # type: ignore
+            asset_filename = f"{rec['asset_key']}{ext}"
+            if rec['item_id'] is None:
                 # this is a collection level asset
                 return base_path / asset_filename
-            if rec.common_asset:
+            if rec['common_asset']:
                 # common assets: save to _common dir (at the collection level) instead of in every item subdir.
                 return base_path / '_common' / asset_filename
-            return base_path / rec.item_id / asset_filename
+            return base_path / rec['item_id'] / asset_filename
 
         def _insert_asset_rec(rec: AssetRecord) -> None:
             self.db_cur.execute(
@@ -224,7 +245,7 @@ class CatalogDownloader():
                         :end_datetime
                     );
                 """,
-                rec.dict()
+                rec
             )
 
         def _handle_item(stac_item: JsonDict) -> None:
@@ -238,19 +259,22 @@ class CatalogDownloader():
             n = 0
             for k, v in assets.items():
                 rec = AssetRecord(
-                    collection_id=stac_item['collection'],
-                    item_id=item_id,
                     asset_key=k,
-                    common_asset=k in COMMON_ASSET_NAMES,
+                    asset_save_path=None,
                     asset_url=v['href'],
                     bbox_json=json.dumps(bbox) if bbox else None,
+                    collection_id=stac_item['collection'],
+                    common_asset=k in COMMON_ASSET_NAMES,
+                    end_datetime=props.get('end_datetime', None),
+                    filtered=False,
                     geometry_json=json.dumps(geometry) if geometry else None,
+                    item_id=item_id,
+                    rowid=None,
                     single_datetime=props.get('datetime', None),
                     start_datetime=props.get('start_datetime', None),
-                    end_datetime=props.get('end_datetime', None),
                 )
                 asset_save_path = _asset_save_path(rec).relative_to(self.asset_dir)
-                rec.asset_save_path = str(asset_save_path)
+                rec['asset_save_path'] = str(asset_save_path)
                 _insert_asset_rec(rec)
                 n += 1
                 if n % 1000 == 0:
@@ -264,12 +288,22 @@ class CatalogDownloader():
             n = 0
             for k, v in assets.items():
                 rec = AssetRecord(
-                    collection_id=collection_id,
                     asset_key=k,
+                    asset_save_path=None,
                     asset_url=v['href'],
+                    bbox_json=None,
+                    collection_id=collection_id,
+                    common_asset=False,
+                    end_datetime=None,
+                    filtered=False,
+                    geometry_json=None,
+                    item_id=None,
+                    rowid=None,
+                    single_datetime=None,
+                    start_datetime=None,
                 )
                 asset_save_path = _asset_save_path(rec).relative_to(self.asset_dir)
-                rec.asset_save_path = str(asset_save_path)
+                rec['asset_save_path'] = str(asset_save_path)
                 _insert_asset_rec(rec)
                 n += 1
                 if n % 1000 == 0:
@@ -605,11 +639,19 @@ class CatalogDownloader():
                 (asset_save_path, asset_url, collection_id, item_id, asset_key) = row_tuple
                 if asset_save_path not in uniq_asset_save_path:
                     asset_rec = AssetRecord(
+                        asset_key=asset_key,
                         asset_save_path=asset_save_path,
                         asset_url=asset_url,
+                        bbox_json=None,
                         collection_id=collection_id,
+                        common_asset=False,
+                        end_datetime=None,
+                        filtered=False,
+                        geometry_json=None,
                         item_id=item_id,
-                        asset_key=asset_key,
+                        rowid=None,
+                        single_datetime=None,
+                        start_datetime=None,
                     )
                     asset_list.append(asset_rec)
                     uniq_asset_save_path.add(asset_save_path)
@@ -625,10 +667,10 @@ class CatalogDownloader():
             future_to_asset_record = {
                 executor.submit(
                     _download_asset_worker, **dict(
-                        asset_url=r.asset_url,
-                        out_file=self.asset_dir / r.asset_save_path,  # type: ignore
+                        asset_url=asset['asset_url'],
+                        out_file=self.asset_dir / asset['asset_save_path'],  # type:ignore
                         if_exists=self.config.if_exists,
-                    )): r for r in asset_list
+                    )): asset for asset in asset_list
             }
             for future in tqdm(
                         as_completed(future_to_asset_record),
@@ -641,9 +683,13 @@ class CatalogDownloader():
                 except Exception as e:
                     # write a line to err_report in the format:
                     # (Error code, Dataset ID, Collection ID, Item ID, Asset Key, Asset URL).
-                    r = asset_rec
                     self.err_writer.writerow([
-                        str(e), self.config.dataset_id, r.collection_id, r.item_id, r.asset_key, r.asset_url
+                        str(e),
+                        self.config.dataset_id,
+                        asset_rec.get('collection_id'),
+                        asset_rec.get('item_id'),
+                        asset_rec.get('asset_key'),
+                        asset_rec.get('asset_url'),
                     ])
                     log.exception(e)
 
