@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add missing dependency urllib3 to setup.py. ([181](https://github.com/radiantearth/radiant-mlhub/pull/181))
+
 ### Removed
 
 ### Changed
