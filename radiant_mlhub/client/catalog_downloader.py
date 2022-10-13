@@ -201,8 +201,7 @@ class CatalogDownloader():
             elif '.csv' in url:
                 ext = 'csv'
             else:
-                print(f'unknown ext {url}')
-                # parse the url and extract the path -> file sufix
+                # parse the url and extract the path -> file suffix (slow)
                 ext = Path(str(urlparse(rec['asset_url']).path)).suffix
             base_path = self.asset_dir / rec['collection_id']  # type: ignore
             asset_filename = f"{rec['asset_key']}{ext}"
