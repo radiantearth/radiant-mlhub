@@ -84,6 +84,7 @@ class AssetRecord(TypedDict):
 class CatalogDownloader():
 
     config: CatalogDownloaderConfig
+    err_writer: Any
     err_report: TextIOWrapper
     err_report_path: Path
     catalog_file: Path
@@ -320,7 +321,7 @@ class CatalogDownloader():
             p = Path(json_src)
             if p.name == 'catalog.json':
                 continue
-            with open(json_src) as json_fh:
+            with open(json_src, encoding='utf-8') as json_fh:
                 stac_item = json.load(json_fh)
                 stac_type = stac_item.get('type', None)
                 if p.name == 'collection.json' or stac_type == 'Collection':
@@ -568,7 +569,7 @@ class CatalogDownloader():
                     if not start or not end:
                         # cannot process date range, just skip forward and log a warning
                         log.warning('cannot compare to missing date range for: {item_id}', extra=dict(item_id=item_id))
-                        next
+                        continue
                     if isinstance(q, tuple):
                         filtered = not datetime_utils.range_to_range_check((start, end), q)
                     else:
@@ -743,7 +744,7 @@ class CatalogDownloader():
         Create and run functions for each processing step.
         """
         c = self.config
-        self.err_report = open(self.err_report_path, 'w')
+        self.err_report = open(self.err_report_path, 'w', encoding='utf-8')
         self.err_writer = csv.writer(self.err_report, quoting=csv.QUOTE_MINIMAL)
 
         steps: List[Callable[[], None]] = []
