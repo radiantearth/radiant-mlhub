@@ -157,7 +157,7 @@ class CatalogDownloader():
         """
         c = self.config
         msg = f'unarchive {self.catalog_file.name}'
-        log.info('{info} ...', extra=dict(info=msg))
+        log.info('%s ...', msg)
         with tarfile.open(self.catalog_file, 'r:gz') as archive:
             if self.config.if_exists == DownloadIfExistsOpts.overwrite:
                 archive.extractall(path=c.output_dir)
@@ -286,7 +286,7 @@ class CatalogDownloader():
             # early out if there is a collection_filter but collection_id is not
             # a member of the collection_filter.
             if self.config.collection_filter and collection_id not in self.config.collection_filter:
-                log.warning('skipping collection {collection_id}', extra=dict(collection_id=collection_id))
+                log.warning('skipping collection %s', collection_id)
                 return
 
             assets = stac_collection.get('assets', None)
@@ -328,7 +328,7 @@ class CatalogDownloader():
                     _handle_collection(stac_item)
                 else:
                     _handle_item(stac_item)
-        log.info('{count} unique assets in stac catalog.', extra=dict(count=self._fetch_unfiltered_count()))
+        log.info('%s unique assets in stac catalog.', self._fetch_unfiltered_count())
 
     def _filter_collections_step(self) -> None:
         """
@@ -387,7 +387,7 @@ class CatalogDownloader():
             raise RuntimeError(
                 f'after filtering collections_ids and asset keys, zero assets to download. filter: {filter}'
             )
-        log.info('{count} assets after collection filter.', extra=dict(count=total_asset_ct))
+        log.info('%s assets after collection filter.', total_asset_ct)
 
     def _filter_bbox_step(self) -> None:
         """
@@ -431,7 +431,7 @@ class CatalogDownloader():
             for row_tuple in rows:
                 (row_id, item_id, bbox_json) = row_tuple
                 if not bbox_json:
-                    log.warning('item missing bbox: {item_id}', extra=dict(item_id=item_id))
+                    log.warning('item missing bbox: %s', item_id)
                     continue
                 hit = item_bbox_cache.get(item_id, None)
                 if hit is None:
@@ -449,7 +449,7 @@ class CatalogDownloader():
             raise RuntimeError(
                 f'after filtering by bounding box, zero assets to download. filter: {filter}'
             )
-        log.info('{total_asset_ct} assets after bounding box filter.', extra=dict(total_asset_ct=total_asset_ct))
+        log.info('%s assets after bounding box filter.', total_asset_ct)
 
     def _filter_intersects_step(self) -> None:
         """
@@ -495,7 +495,7 @@ class CatalogDownloader():
             for row_tuple in rows:
                 (row_id, item_id, bbox_json) = row_tuple
                 if not bbox_json:
-                    log.warning('item missing bbox: {item_id}', extra=dict(item_id=item_id))
+                    log.warning('item missing bbox: %s', item_id)
                     continue
                 hit = item_intersects_cache.get(item_id, None)
                 if hit is None:
@@ -513,7 +513,7 @@ class CatalogDownloader():
             raise RuntimeError(
                 f'after filtering by intersects, zero assets to download. filter: {filter}'
             )
-        log.info('{total_asset_ct} assets after intersects filter.', extra=dict(total_asset_ct=total_asset_ct))
+        log.info('%s assets after intersects filter.', total_asset_ct)
 
     def _filter_temporal_step(self) -> None:
         """
@@ -568,7 +568,7 @@ class CatalogDownloader():
                     end = date_parser(end_datetime)
                     if not start or not end:
                         # cannot process date range, just skip forward and log a warning
-                        log.warning('cannot compare to missing date range for: {item_id}', extra=dict(item_id=item_id))
+                        log.warning('cannot compare to missing date range for: %s', item_id)
                         continue
                     if isinstance(q, tuple):
                         filtered = not datetime_utils.range_to_range_check((start, end), q)
@@ -584,7 +584,7 @@ class CatalogDownloader():
             raise RuntimeError(
               f'after filtering by temporal query, zero assets to download. filter: {filter}'
             )
-        log.info('{total_asset_ct} assets after temporal filter.', extra=dict(total_asset_ct=total_asset_ct))
+        log.info('%s assets after temporal filter.', total_asset_ct)
 
     def _asset_download_step(self) -> None:
         """
@@ -605,12 +605,11 @@ class CatalogDownloader():
             https://{bucket_name}.s3.amazonaws.com .
             """
             log.debug(
-                '(thread id: {thread_id}) {asset_url} -> {out_file}',
-                extra=dict(
-                    thread_id=threading.get_ident(),
-                    asset_url=asset_url,
-                    out_file=out_file,
-                ))
+                '(thread id: %s) %s -> %s',
+                threading.get_ident(),
+                asset_url,
+                out_file,
+            )
             if not out_file.parent.exists():
                 out_file.parent.mkdir(exist_ok=True, parents=True)
             if 's3://' in asset_url:
@@ -789,6 +788,6 @@ class CatalogDownloader():
             raise IOError(msg)
 
         if c.catalog_only:
-            log.info('catalog saved to {work_dir}', extra=dict(work_dir=self.work_dir))
+            log.info('catalog saved to %s', self.work_dir)
         else:
-            log.info('assets saved to {self.asset_dir}', extra=dict(asset_dir=self.asset_dir))
+            log.info('assets saved to %s', self.asset_dir)
