@@ -1,29 +1,29 @@
 import csv
-import os
-import threading
-import tarfile
-import sqlite3
 import json
 import logging
-from glob import iglob
-
+import os
+import sqlite3
+import tarfile
+import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
+from glob import iglob
 from io import TextIOWrapper
 from logging import getLogger
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Tuple, Union, Any, Set, TypedDict
+from typing import (Any, Callable, Dict, List, Optional, Set, Tuple, TypedDict,
+                    Union)
 from urllib.parse import urlparse
-from dateutil.parser import parse as date_parser
 
+from dateutil.parser import parse as date_parser
 from pydantic import BaseModel
 from shapely.geometry import box, shape
 from tqdm import tqdm
 
 from ..if_exists import DownloadIfExistsOpts
 from ..session import Session
-from .resumable_downloader import ResumableDownloader
 from . import datetime_utils
+from .resumable_downloader import ResumableDownloader
 
 log = getLogger(__name__)
 
@@ -156,7 +156,7 @@ class CatalogDownloader():
         """
         c = self.config
         msg = f'unarchive {self.catalog_file.name}'
-        log.info(f'{msg} ...')
+        log.info('{info} ...', extra=dict(info=msg))
         with tarfile.open(self.catalog_file, 'r:gz') as archive:
             if self.config.if_exists == DownloadIfExistsOpts.overwrite:
                 archive.extractall(path=c.output_dir)
@@ -327,7 +327,7 @@ class CatalogDownloader():
                     _handle_collection(stac_item)
                 else:
                     _handle_item(stac_item)
-        log.info(f'{self._fetch_unfiltered_count()} unique assets in stac catalog.')
+        log.info('{count} unique assets in stac catalog.', extra=dict(count=self._fetch_unfiltered_count()))
 
     def _filter_collections_step(self) -> None:
         """
@@ -386,7 +386,7 @@ class CatalogDownloader():
             raise RuntimeError(
                 f'after filtering collections_ids and asset keys, zero assets to download. filter: {filter}'
             )
-        log.info(f'{total_asset_ct} assets after collection filter.')
+        log.info('{count} assets after collection filter.', extra=dict(count=total_asset_ct))
 
     def _filter_bbox_step(self) -> None:
         """
@@ -430,7 +430,7 @@ class CatalogDownloader():
             for row_tuple in rows:
                 (row_id, item_id, bbox_json) = row_tuple
                 if not bbox_json:
-                    log.warning(f'item missing bbox: {item_id}')
+                    log.warning('item missing bbox: {item_id}', extra=dict(item_id=item_id))
                     continue
                 hit = item_bbox_cache.get(item_id, None)
                 if hit is None:
@@ -448,7 +448,7 @@ class CatalogDownloader():
             raise RuntimeError(
                 f'after filtering by bounding box, zero assets to download. filter: {filter}'
             )
-        log.info(f'{total_asset_ct} assets after bounding box filter.')
+        log.info('{total_asset_ct} assets after bounding box filter.', extra=dict(total_asset_ct=total_asset_ct))
 
     def _filter_intersects_step(self) -> None:
         """
@@ -494,7 +494,7 @@ class CatalogDownloader():
             for row_tuple in rows:
                 (row_id, item_id, bbox_json) = row_tuple
                 if not bbox_json:
-                    log.warning(f'item missing bbox: {item_id}')
+                    log.warning('item missing bbox: {item_id}', extra=dict(item_id=item_id))
                     continue
                 hit = item_intersects_cache.get(item_id, None)
                 if hit is None:
@@ -512,7 +512,7 @@ class CatalogDownloader():
             raise RuntimeError(
                 f'after filtering by intersects, zero assets to download. filter: {filter}'
             )
-        log.info(f'{total_asset_ct} assets after intersects filter.')
+        log.info('{total_asset_ct} assets after intersects filter.', extra=dict(total_asset_ct=total_asset_ct))
 
     def _filter_temporal_step(self) -> None:
         """
@@ -567,7 +567,7 @@ class CatalogDownloader():
                     end = date_parser(end_datetime)
                     if not start or not end:
                         # cannot process date range, just skip forward and log a warning
-                        log.warn(f'cannot compare to missing date range for: {item_id}')
+                        log.warning('cannot compare to missing date range for: {item_id}', extra=dict(item_id=item_id))
                         next
                     if isinstance(q, tuple):
                         filtered = not datetime_utils.range_to_range_check((start, end), q)
@@ -583,7 +583,7 @@ class CatalogDownloader():
             raise RuntimeError(
               f'after filtering by temporal query, zero assets to download. filter: {filter}'
             )
-        log.info(f'{total_asset_ct} assets after temporal filter.')
+        log.info('{total_asset_ct} assets after temporal filter.', extra=dict(total_asset_ct=total_asset_ct))
 
     def _asset_download_step(self) -> None:
         """
@@ -603,7 +603,13 @@ class CatalogDownloader():
             Warning: if the asset url is scheme s3://, it will be transformed to
             https://{bucket_name}.s3.amazonaws.com .
             """
-            log.debug(f'(thread id: {threading.get_ident()}) {asset_url} -> {out_file}')
+            log.debug(
+                '(thread id: {thread_id}) {asset_url} -> {out_file}',
+                extra=dict(
+                    thread_id=threading.get_ident(),
+                    asset_url=asset_url,
+                    out_file=out_file,
+                ))
             if not out_file.parent.exists():
                 out_file.parent.mkdir(exist_ok=True, parents=True)
             if 's3://' in asset_url:
@@ -697,7 +703,7 @@ class CatalogDownloader():
                         asset_rec.get('asset_key'),
                         asset_rec.get('asset_url'),
                     ])
-                    log.exception(e)
+                    log.exception(e)  # noqa: G200
 
     def _init_db(self) -> None:
         db_path = self.asset_dir / 'mlhub_stac_assets.db'
@@ -782,6 +788,6 @@ class CatalogDownloader():
             raise IOError(msg)
 
         if c.catalog_only:
-            log.info(f'catalog saved to {self.work_dir}')
+            log.info('catalog saved to {work_dir}', extra=dict(work_dir=self.work_dir))
         else:
-            log.info(f'assets saved to {self.asset_dir}')
+            log.info('assets saved to {self.asset_dir}', extra=dict(asset_dir=self.asset_dir))
