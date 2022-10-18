@@ -281,6 +281,13 @@ class CatalogDownloader():
 
         def _handle_collection(stac_collection: JsonDict) -> None:
             collection_id = stac_collection['id']
+
+            # early out if there is a collection_filter but collection_id is not
+            # a member of the collection_filter.
+            if self.config.collection_filter and collection_id not in self.config.collection_filter:
+                log.warning('skipping collection {collection_id}', extra=dict(collection_id=collection_id))
+                return
+
             assets = stac_collection.get('assets', None)
             if assets is None:
                 return
