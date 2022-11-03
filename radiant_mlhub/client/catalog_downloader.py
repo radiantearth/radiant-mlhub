@@ -703,7 +703,10 @@ class CatalogDownloader():
                         asset_rec.get('asset_key'),
                         asset_rec.get('asset_url'),
                     ])
-                    log.exception(e)  # noqa: G200
+                    # write log message with exception info, but don't break out of
+                    # thread pool executor.
+                    err_msg = str(e)
+                    log.exception(err_msg)
 
     def _init_db(self) -> None:
         db_path = self.asset_dir / 'mlhub_stac_assets.db'
