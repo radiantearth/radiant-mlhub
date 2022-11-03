@@ -204,10 +204,13 @@ The output directory is the current working directory (by default).
     >>> print(nasa_marine_debris)
     nasa_marine_debris: Marine Debris Dataset for Object Detection in Planetscope Imagery
     >>> nasa_marine_debris.download()
-    nasa_marine_debris: fetch stac catalog: 258KB [00:00, 75252.46KB/s]                                                     
-    unarchive nasa_marine_debris.tar.gz: 100%|████████████████████████████████████| 2830/2830 [00:00<00:00, 14185.00it/s]
-    download assets: 100%|█████████████████████████████████████████████████████████████| 2825/2825 [00:19<00:00, 145.36it/s]
-
+    nasa_marine_debris: fetch stac catalog: 258KB [00:00, 412.53KB/s]
+    INFO:radiant_mlhub.client.catalog_downloader:unarchive nasa_marine_debris.tar.gz ...
+    unarchive nasa_marine_debris.tar.gz: 100%|████████████████████| 2830/2830 [00:00<00:00, 5772.09it/s]
+    INFO:radiant_mlhub.client.catalog_downloader:create stac asset list (please wait) ...
+    INFO:radiant_mlhub.client.catalog_downloader:2825 unique assets in stac catalog.
+    download assets: 100%|██████████████████████| 2825/2825 [03:27<00:00, 13.62it/s]
+    INFO:radiant_mlhub.client.catalog_downloader:assets saved to nasa_marine_debris
 
 Download STAC Catalog Archive Only
 ----------------------------------
@@ -227,20 +230,25 @@ the assets just pass the ``catalog_only`` option to the download method:
 Logging
 -------
 
-The Python logging module can be used to control the verbosity of the download. Turn in INFO or DEBUG messages to see additional messages:
+The [Python logging module](https://docs.python.org/3/howto/logging.html) can
+be used to control the verbosity of the downloader. The default log level is
+INFO.
+
+* Turn on WARNING level to see fewer log messages.
+* Set DEBUG level to see more messages. This includes verbose HTTP-level log messages.
 
 .. code-block:: python
 
     >>> import logging
-    >>> logging.basicConfig(level=logging.INFO)
+    >>> logging.basicConfig(level=logging.DEBUG)
     >>> nasa_marine_debris.download()
-    nasa_marine_debris: fetch stac catalog: 258KB [00:00, 34940.12KB/s]                                                     
-    INFO:radiant_mlhub.client.catalog_downloader:unarchive nasa_marine_debris.tar.gz...
-    unarchive nasa_marine_debris.tar.gz: 100%|████████████████████████████████████| 2830/2830 [00:00<00:00, 14191.09it/s]
-    INFO:radiant_mlhub.client.catalog_downloader:create stac asset list...
-    INFO:radiant_mlhub.client.catalog_downloader:2825 unique assets in stac catalog.
-    download assets: 100%|█████████████████████████████████████████████████████████████| 2825/2825 [00:18<00:00, 152.37it/s]
-    INFO:radiant_mlhub.client.catalog_downloader:assets saved to /home/user/nasa_marine_debris
+    ...
+    DEBUG:radiant_mlhub.client.catalog_downloader:(thread id: 123145809592320) https://radiantearth.blob.core.windows.net/mlhub/nasa-marine-debris/labels/20170326_153234_0e26_17069-29758-16.npy -> .../nasa_marine_debris/nasa_marine_debris_labels/nasa_marine_debris_labels_20170326_153234_0e26_17069-29758-16/pixel_bounds.npy
+    ...
+    DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): radiantearth.blob.core.windows.net:443
+    DEBUG:urllib3.connectionpool:https://radiantearth.blob.core.windows.net:443 "HEAD /mlhub/nasa-marine-debris/labels/20181031_095925_103b_32713-31765-16.npy HTTP/1.1" 200 0
+    ...
+    (omitted many log messages here)
 
 Output Directory
 ----------------
