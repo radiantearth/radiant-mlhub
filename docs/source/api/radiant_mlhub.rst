@@ -29,6 +29,14 @@ radiant\_mlhub.if\_exists module
    :undoc-members:
    :show-inheritance:
 
+radiant\_mlhub.retry\_config module
+-----------------------------------
+
+.. automodule:: radiant_mlhub.retry_config
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 radiant\_mlhub.session module
 -----------------------------
 

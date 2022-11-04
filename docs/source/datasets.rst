@@ -230,7 +230,7 @@ the assets just pass the ``catalog_only`` option to the download method:
 Logging
 -------
 
-The [Python logging module](https://docs.python.org/3/howto/logging.html) can
+The `Python logging module <https://docs.python.org/3/howto/logging.html>`_ can
 be used to control the verbosity of the downloader. The default log level is
 INFO.
 
