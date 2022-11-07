@@ -4,7 +4,7 @@ isort==5.10.1
 mypy==0.982
 pytest-click==1.1.0
 pytest-recording==0.12.1
-pytest==7.1.2
+pytest==7.2.0
 python-dotenv==0.21.0
 requests-mock==1.9.3
 types-click==7.1.8
