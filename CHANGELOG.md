@@ -15,11 +15,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Performance improvements to Dataset.download() ([182](https://github.com/radiantearth/radiant-mlhub/pull/182))
+- Enable INFO level logging by default in Dataset.download() ([182](https://github.com/radiantearth/radiant-mlhub/pull/182))
+
 ### Fixed
 
 ### Deprecated
 
 ### Developer
+
+- Add flake8-logging-format package ([182](https://github.com/radiantearth/radiant-mlhub/pull/182))
 
 ## [v0.5.3]
 

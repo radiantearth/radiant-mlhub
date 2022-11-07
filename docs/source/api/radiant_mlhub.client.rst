@@ -28,6 +28,14 @@ radiant\_mlhub.client.datasets module
    :undoc-members:
    :show-inheritance:
 
+radiant\_mlhub.client.datetime\_utils module
+--------------------------------------------
+
+.. automodule:: radiant_mlhub.client.datetime_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 radiant\_mlhub.client.ml\_models module
 ---------------------------------------
 

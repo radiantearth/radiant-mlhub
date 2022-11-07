@@ -14,3 +14,4 @@ exclude =
     build
 max-line-length = 140
 per-file-ignores = __init__.py:F401
+enable-extensions = G

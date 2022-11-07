@@ -1,29 +1,29 @@
 import csv
-import os
-import threading
-import tarfile
-import sqlite3
 import json
-from glob import iglob
-
+import logging
+import os
+import sqlite3
+import tarfile
+import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
+from glob import iglob
 from io import TextIOWrapper
 from logging import getLogger
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Tuple, Union, Any, Set
+from typing import (Any, Callable, Dict, List, Optional, Set, Tuple, TypedDict,
+                    Union)
 from urllib.parse import urlparse
-from dateutil.parser import parse as date_parser
 
+from dateutil.parser import parse as date_parser
 from pydantic import BaseModel
 from shapely.geometry import box, shape
 from tqdm import tqdm
 
 from ..if_exists import DownloadIfExistsOpts
 from ..session import Session
-from .resumable_downloader import ResumableDownloader
 from . import datetime_utils
-
+from .resumable_downloader import ResumableDownloader
 
 log = getLogger(__name__)
 
@@ -62,30 +62,29 @@ class CatalogDownloaderConfig(BaseModel):
     temporal_query: Optional[Union[datetime, Tuple[datetime, datetime]]] = None
 
 
-class AssetRecord(BaseModel):
+class AssetRecord(TypedDict):
     """
     A stac_assets db record.
     """
-    class Config:
-        arbitrary_types_allowed = True
-    rowid: Optional[int] = None
-    asset_key: Optional[str] = None
-    asset_save_path: Optional[str] = None
-    asset_url: Optional[str] = None
-    bbox_json: Optional[str] = None
-    collection_id: Optional[str] = None
-    common_asset: bool = False
-    single_datetime: Optional[datetime] = None
-    start_datetime: Optional[datetime] = None
-    end_datetime: Optional[datetime] = None
-    filtered: bool = False
-    geometry_json: Optional[str] = None
-    item_id: Optional[str] = None
+    rowid: Optional[int]
+    asset_key: Optional[str]
+    asset_save_path: Optional[str]
+    asset_url: str
+    bbox_json: Optional[str]
+    collection_id: Optional[str]
+    common_asset: bool
+    single_datetime: Optional[datetime]
+    start_datetime: Optional[datetime]
+    end_datetime: Optional[datetime]
+    filtered: bool
+    geometry_json: Optional[str]
+    item_id: Optional[str]
 
 
 class CatalogDownloader():
 
     config: CatalogDownloaderConfig
+    err_writer: Any
     err_report: TextIOWrapper
     err_report_path: Path
     catalog_file: Path
@@ -109,6 +108,8 @@ class CatalogDownloader():
             self.asset_dir = self.work_dir
         self.work_dir.mkdir(exist_ok=True, parents=True)
         self.err_report_path = self.asset_dir / 'err_report.csv'
+
+        logging.basicConfig(level=logging.INFO)
 
     def _fetch_unfiltered_count(self) -> int:
         self.db_cur.execute(
@@ -156,7 +157,7 @@ class CatalogDownloader():
         """
         c = self.config
         msg = f'unarchive {self.catalog_file.name}'
-        log.info(msg)
+        log.info('%s ...', msg)
         with tarfile.open(self.catalog_file, 'r:gz') as archive:
             if self.config.if_exists == DownloadIfExistsOpts.overwrite:
                 archive.extractall(path=c.output_dir)
@@ -174,7 +175,7 @@ class CatalogDownloader():
         Scan the stac catalog and extract asset list into tabular format.
         Creates table in sqlite db.
         """
-        msg = 'create stac asset list'
+        msg = 'create stac asset list (please wait) ...'
         log.info(msg)
 
         def _asset_save_path(rec: AssetRecord) -> Path:
@@ -182,16 +183,36 @@ class CatalogDownloader():
             Transform asset into a local save path. This filesystem layout
             is the same as the mlhub's collection archive .tar.gz files.
             """
-            ext = Path(str(urlparse(rec.asset_url).path)).suffix
-            base_path = self.asset_dir / rec.collection_id  # type: ignore
-            asset_filename = f'{rec.asset_key}{ext}'
-            if rec.item_id is None:
+            url = rec['asset_url']
+            # optimization to prevent calling urlparse
+            if '.tif' in url:
+                ext = 'tif'
+            elif '.tiff' in url:
+                ext = 'tiff'
+            elif '.json' in url:
+                ext = 'json'
+            elif '.pdf' in url:
+                ext = 'pdf'
+            elif '.png' in url:
+                ext = 'png'
+            elif '.jpg' in url:
+                ext = 'jpg'
+            elif '.jpeg' in url:
+                ext = 'jpeg'
+            elif '.csv' in url:
+                ext = 'csv'
+            else:
+                # parse the url and extract the path -> file suffix (slow)
+                ext = Path(str(urlparse(rec['asset_url']).path)).suffix
+            base_path = self.asset_dir / rec['collection_id']  # type: ignore
+            asset_filename = f"{rec['asset_key']}{ext}"
+            if rec['item_id'] is None:
                 # this is a collection level asset
                 return base_path / asset_filename
-            if rec.common_asset:
+            if rec['common_asset']:
                 # common assets: save to _common dir (at the collection level) instead of in every item subdir.
                 return base_path / '_common' / asset_filename
-            return base_path / rec.item_id / asset_filename
+            return base_path / rec['item_id'] / asset_filename
 
         def _insert_asset_rec(rec: AssetRecord) -> None:
             self.db_cur.execute(
@@ -224,7 +245,7 @@ class CatalogDownloader():
                         :end_datetime
                     );
                 """,
-                rec.dict()
+                rec
             )
 
         def _handle_item(stac_item: JsonDict) -> None:
@@ -238,19 +259,22 @@ class CatalogDownloader():
             n = 0
             for k, v in assets.items():
                 rec = AssetRecord(
-                    collection_id=stac_item['collection'],
-                    item_id=item_id,
                     asset_key=k,
-                    common_asset=k in COMMON_ASSET_NAMES,
+                    asset_save_path=None,
                     asset_url=v['href'],
                     bbox_json=json.dumps(bbox) if bbox else None,
+                    collection_id=stac_item['collection'],
+                    common_asset=k in COMMON_ASSET_NAMES,
+                    end_datetime=props.get('end_datetime', None),
+                    filtered=False,
                     geometry_json=json.dumps(geometry) if geometry else None,
+                    item_id=item_id,
+                    rowid=None,
                     single_datetime=props.get('datetime', None),
                     start_datetime=props.get('start_datetime', None),
-                    end_datetime=props.get('end_datetime', None),
                 )
                 asset_save_path = _asset_save_path(rec).relative_to(self.asset_dir)
-                rec.asset_save_path = str(asset_save_path)
+                rec['asset_save_path'] = str(asset_save_path)
                 _insert_asset_rec(rec)
                 n += 1
                 if n % 1000 == 0:
@@ -258,18 +282,35 @@ class CatalogDownloader():
 
         def _handle_collection(stac_collection: JsonDict) -> None:
             collection_id = stac_collection['id']
+
+            # early out if there is a collection_filter but collection_id is not
+            # a member of the collection_filter.
+            if self.config.collection_filter and collection_id not in self.config.collection_filter:
+                log.warning('skipping collection %s', collection_id)
+                return
+
             assets = stac_collection.get('assets', None)
             if assets is None:
                 return
             n = 0
             for k, v in assets.items():
                 rec = AssetRecord(
-                    collection_id=collection_id,
                     asset_key=k,
+                    asset_save_path=None,
                     asset_url=v['href'],
+                    bbox_json=None,
+                    collection_id=collection_id,
+                    common_asset=False,
+                    end_datetime=None,
+                    filtered=False,
+                    geometry_json=None,
+                    item_id=None,
+                    rowid=None,
+                    single_datetime=None,
+                    start_datetime=None,
                 )
                 asset_save_path = _asset_save_path(rec).relative_to(self.asset_dir)
-                rec.asset_save_path = str(asset_save_path)
+                rec['asset_save_path'] = str(asset_save_path)
                 _insert_asset_rec(rec)
                 n += 1
                 if n % 1000 == 0:
@@ -280,14 +321,14 @@ class CatalogDownloader():
             p = Path(json_src)
             if p.name == 'catalog.json':
                 continue
-            with open(json_src) as json_fh:
+            with open(json_src, encoding='utf-8') as json_fh:
                 stac_item = json.load(json_fh)
                 stac_type = stac_item.get('type', None)
                 if p.name == 'collection.json' or stac_type == 'Collection':
                     _handle_collection(stac_item)
                 else:
                     _handle_item(stac_item)
-        log.info(f'{self._fetch_unfiltered_count()} unique assets in stac catalog.')
+        log.info('%s unique assets in stac catalog.', self._fetch_unfiltered_count())
 
     def _filter_collections_step(self) -> None:
         """
@@ -346,7 +387,7 @@ class CatalogDownloader():
             raise RuntimeError(
                 f'after filtering collections_ids and asset keys, zero assets to download. filter: {filter}'
             )
-        log.info(f'{total_asset_ct} assets after collection filter.')
+        log.info('%s assets after collection filter.', total_asset_ct)
 
     def _filter_bbox_step(self) -> None:
         """
@@ -390,7 +431,7 @@ class CatalogDownloader():
             for row_tuple in rows:
                 (row_id, item_id, bbox_json) = row_tuple
                 if not bbox_json:
-                    log.warning(f'item missing bbox: {item_id}')
+                    log.warning('item missing bbox: %s', item_id)
                     continue
                 hit = item_bbox_cache.get(item_id, None)
                 if hit is None:
@@ -408,7 +449,7 @@ class CatalogDownloader():
             raise RuntimeError(
                 f'after filtering by bounding box, zero assets to download. filter: {filter}'
             )
-        log.info(f'{total_asset_ct} assets after bounding box filter.')
+        log.info('%s assets after bounding box filter.', total_asset_ct)
 
     def _filter_intersects_step(self) -> None:
         """
@@ -454,7 +495,7 @@ class CatalogDownloader():
             for row_tuple in rows:
                 (row_id, item_id, bbox_json) = row_tuple
                 if not bbox_json:
-                    log.warning(f'item missing bbox: {item_id}')
+                    log.warning('item missing bbox: %s', item_id)
                     continue
                 hit = item_intersects_cache.get(item_id, None)
                 if hit is None:
@@ -472,7 +513,7 @@ class CatalogDownloader():
             raise RuntimeError(
                 f'after filtering by intersects, zero assets to download. filter: {filter}'
             )
-        log.info(f'{total_asset_ct} assets after intersects filter.')
+        log.info('%s assets after intersects filter.', total_asset_ct)
 
     def _filter_temporal_step(self) -> None:
         """
@@ -527,8 +568,8 @@ class CatalogDownloader():
                     end = date_parser(end_datetime)
                     if not start or not end:
                         # cannot process date range, just skip forward and log a warning
-                        log.warn(f'cannot compare to missing date range for: {item_id}')
-                        next
+                        log.warning('cannot compare to missing date range for: %s', item_id)
+                        continue
                     if isinstance(q, tuple):
                         filtered = not datetime_utils.range_to_range_check((start, end), q)
                     else:
@@ -543,7 +584,7 @@ class CatalogDownloader():
             raise RuntimeError(
               f'after filtering by temporal query, zero assets to download. filter: {filter}'
             )
-        log.info(f'{total_asset_ct} assets after temporal filter.')
+        log.info('%s assets after temporal filter.', total_asset_ct)
 
     def _asset_download_step(self) -> None:
         """
@@ -563,7 +604,12 @@ class CatalogDownloader():
             Warning: if the asset url is scheme s3://, it will be transformed to
             https://{bucket_name}.s3.amazonaws.com .
             """
-            log.debug(f'(thread id: {threading.get_ident()}) {asset_url} -> {out_file}')
+            log.debug(
+                '(thread id: %s) %s -> %s',
+                threading.get_ident(),
+                asset_url,
+                out_file,
+            )
             if not out_file.parent.exists():
                 out_file.parent.mkdir(exist_ok=True, parents=True)
             if 's3://' in asset_url:
@@ -605,11 +651,19 @@ class CatalogDownloader():
                 (asset_save_path, asset_url, collection_id, item_id, asset_key) = row_tuple
                 if asset_save_path not in uniq_asset_save_path:
                     asset_rec = AssetRecord(
+                        asset_key=asset_key,
                         asset_save_path=asset_save_path,
                         asset_url=asset_url,
+                        bbox_json=None,
                         collection_id=collection_id,
+                        common_asset=False,
+                        end_datetime=None,
+                        filtered=False,
+                        geometry_json=None,
                         item_id=item_id,
-                        asset_key=asset_key,
+                        rowid=None,
+                        single_datetime=None,
+                        start_datetime=None,
                     )
                     asset_list.append(asset_rec)
                     uniq_asset_save_path.add(asset_save_path)
@@ -625,10 +679,10 @@ class CatalogDownloader():
             future_to_asset_record = {
                 executor.submit(
                     _download_asset_worker, **dict(
-                        asset_url=r.asset_url,
-                        out_file=self.asset_dir / r.asset_save_path,  # type: ignore
+                        asset_url=asset['asset_url'],
+                        out_file=self.asset_dir / asset['asset_save_path'],  # type:ignore
                         if_exists=self.config.if_exists,
-                    )): r for r in asset_list
+                    )): asset for asset in asset_list
             }
             for future in tqdm(
                         as_completed(future_to_asset_record),
@@ -641,11 +695,18 @@ class CatalogDownloader():
                 except Exception as e:
                     # write a line to err_report in the format:
                     # (Error code, Dataset ID, Collection ID, Item ID, Asset Key, Asset URL).
-                    r = asset_rec
                     self.err_writer.writerow([
-                        str(e), self.config.dataset_id, r.collection_id, r.item_id, r.asset_key, r.asset_url
+                        str(e),
+                        self.config.dataset_id,
+                        asset_rec.get('collection_id'),
+                        asset_rec.get('item_id'),
+                        asset_rec.get('asset_key'),
+                        asset_rec.get('asset_url'),
                     ])
-                    log.exception(e)
+                    # write log message with exception info, but don't break out of
+                    # thread pool executor.
+                    err_msg = str(e)
+                    log.exception(err_msg)
 
     def _init_db(self) -> None:
         db_path = self.asset_dir / 'mlhub_stac_assets.db'
@@ -685,7 +746,7 @@ class CatalogDownloader():
         Create and run functions for each processing step.
         """
         c = self.config
-        self.err_report = open(self.err_report_path, 'w')
+        self.err_report = open(self.err_report_path, 'w', encoding='utf-8')
         self.err_writer = csv.writer(self.err_report, quoting=csv.QUOTE_MINIMAL)
 
         steps: List[Callable[[], None]] = []
@@ -730,6 +791,6 @@ class CatalogDownloader():
             raise IOError(msg)
 
         if c.catalog_only:
-            log.info(f'catalog saved to {self.work_dir}')
+            log.info('catalog saved to %s', self.work_dir)
         else:
-            log.info(f'assets saved to {self.asset_dir}')
+            log.info('assets saved to %s', self.asset_dir)

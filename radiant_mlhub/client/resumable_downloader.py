@@ -78,11 +78,11 @@ class ResumableDownloader():
         self.out_file.parent.mkdir(exist_ok=True, parents=True)
         if self.out_file.exists():
             if self.if_exists == DownloadIfExistsOpts.skip:
-                log.debug(f'{self.out_file.resolve()} -> skip')
+                log.debug('%s -> skip', self.out_file)
                 return
             elif self.if_exists == DownloadIfExistsOpts.overwrite:
                 self.out_file.unlink()
-                log.debug(f'{self.out_file.resolve()} -> overwrite')
+                log.debug('%s -> overwrite', self.out_file)
             elif self.if_exists == DownloadIfExistsOpts.resume:
                 # make HEAD request to get content-length (detect whether to resume)
                 resp = self.session.head(self.url, allow_redirects=True)
@@ -92,7 +92,7 @@ class ResumableDownloader():
                 assert size <= content_len, 'unexpected asset size on filesystem'
                 if size == content_len:
                     return  # nothing to resume
-                log.debug(f'{self.out_file.resolve()} -> resume')
+                log.debug('%s -> resume', self.out_file)
 
         with open(self.out_file, mode='ab') as fh:
             req_headers = self.session.headers.copy()

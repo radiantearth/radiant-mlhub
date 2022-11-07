@@ -170,9 +170,13 @@ is relatively small in size. The downloader can also scale up to the largest dat
     >>> print(dataset.estimated_dataset_size)  # OK the total dataset assets are ~77MB
     77207762
     >>> dataset.download()
-    nasa_marine_debris: fetch stac catalog: 258KB [00:00, 404.83KB/s]                                                                                                        
-    unarchive nasa_marine_debris.tar.gz: 100%|█████████████████████████████████████████████████████████████████████████████████████████| 2830/2830 [00:00<00:00, 4744.75it/s]
-    download assets: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2825/2825 [03:48<00:00, 12.36it/s]
+    nasa_marine_debris: fetch stac catalog: 258KB [00:00, 412.53KB/s]
+    INFO:radiant_mlhub.client.catalog_downloader:unarchive nasa_marine_debris.tar.gz ...
+    unarchive nasa_marine_debris.tar.gz: 100%|████████████████████| 2830/2830 [00:00<00:00, 5772.09it/s]
+    INFO:radiant_mlhub.client.catalog_downloader:create stac asset list (please wait) ...
+    INFO:radiant_mlhub.client.catalog_downloader:2825 unique assets in stac catalog.
+    download assets: 100%|██████████████████████| 2825/2825 [03:27<00:00, 13.62it/s]
+    INFO:radiant_mlhub.client.catalog_downloader:assets saved to nasa_marine_debris
 
 The :meth:`Dataset.download <radiant_mlhub.models.Dataset.download>` method
 saves the STAC catalog and assets into your current working directory (by default).
