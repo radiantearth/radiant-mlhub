@@ -205,7 +205,7 @@ class CatalogDownloader():
                 # parse the url and extract the path -> file suffix (slow)
                 ext = Path(str(urlparse(rec['asset_url']).path)).suffix
             base_path = self.asset_dir / rec['collection_id']  # type: ignore
-            asset_filename = f"{rec['asset_key']}{ext}"
+            asset_filename = f"{rec['asset_key']}.{ext}"
             if rec['item_id'] is None:
                 # this is a collection level asset
                 return base_path / asset_filename
