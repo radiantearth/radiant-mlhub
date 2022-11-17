@@ -197,6 +197,7 @@ class TestDataset:
         assert size is not None and size == expect_size, 'unexpected estimated_dataset_size'
 
     def asset_database_record_count(self, db: Path) -> str:
+        """Count the distinct asset_save_path's in the asset db."""
         db_conn = sqlite3.connect(
             db,
             detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES
@@ -212,6 +213,26 @@ class TestDataset:
         db_cur.close()
         db_conn.close()
         return n
+
+    def asset_database_file_extension_count(self, db: Path, ext: str) -> int:
+        """Count the distinct asset save paths matching a file extension."""
+        db_conn = sqlite3.connect(
+            db,
+            detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES
+        )
+        db_cur = db_conn.cursor()
+        sql_condition = f'%.{ext}'
+        db_cur.execute(
+            """
+                SELECT COUNT(DISTINCT asset_save_path)
+                    FROM assets WHERE asset_save_path LIKE :cond
+            """,
+            {"cond": sql_condition}
+        )
+        (n, ) = db_cur.fetchone()
+        db_cur.close()
+        db_conn.close()
+        return int(n)
 
     @pytest.mark.dataset_id('su_sar_moisture_content_main')
     def test_2_datetime_filters_to_start_and_end_datetime_fields(
@@ -446,6 +467,34 @@ class TestDataset:
         assert asset_db.exists()
         n = self.asset_database_record_count(asset_db)
         assert n == expect_assets
+        rmtree(tmp_path, ignore_errors=True)
+
+    @pytest.mark.vcr
+    def test_download_asset_save_paths_have_file_ext(self, tmp_path: Path) -> None:
+        """Query the asset db to make sure asset save paths have the
+            correct file extensions (this was a regression bug).
+        """
+        expect_count = dict(
+            pdf=1,  # this is a "common asset", so want 1 unique path
+            tif=706,
+            jpg=706,
+        )
+
+        ds = Dataset.fetch_by_id('nasa_marine_debris')
+        ds.download(output_dir=tmp_path)
+        asset_dir = tmp_path / 'nasa_marine_debris'
+        asset_db = asset_dir / 'mlhub_stac_assets.db'
+        assert asset_db.exists()
+
+        got_pdf_count = self.asset_database_file_extension_count(asset_db, 'pdf')
+        assert got_pdf_count == expect_count['pdf']
+
+        got_tif_count = self.asset_database_file_extension_count(asset_db, 'tif')
+        assert got_tif_count == expect_count['tif']
+
+        got_jpg_count = self.asset_database_file_extension_count(asset_db, 'jpg')
+        assert got_jpg_count == expect_count['jpg']
+
         rmtree(tmp_path, ignore_errors=True)
 
 
