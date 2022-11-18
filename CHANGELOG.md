@@ -244,7 +244,7 @@ Includes support for:
 * Fetching datasets and collections by ID
 * Downloading collection archives
 
-[Unreleased]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.3...main>
+[Unreleased]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.4...main>
 [v0.5.4]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.3...v0.5.4>
 [v0.5.3]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.2...v0.5.3>
 [v0.5.2]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.1...v0.5.2>
