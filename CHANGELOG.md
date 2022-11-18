@@ -9,18 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add missing dependency urllib3 to setup.py. ([181](https://github.com/radiantearth/radiant-mlhub/pull/181))
-
 ### Removed
+
+### Changed
+
+### Fixed
+
+### Deprecated
+
+### Developer
+
+## [v0.5.4]
+
+### Added
+
+- Add missing dependency urllib3 to setup.py. ([181](https://github.com/radiantearth/radiant-mlhub/pull/181))
 
 ### Changed
 
 - Performance improvements to Dataset.download() ([182](https://github.com/radiantearth/radiant-mlhub/pull/182))
 - Enable INFO level logging by default in Dataset.download() ([182](https://github.com/radiantearth/radiant-mlhub/pull/182))
-
-### Fixed
-
-### Deprecated
 
 ### Developer
 
@@ -237,6 +245,7 @@ Includes support for:
 * Downloading collection archives
 
 [Unreleased]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.3...main>
+[v0.5.4]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.3...v0.5.4>
 [v0.5.3]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.2...v0.5.3>
 [v0.5.2]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.1...v0.5.2>
 [v0.5.1]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.0...v0.5.1>
