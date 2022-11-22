@@ -186,24 +186,25 @@ class CatalogDownloader():
             url = rec['asset_url']
             # optimization to prevent calling urlparse
             if '.tif' in url:
-                ext = 'tif'
+                ext = '.tif'
             elif '.tiff' in url:
-                ext = 'tiff'
+                ext = '.tiff'
             elif '.json' in url:
-                ext = 'json'
+                ext = '.json'
             elif '.pdf' in url:
-                ext = 'pdf'
+                ext = '.pdf'
             elif '.png' in url:
-                ext = 'png'
+                ext = '.png'
             elif '.jpg' in url:
-                ext = 'jpg'
+                ext = '.jpg'
             elif '.jpeg' in url:
-                ext = 'jpeg'
+                ext = '.jpeg'
             elif '.csv' in url:
-                ext = 'csv'
+                ext = '.csv'
             else:
                 # parse the url and extract the path -> file suffix (slow)
                 ext = Path(str(urlparse(rec['asset_url']).path)).suffix
+            assert '.' in ext, 'File extension is not formatted correctly'
             base_path = self.asset_dir / rec['collection_id']  # type: ignore
             asset_filename = f"{rec['asset_key']}{ext}"
             if rec['item_id'] is None:
