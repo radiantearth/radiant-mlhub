@@ -19,20 +19,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Developer
 
-## [v0.5.4]
+## [v0.5.5]
 
 ### Added
 
 - Add missing dependency urllib3 to setup.py. ([181](https://github.com/radiantearth/radiant-mlhub/pull/181))
+- Add a unit test to confirm asset save paths are getting formatted correctly with expected file extensions. ([186](https://github.com/radiantearth/radiant-mlhub/pull/186))
 
 ### Changed
 
 - Performance improvements to Dataset.download() ([182](https://github.com/radiantearth/radiant-mlhub/pull/182))
 - Enable INFO level logging by default in Dataset.download() ([182](https://github.com/radiantearth/radiant-mlhub/pull/182))
 
+### Fixed
+
+- Fix regression bug from PR #182. ([186](https://github.com/radiantearth/radiant-mlhub/pull/186))
+
 ### Developer
 
 - Add flake8-logging-format package ([182](https://github.com/radiantearth/radiant-mlhub/pull/182))
+
+## [v0.5.4]
+
+Unreleased version.
 
 ## [v0.5.3]
 
@@ -244,8 +253,8 @@ Includes support for:
 * Fetching datasets and collections by ID
 * Downloading collection archives
 
-[Unreleased]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.4...main>
-[v0.5.4]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.3...v0.5.4>
+[Unreleased]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.5...main>
+[v0.5.5]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.3...v0.5.5>
 [v0.5.3]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.2...v0.5.3>
 [v0.5.2]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.1...v0.5.2>
 [v0.5.1]: <https://github.com/radiantearth/radiant-mlhub/compare/v0.5.0...v0.5.1>
